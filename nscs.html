@@ -33,12 +33,23 @@ html.swipe-out {
   100% { opacity: 0; transform: translateX(-30px); }
 }
 </style>
+<style>
+body {
+  animation: fadeIn 1.2s ease-out;
+}
+@keyframes fadeIn {
+  0% { opacity: 0; transform: scale(1.05); }
+  100% { opacity: 1; transform: scale(1); }
+}
+</style>
 </head>
 <body>
+
 <nav>
-  <a href="chronik.html" class="swipe-link" > class="swipe-link">📖 Chronik</a>
-  <a href="nscs.html">🧙‍♂️ NSC-Verzeichnis</a>
+  <a href="chronik.html" class="swipe-link">📖 Chronik</a>
+  <a href="nscs.html" class="swipe-link">🧙‍♂️ NSC-Verzeichnis</a>
 </nav>
+
 
   <h1>🧙‍♂️ NSC-Verzeichnis</h1>
   <div class="form">
