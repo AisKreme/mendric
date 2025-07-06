@@ -1,4 +1,5 @@
 const API_URL = 'https://mendric.vercel.app/api/chronik';
+const VERIFY_URL = 'https://mendric.vercel.app/api/verify-password';
 let entries = [];
 let currentPage = 0;
 
@@ -13,7 +14,7 @@ async function loadEntries() {
 
 function checkAccess() {
   const input = document.getElementById('accessPassword').value.trim();
-  fetch('/api/verify-password', {
+  fetch(VERIFY_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ password: input })
