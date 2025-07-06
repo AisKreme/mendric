@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mendrics Chronik</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mendrics Chronik – Magisches Buch</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4.1.0/turn.min.css">
   <style>
     body {
-      background: url('https://cdn.pixabay.com/photo/2017/03/27/13/56/old-paper-2178564_1280.jpg') no-repeat center center fixed;
+      background: url('https://cdn.pixabay.com/photo/2017/03/27/13/56/old-paper-2178564_1280.jpg') center center fixed no-repeat;
       background-size: cover;
       font-family: 'Georgia', serif;
       margin: 0;
@@ -15,272 +16,173 @@
     }
     h1 {
       text-align: center;
-      font-size: 2.8rem;
+      font-size: 2.5rem;
       margin-bottom: 2rem;
       color: #3a2e1a;
-      text-shadow: 1px 1px 2px #ddd;
+      text-shadow: 1px 1px 2px #fff;
     }
-    .layout {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      flex-wrap: wrap;
+    #flipbook {
+      width: 800px;
+      height: 500px;
+      margin: auto;
     }
-    .book {
-      flex: 1 1 600px;
-      background: rgba(255,248,225,0.95);
+    .page {
+      background: #fffef9;
+      border: 2px solid #a47e3c;
+      border-radius: 4px;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
       padding: 2rem;
-      border: 5px solid #5c3d1e;
-      border-radius: 12px;
-      box-shadow: 0 0 25px rgba(0,0,0,0.3);
-      max-width: 700px;
+      font-size: 1rem;
+      position: relative;
     }
-    .sidebar {
-      width: 220px;
-      background: #fffef0cc;
-      border: 3px solid #5c3d1e;
-      border-radius: 10px;
-      padding: 1rem;
-      height: fit-content;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    .entry-buttons {
+      margin-top: 1rem;
     }
-    .sidebar h2 {
-      font-size: 1.2rem;
-      border-bottom: 1px solid #999;
-      padding-bottom: 0.5rem;
-      margin-bottom: 0.5rem;
-    }
-    .sidebar ul {
-      list-style: none;
-      padding-left: 0;
-    }
-    .sidebar li {
+    .entry-buttons button {
+      margin-right: 0.5rem;
+      padding: 0.4rem 0.8rem;
+      font-size: 0.9rem;
+      background-color: #5c3d1e;
+      color: white;
+      border: none;
+      border-radius: 5px;
       cursor: pointer;
-      margin: 0.3rem 0;
-      color: #2c2b29;
     }
-    .sidebar li:hover {
-      text-decoration: underline;
+    #controls {
+      text-align: center;
+      margin: 1rem 0;
+    }
+    #entryForm, #unlockArea {
+      text-align: center;
+      margin: 2rem auto;
+      max-width: 600px;
+      background: rgba(255,248,225,0.95);
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
     }
     textarea {
       width: 100%;
-      height: 120px;
+      height: 100px;
+      margin-bottom: 1rem;
       font-family: monospace;
       font-size: 1rem;
-      padding: 1rem;
-      border: 1px solid #999;
-      border-radius: 6px;
-      margin-bottom: 1rem;
-      white-space: pre;
+      padding: 0.5rem;
     }
-    button {
-      padding: 0.5rem 1rem;
-      margin-right: 0.5rem;
-      font-size: 1rem;
-      cursor: pointer;
-      border: none;
-      border-radius: 5px;
-      background-color: #5c3d1e;
-      color: white;
-    }
-    .entry {
-      background: #fffef9;
-      border: 1px solid #c2b59b;
-      padding: 1rem;
-      margin-top: 1.5rem;
-      border-radius: 8px;
-      position: relative;
-    }
-    .entry .buttons {
-      margin-top: 1rem;
-    }
-    .hidden {
-      display: none;
-    }
-    #unlockSection {
-      text-align: center;
-      max-width: 400px;
-      margin: 5rem auto;
-      background: rgba(255,248,225,0.95);
-      padding: 2rem;
-      border: 3px solid #5c3d1e;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.2);
-    }
-    #unlockSection input {
+    input[type="password"] {
       padding: 0.5rem;
       font-size: 1rem;
-      margin-top: 1rem;
-      margin-bottom: 1rem;
-      width: 80%;
-      border-radius: 5px;
-      border: 1px solid #888;
+      width: 200px;
     }
   </style>
 </head>
 <body>
   <h1>Mendrics Chronik</h1>
-
-  <!-- Passwortschutz-Bereich -->
-  <div id="unlockSection">
-    <p>🧙‍♂️ Nur wahre Chronisten dürfen lesen und schreiben.<br>Bitte das geheime Passwort eingeben:</p>
-    <input type="password" id="passwordInput" placeholder="Passwort">
-    <br>
+  <div id="unlockArea">
+    <p>🔒 Nur eingeweihte Chronisten dürfen lesen oder schreiben.</p>
+    <input type="password" id="pwInput" placeholder="Passwort">
+    <br><br>
     <button onclick="checkPassword()">🔓 Freischalten</button>
   </div>
-
-  <!-- Hauptinhalt wird erst nach Passwort sichtbar -->
-  <div id="mainContent" class="hidden layout">
-    <!-- Inhaltsverzeichnis -->
-    <div class="sidebar">
-      <h2>📜 Inhaltsverzeichnis</h2>
-      <ul id="tocList"></ul>
-    </div>
-
-    <!-- Eingabe und Einträge -->
-    <div class="book">
-      <textarea id="noteInput" placeholder="Notiz eingeben..."></textarea>
-      <textarea id="flowInput" placeholder="Optional: Fließtext-Version dieser Notiz..."></textarea>
-      <button onclick="saveEntry()">Eintrag speichern</button>
-      <div id="entries"></div>
-    </div>
+  <div id="entryForm" class="hidden">
+    <textarea id="noteInput" placeholder="Notiz eingeben..."></textarea>
+    <textarea id="flowInput" placeholder="Optional: Fließtext-Version..."></textarea>
+    <button onclick="addEntry()">🖋️ Eintrag speichern</button>
   </div>
-<script>
-  const entriesDiv = document.getElementById('entries');
-  const mainContent = document.getElementById('mainContent');
-  const unlockSection = document.getElementById('unlockSection');
-  const tocList = document.getElementById('tocList');
+  <div id="flipbook" class="hidden"></div>
+  <div id="controls" class="hidden">
+    <button onclick="$('#flipbook').turn('previous')">⬅️ Zurück</button>
+    <button onclick="$('#flipbook').turn('next')">Weiter ➡️</button>
+  </div>
 
-  function checkPassword() {
-    const input = document.getElementById('passwordInput').value;
-    if (input === 'Mendric') {
-      unlockSection.classList.add('hidden');
-      mainContent.classList.remove('hidden');
-      renderEntries();
-    } else {
-      alert("Falsches Passwort. Nur wahre Chronisten dürfen fortfahren!");
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4.1.0/turn.min.js"></script>
+  <script>
+    let isUnlocked = false;
+
+    function checkPassword() {
+      if (document.getElementById('pwInput').value === 'Mendric') {
+        document.getElementById('unlockArea').style.display = 'none';
+        document.getElementById('entryForm').classList.remove('hidden');
+        document.getElementById('flipbook').classList.remove('hidden');
+        document.getElementById('controls').classList.remove('hidden');
+        isUnlocked = true;
+        renderBook();
+      } else {
+        alert("Falsches Passwort!");
+      }
     }
-  }
 
-  function saveEntry() {
-    const note = document.getElementById('noteInput').value.trim();
-    const flow = document.getElementById('flowInput').value.trim();
-    if (!note) return alert("Bitte eine Notiz eingeben.");
-
-    const date = new Date().toLocaleDateString('de-DE', {
-      day: '2-digit', month: 'long', year: 'numeric'
-    });
-
-    const entry = { note, flow, date };
-    const entries = JSON.parse(localStorage.getItem('chronik')) || [];
-    entries.push(entry);
-    localStorage.setItem('chronik', JSON.stringify(entries));
-    document.getElementById('noteInput').value = '';
-    document.getElementById('flowInput').value = '';
-    renderEntries();
-  }
-
-  function renderEntries() {
-    entriesDiv.innerHTML = '';
-    tocList.innerHTML = '';
-    const entries = JSON.parse(localStorage.getItem('chronik')) || [];
-
-    entries.forEach((entry, index) => {
-      const div = document.createElement('div');
-      div.className = 'entry';
-      div.id = 'entry-' + index;
-
-      const noteDiv = document.createElement('div');
-      noteDiv.className = 'note';
-      noteDiv.textContent = entry.note;
-
-      const flowDiv = document.createElement('div');
-      flowDiv.className = 'flow hidden';
-      flowDiv.textContent = entry.flow || '(Kein Fließtext hinterlegt)';
-
-      const buttons = document.createElement('div');
-      buttons.className = 'buttons';
-
-      const speakBtn = document.createElement('button');
-      speakBtn.textContent = '🔊 Vorlesen';
-      speakBtn.onclick = () => speakText(
-        noteDiv.classList.contains('hidden') ? flowDiv.textContent : noteDiv.textContent
-      );
-
-      const toggleBtn = document.createElement('button');
-      toggleBtn.textContent = '➡️ Fließtext anzeigen';
-      toggleBtn.onclick = () => {
-        const isNote = !noteDiv.classList.contains('hidden');
-        noteDiv.classList.toggle('hidden');
-        flowDiv.classList.toggle('hidden');
-        toggleBtn.textContent = isNote ? '⬅️ Notiz anzeigen' : '➡️ Fließtext anzeigen';
-      };
-
-      const deleteBtn = document.createElement('button');
-      deleteBtn.textContent = '🗑️ Löschen';
-      deleteBtn.onclick = () => {
-        if (confirm('Diesen Eintrag wirklich löschen?')) {
-          deleteEntry(index);
-        }
-      };
-
-      buttons.appendChild(speakBtn);
-      if (entry.flow) buttons.appendChild(toggleBtn);
-      buttons.appendChild(deleteBtn);
-
-      const meta = document.createElement('div');
-      meta.style.fontSize = '0.9rem';
-      meta.style.color = '#555';
-      meta.textContent = `📅 Eintrag vom ${entry.date}`;
-
-      div.appendChild(meta);
-      div.appendChild(noteDiv);
-      div.appendChild(flowDiv);
-      div.appendChild(buttons);
-      entriesDiv.appendChild(div);
-
-      // Inhaltsverzeichnis
-      const tocItem = document.createElement('li');
-      tocItem.textContent = `Seite ${index + 1} – ${entry.date}`;
-      tocItem.onclick = () => {
-        const target = document.getElementById('entry-' + index);
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth' });
-        }
-      };
-      tocList.appendChild(tocItem);
-    });
-
-    // Automatisch zur letzten Seite scrollen
-    if (entries.length) {
-      const last = document.getElementById('entry-' + (entries.length - 1));
-      if (last) last.scrollIntoView({ behavior: 'smooth' });
+    function addEntry() {
+      const note = document.getElementById('noteInput').value.trim();
+      const flow = document.getElementById('flowInput').value.trim();
+      if (!note) return alert("Bitte Notiz eingeben.");
+      const date = new Date().toLocaleDateString('de-DE');
+      const entries = JSON.parse(localStorage.getItem('chronik')) || [];
+      entries.push({ note, flow, date });
+      localStorage.setItem('chronik', JSON.stringify(entries));
+      document.getElementById('noteInput').value = '';
+      document.getElementById('flowInput').value = '';
+      renderBook();
     }
-  }
 
-  function speakText(text) {
-    if (!text) return;
-    const cleanText = text.replace(/\p{Emoji_Presentation}|\p{Extended_Pictographic}/gu, '');
-    const utterance = new SpeechSynthesisUtterance(cleanText);
-    utterance.lang = 'de-DE';
-    utterance.rate = 0.85;
-    utterance.pitch = 0.6;
-    const voices = speechSynthesis.getVoices().filter(v => v.lang === 'de-DE');
-    utterance.voice = voices.find(v => v.name.includes('Male') || v.name.includes('Deep')) || voices[0];
-    speechSynthesis.speak(utterance);
-  }
+    function renderBook() {
+      $('#flipbook').html('');
+      const entries = JSON.parse(localStorage.getItem('chronik')) || [];
+      entries.forEach((entry, index) => {
+        const page = document.createElement('div');
+        page.className = 'page';
+        const content = `
+          <div><strong>📜 Eintrag vom ${entry.date}</strong></div>
+          <div id="note-${index}">${entry.note}</div>
+          <div id="flow-${index}" class="hidden">${entry.flow || '(Kein Fließtext)'}</div>
+          <div class="entry-buttons">
+            <button onclick="toggleText(${index})">➡️ Fließtext anzeigen</button>
+            <button onclick="speakText(getCurrentText(${index}))">🔊 Vorlesen</button>
+            <button onclick="deleteEntry(${index})">🗑️ Löschen</button>
+          </div>`;
+        page.innerHTML = content;
+        $('#flipbook').append(page);
+      });
+      $('#flipbook').turn({ width: 800, height: 500, autoCenter: true });
+      if (entries.length > 1) $('#flipbook').turn('page', entries.length);
+    }
 
-  function deleteEntry(index) {
-    const entries = JSON.parse(localStorage.getItem('chronik')) || [];
-    entries.splice(index, 1);
-    localStorage.setItem('chronik', JSON.stringify(entries));
-    renderEntries();
-  }
+    function toggleText(index) {
+      const note = document.getElementById(`note-${index}`);
+      const flow = document.getElementById(`flow-${index}`);
+      const isNote = !note.classList.contains('hidden');
+      note.classList.toggle('hidden');
+      flow.classList.toggle('hidden');
+    }
 
-  // Bei Stimmen laden: Workaround für Safari/Chrome
-  if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
-    speechSynthesis.onvoiceschanged = () => {};
-  }
-</script>
+    function getCurrentText(index) {
+      const note = document.getElementById(`note-${index}`);
+      const flow = document.getElementById(`flow-${index}`);
+      return (!note.classList.contains('hidden') ? note.textContent : flow.textContent).replace(/\p{Emoji_Presentation}|\p{Extended_Pictographic}/gu, '');
+    }
+
+    function speakText(text) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'de-DE';
+      utterance.rate = 0.85;
+      utterance.pitch = 0.6;
+      const voices = speechSynthesis.getVoices().filter(v => v.lang === 'de-DE');
+      utterance.voice = voices.find(v => v.name.includes('Male') || v.name.includes('Deep')) || voices[0];
+      speechSynthesis.speak(utterance);
+    }
+
+    function deleteEntry(index) {
+      if (!confirm('Eintrag wirklich löschen?')) return;
+      const entries = JSON.parse(localStorage.getItem('chronik')) || [];
+      entries.splice(index, 1);
+      localStorage.setItem('chronik', JSON.stringify(entries));
+      renderBook();
+    }
+
+    if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+      speechSynthesis.onvoiceschanged = () => {};
+    }
+  </script>
 </body>
 </html>
