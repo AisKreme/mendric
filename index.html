@@ -7,13 +7,8 @@
   <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/166/166539.png">
   <link href="https://fonts.googleapis.com/css2?family=Cardo&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="src/style.css">
-  <link rel="stylesheet" href="src/book-style.css">
 </head>
 <body>
-<nav style="text-align:center; margin-bottom: 1rem;">
-  <a href="index.html" style="margin-right:1rem; color:#ffd86b;">📖 Chronik</a>
-  <a href="nscs.html" style="color:#ffd86b;">🧙‍♂️ NSC-Verzeichnis</a>
-</nav>
   <div id="cover" class="cover-screen">
     <img src="https://cdn.pixabay.com/photo/2024/12/07/13/19/viking-9250894_1280.png" alt="Rune"
          class="rune-glow" style="max-width: 180px; margin-bottom: 1rem;">
@@ -24,33 +19,26 @@
     <p id="errorMessage" class="error-message"></p>
   </div>
 
-  <div id="chronikApp" style="display:none;">
-    <div id="bookContainer" class="book-container">
-      <div id="toc-toggle" onclick="toggleTOC()">📖</div>
-      <div id="bookPages"></div>
-      <div id="toc"></div>
-      <div class="book-nav">
-        <button onclick="prevPage()">⬅️</button>
-        <span id="pageIndicator"></span>
-        <button onclick="nextPage()">➡️</button>
-      </div>
-    </div>
-
-    <div class="container">
-      <button onclick="toggleEntryForm()" style="margin-bottom: 1rem;">🖋️ Neue Seite schreiben</button>
-      <div id="entryForm" style="display: none;">
-        <textarea id="noteInput" placeholder="Notiz eingeben..."></textarea>
-        <textarea id="flowInput" placeholder="Optionaler Fließtext..."></textarea>
-        <button onclick="addEntry()">📜 Eintrag speichern</button>
-      </div>
-    </div>
-  </div>
-
-  <script src="src/main.js"></script>
   <script>
-    function toggleEntryForm() {
-      const form = document.getElementById('entryForm');
-      form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    const VERIFY_URL = 'https://mendric.vercel.app/api/verify-password';
+    function checkAccess() {
+      const input = document.getElementById('accessPassword').value.trim();
+      fetch(VERIFY_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: input })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            window.location.href = 'chronik.html';
+          } else {
+            document.getElementById('errorMessage').textContent = '⚡ Du erhältst einen Elektrischen Schock und erhälst 1W6 Schaden';
+          }
+        })
+        .catch(() => {
+          document.getElementById('errorMessage').textContent = '⚡ Du erhältst einen Elektrischen Schock und erhälst 1W6 Schaden';
+        });
     }
   </script>
 </body>
