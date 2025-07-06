@@ -117,3 +117,5 @@ function speakText(text) {
 
 window.addEntry = addEntry;
 window.onload = loadEntries;
+window.prevPage = prevPage;
+window.nextPage = nextPage;
