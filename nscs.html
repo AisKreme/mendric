@@ -6,50 +6,12 @@
   <title>NSC-Verzeichnis</title>
   <link href="https://fonts.googleapis.com/css2?family=Cardo&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="src/nsc-style.css">
-<style>
-/* Optional swipe effect between pages */
-html.swipe-left {
-  animation: swipeLeft 0.4s forwards;
-}
-html.swipe-right {
-  animation: swipeRight 0.4s forwards;
-}
-@keyframes swipeLeft {
-  0% { transform: translateX(0); opacity: 1; }
-  100% { transform: translateX(-100%); opacity: 0; }
-}
-@keyframes swipeRight {
-  0% { transform: translateX(0); opacity: 1; }
-  100% { transform: translateX(100%); opacity: 0; }
-}
-</style>
-<style>
-html.swipe-out {
-  animation: smoothSwipeOut 0.8s ease-in forwards;
-  background-color: #000 !important;
-}
-@keyframes smoothSwipeOut {
-  0% { opacity: 1; transform: translateX(0); }
-  100% { opacity: 0; transform: translateX(-30px); }
-}
-</style>
-<style>
-body {
-  animation: fadeIn 1.2s ease-out;
-}
-@keyframes fadeIn {
-  0% { opacity: 0; transform: scale(1.05); }
-  100% { opacity: 1; transform: scale(1); }
-}
-</style>
 </head>
 <body>
-
 <nav>
   <a href="chronik.html" class="swipe-link">📖 Chronik</a>
   <a href="nscs.html" class="swipe-link">🧙‍♂️ NSC-Verzeichnis</a>
 </nav>
-
 
   <h1>🧙‍♂️ NSC-Verzeichnis</h1>
   <div class="form">
@@ -60,70 +22,118 @@ body {
     <button onclick="saveNSC()">💾 Speichern</button>
   </div>
 
+  <input class="search-input" type="text" id="searchField" placeholder="🔍 Suche nach Name oder Rolle..." />
+
   <div class="nsc-list">
     <h2>Bekannte NSCs</h2>
     <div id="nscContainer">Wird geladen...</div>
   </div>
 
-  <script>
-    const API_NSC = 'https://mendric.vercel.app/api/nscs';
-
-    async function saveNSC() {
-      const name = document.getElementById('nscName').value.trim();
-      const rolle = document.getElementById('nscRolle').value.trim();
-      const info = document.getElementById('nscInfo').value.trim();
-      if (!name) return alert("Bitte Name eingeben.");
-      const res = await fetch(API_NSC, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, rolle, info })
-      });
-      const result = await res.json();
-      if (result.error) return alert('Fehler: ' + result.error);
-      document.getElementById('nscName').value = '';
-      document.getElementById('nscRolle').value = '';
-      document.getElementById('nscInfo').value = '';
-      loadNSCs();
-    }
-
-    async function loadNSCs() {
-      const container = document.getElementById('nscContainer');
-      const res = await fetch(API_NSC);
-      const data = await res.json();
-      if (!Array.isArray(data)) {
-        container.innerHTML = 'Fehler beim Laden.';
-        return;
-      }
-      container.innerHTML = '';
-      data.forEach(nsc => {
-        const div = document.createElement('div');
-        div.className = 'nsc-entry';
-        div.innerHTML = `
-          <h3>🧾 ${nsc.name}</h3>
-          <p><strong>Rolle:</strong> ${nsc.rolle || '–'}</p>
-          <p>${nsc.info || ''}</p>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    loadNSCs();
-  </script>
 <script>
-const links = document.querySelectorAll('a[href*="chronik.html"]');
-links.forEach(link => {
-  link.addEventListener('click', () => {
-    document.documentElement.classList.add('swipe-right');
+const API_NSC = 'https://mendric.vercel.app/api/nscs';
+let nscs = [];
+
+async function saveNSC() {
+  const name = document.getElementById('nscName').value.trim();
+  const rolle = document.getElementById('nscRolle').value.trim();
+  const info = document.getElementById('nscInfo').value.trim();
+  if (!name) return alert("Bitte Name eingeben.");
+  const res = await fetch(API_NSC, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, rolle, info })
   });
-});
-</script>
-<script>
-function triggerSwipe() {
-  document.documentElement.classList.add('swipe-out');
-  setTimeout(() => {
-    window.location.href = 'chronik.html';
-  }, 800);
+  const result = await res.json();
+  if (result.error) return alert('Fehler: ' + result.error);
+  document.getElementById('nscName').value = '';
+  document.getElementById('nscRolle').value = '';
+  document.getElementById('nscInfo').value = '';
+  loadNSCs();
 }
+
+async function deleteNSC(id) {
+  if (!confirm("Diesen NSC wirklich löschen?")) return;
+  const res = await fetch(API_NSC, {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id })
+  });
+  const result = await res.json();
+  if (result.error) return alert('Fehler: ' + result.error);
+  loadNSCs();
+}
+
+function editNSC(entry, nsc) {
+  const nameInput = document.createElement('input');
+  nameInput.value = nsc.name;
+
+  const roleInput = document.createElement('input');
+  roleInput.value = nsc.rolle;
+
+  const infoArea = document.createElement('textarea');
+  infoArea.value = nsc.info;
+
+  const saveBtn = document.createElement('button');
+  saveBtn.textContent = '💾 Speichern';
+  saveBtn.onclick = async () => {
+    const updated = {
+      id: nsc.id,
+      name: nameInput.value.trim(),
+      rolle: roleInput.value.trim(),
+      info: infoArea.value.trim()
+    };
+    const res = await fetch(API_NSC, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updated)
+    });
+    const result = await res.json();
+    if (result.error) return alert('Fehler: ' + result.error);
+    loadNSCs();
+  };
+
+  entry.innerHTML = '';
+  entry.appendChild(nameInput);
+  entry.appendChild(roleInput);
+  entry.appendChild(infoArea);
+  entry.appendChild(saveBtn);
+}
+
+function renderNSCs(list) {
+  const container = document.getElementById('nscContainer');
+  container.innerHTML = '';
+  list.forEach(nsc => {
+    const div = document.createElement('div');
+    div.className = 'nsc-entry';
+    div.innerHTML = `
+      <h3>🧾 ${nsc.name}</h3>
+      <p><strong>Rolle:</strong> ${nsc.rolle || '–'}</p>
+      <p>${nsc.info || ''}</p>
+      <div class="nsc-controls">
+        <button onclick="editNSC(this.parentNode.parentNode, ${JSON.stringify(nsc).replace(/"/g, '&quot;')})">✏️</button>
+        <button onclick="deleteNSC(${nsc.id})">🗑️</button>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+async function loadNSCs() {
+  const res = await fetch(API_NSC);
+  nscs = await res.json();
+  filterNSCs();
+}
+
+function filterNSCs() {
+  const query = document.getElementById('searchField').value.toLowerCase();
+  const filtered = nscs.filter(n =>
+    n.name.toLowerCase().includes(query) || (n.rolle && n.rolle.toLowerCase().includes(query))
+  );
+  renderNSCs(filtered);
+}
+
+document.getElementById('searchField').addEventListener('input', filterNSCs);
+loadNSCs();
 </script>
 
 <script>

@@ -1,14 +1,36 @@
+/* === Grundlayout === */
 body {
   font-family: 'Cardo', serif;
   background: #000 url('https://cdn.pixabay.com/photo/2017/08/30/07/52/fantasy-2695569_1280.jpg') no-repeat center center fixed;
   background-size: cover;
   color: #fef4dc;
   padding: 2rem;
+  animation: fadeIn 1.2s ease-out;
 }
+
+/* === Navigation === */
+nav {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+nav a {
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #ffd86b;
+  margin: 0 1rem;
+}
+nav a:hover {
+  text-shadow: 0 0 5px #ffd86b;
+}
+
+/* === Überschrift === */
 h1 {
   text-align: center;
   margin-bottom: 2rem;
 }
+
+/* === Eingabeformulare === */
 .form, .nsc-list {
   max-width: 600px;
   margin: auto;
@@ -36,6 +58,8 @@ button {
   cursor: pointer;
   box-shadow: 0 0 8px #f5cb6b;
 }
+
+/* === NSC-Einträge === */
 .nsc-entry {
   border-bottom: 1px solid #555;
   padding: 1rem 0;
@@ -43,17 +67,35 @@ button {
 .nsc-entry:last-child {
   border: none;
 }
-nav {
+.nsc-controls button {
+  margin-left: 0.5rem;
+}
+
+/* === Suchfeld === */
+.search-input {
+  margin: 2rem auto 1rem auto;
+  display: block;
+  width: 80%;
+  max-width: 400px;
+  padding: 0.5rem;
+  font-size: 1rem;
+  background: #111;
+  color: #ffeccc;
+  border: 1px solid #999;
+  border-radius: 6px;
   text-align: center;
-  margin-bottom: 1rem;
 }
-nav a {
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 1.1rem;
-  color: #ffd86b;
-  margin: 0 1rem;
+
+/* === Animationen === */
+@keyframes fadeIn {
+  0% { opacity: 0; transform: scale(1.05); }
+  100% { opacity: 1; transform: scale(1); }
 }
-nav a:hover {
-  text-shadow: 0 0 5px #ffd86b;
+html.swipe-out {
+  animation: smoothSwipeOut 0.8s ease-in forwards;
+  background-color: #000 !important;
+}
+@keyframes smoothSwipeOut {
+  0% { opacity: 1; transform: translateX(0); }
+  100% { opacity: 0; transform: translateX(-30px); }
 }
