@@ -1,128 +1,134 @@
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mendrics Chronik – Magisches Foliantenbuch</title>
+  <meta charset="UTF-8">
+  <title>Mendrics Chronikbuch – Magische Version</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cardo&display=swap">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/turn.js@4/turn.min.css">
   <style>
     body {
-      background: url('https://cdn.pixabay.com/photo/2016/11/29/03/53/book-1868597_1280.jpg') no-repeat center center fixed;
-      background-size: cover;
       margin: 0;
-      padding: 0;
       font-family: 'Cardo', serif;
-      color: #2e2b25;
+      background: url('https://cdn.pixabay.com/photo/2016/11/29/03/53/book-1868597_1280.jpg') center center no-repeat fixed;
+      background-size: cover;
+      color: #2c2b29;
     }
     h1 {
       text-align: center;
       font-size: 3rem;
-      margin-top: 1rem;
       color: #3a2e1a;
-      text-shadow: 2px 2px 4px #d6c289;
+      padding: 1rem 0;
     }
-    .hidden { display: none; }
-
     #flipbook {
-      width: 800px;
-      height: 500px;
+      width: 900px;
+      height: 600px;
       margin: 2rem auto;
     }
     .page {
-      background: #fdfaf2 url('https://cdn.pixabay.com/photo/2015/09/18/19/03/old-944234_1280.jpg') center center no-repeat;
+      background: url('https://cdn.pixabay.com/photo/2015/09/18/19/03/old-944234_1280.jpg') no-repeat center center;
       background-size: cover;
       padding: 2rem;
-      border: 1px solid #7a5a3a;
-      border-radius: 6px;
-      box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+      box-sizing: border-box;
+      overflow-y: auto;
     }
     .page h2 {
-      font-size: 1.3rem;
-      color: #5a4221;
-      margin-bottom: 1rem;
+      font-size: 1.4rem;
+      color: #5a3a1e;
+      margin-top: 0;
     }
     .page p {
       white-space: pre-wrap;
       font-size: 1.1rem;
       line-height: 1.6;
     }
-    .buttons {
-      margin-top: 1rem;
+    .controls, #entryForm, #unlockArea {
+      max-width: 800px;
+      margin: 1rem auto;
+      padding: 1rem;
+      background: rgba(255,248,225,0.9);
+      border: 2px solid #7a5a3a;
+      border-radius: 10px;
     }
-    .buttons button {
-      background-color: #5c3d1e;
+    textarea, input[type="password"] {
+      width: 100%;
+      padding: 0.5rem;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      font-family: monospace;
+    }
+    button {
+      background: #5a3a1e;
       color: white;
       border: none;
-      padding: 0.4rem 1rem;
-      margin-right: 0.5rem;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    #entryForm, #unlockArea {
-      max-width: 700px;
-      margin: 2rem auto;
-      background: rgba(255,248,220,0.95);
-      padding: 1.5rem;
-      border-radius: 10px;
-      border: 2px solid #7a5a3a;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-    }
-    textarea {
-      width: 100%;
-      font-size: 1rem;
-      padding: 0.6rem;
-      font-family: monospace;
-      margin-bottom: 1rem;
-    }
-    input[type=password] {
-      font-size: 1rem;
-      padding: 0.5rem;
-      width: 200px;
-      margin-bottom: 1rem;
-    }
-    #controls {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-    #controls button {
       padding: 0.5rem 1rem;
       font-size: 1rem;
-      margin: 0 0.5rem;
+      border-radius: 5px;
       cursor: pointer;
+      margin-right: 0.5rem;
+    }
+    .toc {
+      position: fixed;
+      right: 10px;
+      top: 100px;
+      background: #fff8e1;
+      border: 2px solid #7a5a3a;
+      padding: 0.5rem;
+      max-height: 400px;
+      overflow-y: auto;
+      width: 200px;
+      display: none;
+    }
+    .toc h3 {
+      margin-top: 0;
+    }
+    .toc ul {
+      list-style: none;
+      padding: 0;
+    }
+    .toc li {
+      cursor: pointer;
+      margin: 0.3rem 0;
+    }
+    .hidden {
+      display: none;
     }
   </style>
 </head>
 <body>
-  <h1>Mendrics Chronik</h1>
+  <h1>Mendrics Chronikbuch</h1>
 
   <div id="unlockArea">
-    <p>🧙‍♂️ Nur eingeweihte Chronisten dürfen das Buch öffnen.<br>Gib das geheime Wort ein:</p>
+    <p>🔐 Nur für Eingeweihte: Gib das Passwort ein</p>
     <input type="password" id="pwInput" placeholder="Passwort">
-    <br>
-    <button onclick="checkPassword()">🔓 Freischalten</button>
+    <button onclick="checkPassword()">Öffnen</button>
   </div>
 
   <div id="mainContent" class="hidden">
     <div id="flipbook"></div>
 
-    <div id="controls">
+    <div class="controls">
       <button onclick="$('#flipbook').turn('previous')">⬅️ Zurück</button>
       <button onclick="$('#flipbook').turn('next')">Weiter ➡️</button>
+      <button onclick="toggleTOC()">📖 Inhaltsverzeichnis</button>
     </div>
 
     <div id="entryForm">
       <textarea id="noteInput" placeholder="Notiz eingeben..."></textarea>
-      <textarea id="flowInput" placeholder="Optional: Fließtext..."></textarea>
-      <button onclick="addEntry()">🖋️ Eintrag speichern</button>
+      <textarea id="flowInput" placeholder="Optionaler Fließtext..."></textarea>
+      <button onclick="addEntry()">🖋️ Speichern</button>
+    </div>
+
+    <div class="toc" id="tocPanel">
+      <h3>Inhaltsverzeichnis</h3>
+      <ul id="tocList"></ul>
     </div>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/turn.js@4/turn.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/blasten/turn.js@master/lib/turn.min.js"></script>
   <script>
     let entries = JSON.parse(localStorage.getItem('chronik')) || [];
-    let showFlow = false;
 
     function checkPassword() {
       const input = document.getElementById('pwInput').value;
@@ -130,78 +136,85 @@
         document.getElementById('unlockArea').classList.add('hidden');
         document.getElementById('mainContent').classList.remove('hidden');
         buildBook();
+        buildTOC();
       } else {
-        alert("Falsches Passwort!");
+        alert('Falsches Passwort!');
       }
     }
 
     function buildBook() {
-      const flipbook = document.getElementById('flipbook');
-      flipbook.innerHTML = '';
-      entries.forEach((entry, i) => {
+      const fb = document.getElementById('flipbook');
+      fb.innerHTML = '';
+      entries.forEach((e, i) => {
         const page = document.createElement('div');
         page.className = 'page';
         page.innerHTML = `
-          <h2>📜 Eintrag vom ${entry.date}</h2>
-          <p id="text-${i}">${entry.note}</p>
-          <p id="flow-${i}" class="hidden">${entry.flow || '(Kein Fließtext)'}</p>
-          <div class="buttons">
-            <button onclick="toggleText(${i})">↔️ Text wechseln</button>
-            <button onclick="speakText(${i})">🔊 Vorlesen</button>
-            <button onclick="deleteEntry(${i})">🗑️ Löschen</button>
-          </div>
+          <h2>📜 Eintrag vom ${e.date}</h2>
+          <p id="note-${i}">${e.note}</p>
+          <p id="flow-${i}" class="hidden">${e.flow || '(kein Fließtext)'}</p>
+          <button onclick="toggleText(${i})">↔️ Text wechseln</button>
+          <button onclick="speakText(${i})">🔊 Vorlesen</button>
+          <button onclick="deleteEntry(${i})">🗑️ Löschen</button>
         `;
-        flipbook.appendChild(page);
+        fb.appendChild(page);
       });
-
-      $('#flipbook').turn({
-        width: 800,
-        height: 500,
-        autoCenter: true
-      });
-    }
-
-    function toggleText(index) {
-      const note = document.getElementById(`text-${index}`);
-      const flow = document.getElementById(`flow-${index}`);
-      note.classList.toggle('hidden');
-      flow.classList.toggle('hidden');
-    }
-
-    function speakText(index) {
-      const note = document.getElementById(`text-${index}`);
-      const flow = document.getElementById(`flow-${index}`);
-      const text = note.classList.contains('hidden') ? flow.textContent : note.textContent;
-      const utterance = new SpeechSynthesisUtterance(text.replace(/\p{Emoji_Presentation}|\p{Extended_Pictographic}/gu, ''));
-      utterance.lang = 'de-DE';
-      utterance.rate = 0.85;
-      utterance.pitch = 0.6;
-      const voices = speechSynthesis.getVoices().filter(v => v.lang === 'de-DE');
-      utterance.voice = voices.find(v => v.name.includes('Male') || v.name.includes('Deep')) || voices[0];
-      speechSynthesis.speak(utterance);
-    }
-
-    function deleteEntry(index) {
-      if (!confirm("Diesen Eintrag wirklich löschen?")) return;
-      entries.splice(index, 1);
-      localStorage.setItem('chronik', JSON.stringify(entries));
-      buildBook();
+      $('#flipbook').turn({width: 900, height: 600, autoCenter: true});
     }
 
     function addEntry() {
       const note = document.getElementById('noteInput').value.trim();
       const flow = document.getElementById('flowInput').value.trim();
-      if (!note) return alert("Bitte eine Notiz eingeben!");
+      if (!note) return alert('Notiz fehlt!');
       const date = new Date().toLocaleDateString('de-DE');
-      entries.push({ note, flow, date });
+      entries.push({note, flow, date});
       localStorage.setItem('chronik', JSON.stringify(entries));
       document.getElementById('noteInput').value = '';
       document.getElementById('flowInput').value = '';
       buildBook();
+      buildTOC();
       $('#flipbook').turn('page', entries.length);
     }
 
-    if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+    function toggleText(index) {
+      document.getElementById(`note-${index}`).classList.toggle('hidden');
+      document.getElementById(`flow-${index}`).classList.toggle('hidden');
+    }
+
+    function speakText(index) {
+      const note = document.getElementById(`note-${index}`);
+      const flow = document.getElementById(`flow-${index}`);
+      const text = note.classList.contains('hidden') ? flow.textContent : note.textContent;
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'de-DE'; u.rate = 0.85; u.pitch = 0.6;
+      const v = speechSynthesis.getVoices().filter(v => v.lang === 'de-DE');
+      u.voice = v.find(v => v.name.includes('Male') || v.name.includes('Deep')) || v[0];
+      speechSynthesis.speak(u);
+    }
+
+    function deleteEntry(index) {
+      if (!confirm('Wirklich löschen?')) return;
+      entries.splice(index, 1);
+      localStorage.setItem('chronik', JSON.stringify(entries));
+      buildBook();
+      buildTOC();
+    }
+
+    function toggleTOC() {
+      document.getElementById('tocPanel').classList.toggle('hidden');
+    }
+
+    function buildTOC() {
+      const toc = document.getElementById('tocList');
+      toc.innerHTML = '';
+      entries.forEach((e, i) => {
+        const li = document.createElement('li');
+        li.textContent = `Seite ${i+1} – ${e.date}`;
+        li.onclick = () => $('#flipbook').turn('page', i+1);
+        toc.appendChild(li);
+      });
+    }
+
+    if (typeof speechSynthesis !== 'undefined') {
       speechSynthesis.onvoiceschanged = () => {};
     }
   </script>
