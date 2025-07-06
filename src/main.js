@@ -2,8 +2,7 @@ const API_URL = 'https://mendric.vercel.app/api/chronik';
 let entries = [];
 let currentPage = 0;
 
-// Sound beim Öffnen
-const openSound = new Audio('https://cdn.freesound.org/previews/704/704359_634166-lq.mp3'); // Beispiel-URL mit funktionierender kleiner MP3
+const openSound = new Audio('https://cdn.freesound.org/previews/704/704359_634166-lq.mp3');
 
 async function loadEntries() {
   const res = await fetch(API_URL);
@@ -189,7 +188,8 @@ function checkAccess() {
         openSound.play();
         loadEntries();
       } else {
-        error.textContent = '⚡ Du erhältst einen Elektrischen Schock und erhälst 1W6 Schaden';
+        alert('⚡ Du erhältst einen Elektrischen Schock und erhälst 1W6 Schaden');
+        location.reload();
       }
     });
 }
