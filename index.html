@@ -1,16 +1,120 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="de">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2575.6">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mendrics Chronik</title>
+  <style>
+    body {
+      background: #fdfcf7;
+      font-family: 'Georgia', serif;
+      margin: 0;
+      padding: 2rem;
+      max-width: 900px;
+      margin-inline: auto;
+      color: #2c2b29;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      border-bottom: 2px solid #999;
+      padding-bottom: 0.5rem;
+    }
+    textarea {
+      width: 100%;
+      height: 180px;
+      font-family: monospace;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      background: #fff;
+    }
+    button {
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
+      cursor: pointer;
+      margin: 0.3rem;
+      border: none;
+      background-color: #3f3c3a;
+      color: white;
+      border-radius: 6px;
+    }
+    .entry {
+      background: #fff;
+      border-left: 4px solid #8b5e3c;
+      padding: 1rem;
+      margin-top: 2rem;
+      white-space: pre-wrap;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .entry-meta {
+      font-size: 0.85rem;
+      color: #555;
+      margin-bottom: 0.5rem;
+    }
+    #chronik label {
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
-<p class="p1">Index</p>
+  <h1>Mendrics Chronik</h1>
+
+  <textarea id="chronikText" placeholder="Schreibe hier deinen neuen Eintrag, z. B. Ort, Beobachtungen, magische Notizen..."></textarea><br>
+  <button onclick="addEntry()">🖋️ Eintrag speichern</button>
+  <button onclick="speakEntry()">🔊 Vorlesen</button>
+  <button onclick="clearEntries()">🗑️ Alles löschen</button>
+
+  <div id="chronik"></div>
+
+  <script>
+    const chronikContainer = document.getElementById('chronik');
+    const chronikText = document.getElementById('chronikText');
+
+    // Lade gespeicherte Einträge
+    window.onload = () => {
+      const eintraege = JSON.parse(localStorage.getItem('chronik')) || [];
+      eintraege.reverse().forEach(eintrag => createEntryElement(eintrag.text, eintrag.date));
+    };
+
+    function addEntry() {
+      const text = chronikText.value.trim();
+      if (!text) return;
+      const datum = new Date().toLocaleDateString("de-DE", {
+        year: 'numeric', month: 'long', day: 'numeric'
+      });
+      createEntryElement(text, datum);
+      chronikText.value = '';
+      const eintraege = JSON.parse(localStorage.getItem('chronik')) || [];
+      eintraege.push({ text: text, date: datum });
+      localStorage.setItem('chronik', JSON.stringify(eintraege));
+    }
+
+    function createEntryElement(text, datum) {
+      const div = document.createElement('div');
+      div.className = 'entry';
+      div.innerHTML = `<div class="entry-meta">📜 Eintrag vom ${datum}</div>${text}`;
+      chronikContainer.prepend(div);
+    }
+
+    function speakEntry() {
+      const text = chronikText.value.trim();
+      if (!text) return;
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'de-DE';
+      utterance.rate = 0.9;
+      utterance.pitch = 0.7;
+      speechSynthesis.speak(utterance);
+    }
+
+    function clearEntries() {
+      if (confirm("Bist du sicher, dass du alle Einträge löschen willst?")) {
+        localStorage.removeItem('chronik');
+        chronikContainer.innerHTML = '';
+      }
+    }
+  </script>
 </body>
 </html>
