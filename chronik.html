@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chronik – Der Dritte Entwurf</title>
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/166/166539.png">
+  <link href="https://fonts.googleapis.com/css2?family=Cardo&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="src/book-style.css">
+</head>
+<body>
+<nav>
+  <a href="index.html">🏰 Startseite</a>
+  <a href="chronik.html">📖 Chronik</a>
+  <a href="nscs.html">🧙‍♂️ NSC-Verzeichnis</a>
+</nav>
+
+  <div id="chronikApp">
+    <div id="bookContainer" class="book-container">
+      <div id="toc-toggle" onclick="toggleTOC()">📖</div>
+      <div id="bookPages"></div>
+      <div id="toc"></div>
+      <div class="book-nav">
+        <button onclick="prevPage()">⬅️</button>
+        <span id="pageIndicator"></span>
+        <button onclick="nextPage()">➡️</button>
+      </div>
+    </div>
+
+    <div class="container">
+      <button onclick="toggleEntryForm()" style="margin-bottom: 1rem;">🖋️ Neue Seite schreiben</button>
+      <div id="entryForm" style="display: none;">
+        <textarea id="noteInput" placeholder="Notiz eingeben..."></textarea>
+        <textarea id="flowInput" placeholder="Optionaler Fließtext..."></textarea>
+        <button onclick="addEntry()">📜 Eintrag speichern</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="src/main.js"></script>
+  <script>
+    function toggleEntryForm() {
+      const form = document.getElementById('entryForm');
+      form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+    // Buch direkt laden
+    window.onload = () => {
+      if (window.loadEntries) loadEntries();
+    };
+  </script>
+</body>
+</html>
