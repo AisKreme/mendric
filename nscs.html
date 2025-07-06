@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NSC-Verzeichnis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cardo&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Cardo', serif;
+      background: #000 url('https://cdn.pixabay.com/photo/2017/08/30/07/52/fantasy-2695569_1280.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #fef4dc;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .form, .nsc-list {
+      max-width: 600px;
+      margin: auto;
+      background: rgba(0,0,0,0.7);
+      padding: 2rem;
+      border-radius: 10px;
+      border: 1px solid #f5cb6b;
+      box-shadow: 0 0 10px #f5cb6b;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 0.5rem;
+      margin: 0.5rem 0;
+      font-family: monospace;
+      background: #1b1b1b;
+      border: 1px solid #999;
+      color: #ffeccc;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      background: #b88c32;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 0 8px #f5cb6b;
+    }
+    .nsc-entry {
+      border-bottom: 1px solid #555;
+      padding: 1rem 0;
+    }
+    .nsc-entry:last-child {
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧙‍♂️ NSC-Verzeichnis</h1>
+  <div class="form">
+    <h2>Neuen NSC anlegen</h2>
+    <input type="text" id="nscName" placeholder="Name des NSC" />
+    <input type="text" id="nscRolle" placeholder="Rolle / Funktion" />
+    <textarea id="nscInfo" placeholder="Beschreibung, Notizen, Beziehungen..."></textarea>
+    <button onclick="saveNSC()">💾 Speichern</button>
+  </div>
+
+  <div class="nsc-list">
+    <h2>Bekannte NSCs</h2>
+    <div id="nscContainer">Wird geladen...</div>
+  </div>
+
+  <script>
+    const API_NSC = 'https://mendric.vercel.app/api/nscs';
+
+    async function saveNSC() {
+      const name = document.getElementById('nscName').value.trim();
+      const rolle = document.getElementById('nscRolle').value.trim();
+      const info = document.getElementById('nscInfo').value.trim();
+      if (!name) return alert("Bitte Name eingeben.");
+      const res = await fetch(API_NSC, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, rolle, info })
+      });
+      const result = await res.json();
+      if (result.error) return alert('Fehler: ' + result.error);
+      document.getElementById('nscName').value = '';
+      document.getElementById('nscRolle').value = '';
+      document.getElementById('nscInfo').value = '';
+      loadNSCs();
+    }
+
+    async function loadNSCs() {
+      const container = document.getElementById('nscContainer');
+      const res = await fetch(API_NSC);
+      const data = await res.json();
+      if (!Array.isArray(data)) {
+        container.innerHTML = 'Fehler beim Laden.';
+        return;
+      }
+      container.innerHTML = '';
+      data.forEach(nsc => {
+        const div = document.createElement('div');
+        div.className = 'nsc-entry';
+        div.innerHTML = `
+          <h3>🧾 ${nsc.name}</h3>
+          <p><strong>Rolle:</strong> ${nsc.rolle || '–'}</p>
+          <p>${nsc.info || ''}</p>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    loadNSCs();
+  </script>
+</body>
+</html>
