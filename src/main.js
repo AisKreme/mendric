@@ -19,16 +19,18 @@ function renderPage(index) {
     indicator.textContent = '';
     return;
   }
-  const entry = entries[index];
 
+  const entry = entries[index];
   const div = document.createElement('div');
   div.className = 'entry';
+  div.dataset.id = entry.id;
 
   const title = document.createElement('h3');
   title.textContent = `📜 ${entry.date}`;
 
   const note = document.createElement('p');
   note.textContent = entry.note;
+  note.classList.add('note-display');
 
   const flow = document.createElement('details');
   const summary = document.createElement('summary');
@@ -38,9 +40,17 @@ function renderPage(index) {
   flow.appendChild(summary);
   flow.appendChild(pre);
 
-  const speakBtn = document.createElement('button');
-  speakBtn.textContent = '🔊 Vorlesen';
-  speakBtn.onclick = () => speakText(entry.note);
+  const speakNoteBtn = document.createElement('button');
+  speakNoteBtn.textContent = '🔊 Notiz';
+  speakNoteBtn.onclick = () => speakText(entry.note);
+
+  const speakFlowBtn = document.createElement('button');
+  speakFlowBtn.textContent = '🔊 Fließtext';
+  speakFlowBtn.onclick = () => speakText(entry.flow || '');
+
+  const editBtn = document.createElement('button');
+  editBtn.textContent = '📝 Bearbeiten';
+  editBtn.onclick = () => editEntry(div, entry);
 
   const delBtn = document.createElement('button');
   delBtn.textContent = '🗑️ Löschen';
@@ -49,7 +59,9 @@ function renderPage(index) {
   div.appendChild(title);
   div.appendChild(note);
   div.appendChild(flow);
-  div.appendChild(speakBtn);
+  div.appendChild(speakNoteBtn);
+  div.appendChild(speakFlowBtn);
+  div.appendChild(editBtn);
   div.appendChild(delBtn);
 
   book.appendChild(div);
@@ -58,12 +70,11 @@ function renderPage(index) {
 
 function renderTOC() {
   const toc = document.getElementById('toc');
-  toc.innerHTML = '<h3>📖 Inhaltsverzeichnis</h3>';
   const list = document.createElement('ul');
+  toc.innerHTML = '<h3>📖 Inhaltsverzeichnis</h3>';
   entries.forEach((entry, i) => {
     const li = document.createElement('li');
     li.textContent = `Seite ${i + 1}: ${entry.date}`;
-    li.style.cursor = 'pointer';
     li.onclick = () => {
       currentPage = i;
       renderPage(currentPage);
@@ -71,6 +82,10 @@ function renderTOC() {
     list.appendChild(li);
   });
   toc.appendChild(list);
+}
+
+function toggleTOC() {
+  document.getElementById('toc').classList.toggle('open');
 }
 
 function nextPage() {
@@ -138,7 +153,44 @@ function speakText(text) {
   speechSynthesis.speak(utterance);
 }
 
+function editEntry(div, entry) {
+  const noteArea = document.createElement('textarea');
+  noteArea.value = entry.note;
+
+  const flowArea = document.createElement('textarea');
+  flowArea.value = entry.flow || '';
+
+  const saveBtn = document.createElement('button');
+  saveBtn.textContent = '💾 Speichern';
+  saveBtn.onclick = async () => {
+    const pw = document.getElementById('pwInput').value.trim();
+    if (!pw) return alert('Zum Bearbeiten bitte Passwort eingeben.');
+    const newNote = noteArea.value.trim();
+    const newFlow = flowArea.value.trim();
+
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ note: newNote, flow: newFlow, date: entry.date, password: pw })
+      });
+      const result = await res.json();
+      if (result.error) return alert('Fehler: ' + result.error);
+      loadEntries();
+    } catch (e) {
+      console.error('Fehler beim Bearbeiten:', e);
+      alert('Fehler beim Speichern.');
+    }
+  };
+
+  div.innerHTML = '';
+  div.appendChild(noteArea);
+  div.appendChild(flowArea);
+  div.appendChild(saveBtn);
+}
+
 window.addEntry = addEntry;
 window.prevPage = prevPage;
 window.nextPage = nextPage;
+window.toggleTOC = toggleTOC;
 window.onload = loadEntries;
