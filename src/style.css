@@ -6,143 +6,13 @@ body {
   padding: 2rem;
   color: #2c2b29;
 }
-
-/* 🔮 Deckblatt-Animation + Nebel */
-.cover-screen {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background: #000 url('https://cdn.pixabay.com/photo/2017/08/30/07/52/fantasy-2695569_1280.jpg') center/cover no-repeat;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  color: #fffbe8;
+h1 {
   text-align: center;
-  z-index: 9999;
-  font-family: 'Cardo', serif;
-  animation: fadeIn 1.5s ease-out;
-}
-.cover-screen h1 {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  text-shadow: 0 0 12px #f9d97b, 0 0 24px #f0b000;
-  animation: glow 2s infinite alternate;
-}
-.cover-screen input, .cover-screen button {
-  font-size: 1.2rem;
-  padding: 0.5rem;
-  margin-top: 0.8rem;
-  border: none;
-  border-radius: 6px;
-}
-.cover-screen button {
-  background: #8b5e3c;
-  color: white;
-  cursor: pointer;
-}
-.cover-screen button:hover {
-  background: #a66f47;
-}
-.error-message {
-  color: #ff4444;
-  margin-top: 0.6rem;
-  font-weight: bold;
-}
-@keyframes glow {
-  from { text-shadow: 0 0 4px #fff, 0 0 10px #f9d97b; }
-  to { text-shadow: 0 0 20px #fff6a9, 0 0 40px #f0b000; }
-}
-@keyframes fadeIn {
-  0% { opacity: 0; transform: scale(1.1); }
-  100% { opacity: 1; transform: scale(1); }
-}
-
-/* 📘 Buchansicht + Navigation */
-.book-container {
-  max-width: 850px;
-  margin: auto;
-  padding: 1rem;
-  background: rgba(255,248,220,0.95);
-  border: 3px solid #8b5e3c;
-  border-radius: 10px;
-  margin-bottom: 2rem;
-  box-shadow: 0 0 30px rgba(0,0,0,0.2);
-  position: relative;
-}
-.book-nav {
-  text-align: center;
-  margin-top: 1rem;
-}
-.book-nav button {
-  margin: 0 1rem;
-  font-size: 1.1rem;
-}
-#pageIndicator {
-  font-weight: bold;
-}
-
-/* 📚 Inhaltsverzeichnis Burger-Menü */
-#toc-toggle {
-  position: absolute;
-  top: 0;
-  right: -45px;
-  background: #5a3a1e;
-  color: white;
-  border-radius: 5px 0 0 5px;
-  padding: 0.5rem;
-  cursor: pointer;
-  z-index: 999;
-}
-#toc {
-  position: absolute;
-  top: 0;
-  right: -300px;
-  width: 250px;
-  height: 100%;
-  background: #fff8e1;
-  padding: 1rem;
-  overflow-y: auto;
-  box-shadow: -4px 0 10px rgba(0,0,0,0.2);
-  transition: right 0.4s ease-in-out;
-}
-#toc.open {
-  right: 0;
-}
-#toc h3 {
-  margin-top: 0;
-}
-#toc ul {
-  list-style: none;
-  padding-left: 0;
-}
-#toc li {
-  cursor: pointer;
-  margin: 0.3rem 0;
   color: #3a2e1a;
 }
-#toc li:hover {
-  text-decoration: underline;
-}
-
-/* 📜 Einträge + Animation */
-.entry {
-  animation: turnPage 0.7s ease-in-out;
-  background: #fffef9;
-  padding: 1rem;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
-}
-@keyframes turnPage {
-  0% { transform: rotateY(-90deg); opacity: 0; }
-  100% { transform: rotateY(0deg); opacity: 1; }
-}
-
-/* ✍ Eingabe unten */
 .container {
   max-width: 800px;
-  margin: 2rem auto;
+  margin: auto;
   background: rgba(255,248,225,0.95);
   padding: 2rem;
   border-radius: 10px;
@@ -163,5 +33,14 @@ button {
   font-size: 1rem;
   border-radius: 5px;
   cursor: pointer;
-  margin-right: 0.3rem;
+}
+.entry {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #aaa;
+}
+
+.rune-glow {
+  animation: glow 2.5s infinite alternate;
+  filter: drop-shadow(0 0 6px #ffe39c) drop-shadow(0 0 12px #f0b000);
 }
