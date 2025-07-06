@@ -1,46 +1,37 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mendrics Chronikbuch – Sicherer Modus</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cardo&display=swap">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mendrics Chronik</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cardo&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Cardo', serif;
-      background: url('https://cdn.pixabay.com/photo/2016/11/29/03/53/book-1868597_1280.jpg') center center no-repeat fixed;
+      background: url('https://cdn.pixabay.com/photo/2016/11/29/03/53/book-1868597_1280.jpg') no-repeat center center fixed;
       background-size: cover;
       margin: 0;
+      padding: 2rem;
       color: #2c2b29;
     }
     h1 {
       text-align: center;
-      font-size: 2.5rem;
-      margin: 1rem;
       color: #3a2e1a;
     }
-    #entries {
+    .container {
       max-width: 800px;
-      margin: 1rem auto;
-      background: rgba(255,248,225,0.9);
-      padding: 1rem 2rem;
+      margin: auto;
+      background: rgba(255,248,225,0.95);
+      padding: 2rem;
       border-radius: 10px;
       border: 2px solid #7a5a3a;
-    }
-    .entry {
-      border-bottom: 1px solid #ccc;
-      margin-bottom: 1rem;
-      padding-bottom: 1rem;
-    }
-    .entry:last-child {
-      border: none;
     }
     textarea, input[type="password"] {
       width: 100%;
       padding: 0.5rem;
-      font-size: 1rem;
-      margin-bottom: 0.8rem;
+      margin-bottom: 1rem;
       font-family: monospace;
+      font-size: 1rem;
     }
     button {
       background: #5a3a1e;
@@ -50,35 +41,22 @@
       font-size: 1rem;
       border-radius: 5px;
       cursor: pointer;
-      margin-right: 0.5rem;
     }
-    .hidden { display: none; }
-    #entryForm, #unlockArea {
-      max-width: 800px;
-      margin: 1rem auto;
-      background: rgba(255,248,225,0.9);
-      padding: 1rem 2rem;
-      border-radius: 10px;
-      border: 2px solid #7a5a3a;
+    .entry {
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid #aaa;
     }
   </style>
 </head>
 <body>
   <h1>Mendrics Chronik</h1>
-  <div id="unlockArea">
-    <p>🔐 Gib das Passwort ein, um Einträge sehen oder schreiben zu können:</p>
-    <input type="password" id="pwInput" placeholder="Passwort">
-    <button onclick="checkPassword()">Öffnen</button>
-  </div>
-
-  <div id="mainContent" class="hidden">
+  <div class="container">
+    <textarea id="noteInput" placeholder="Notiz eingeben..."></textarea>
+    <textarea id="flowInput" placeholder="Optionaler Fließtext..."></textarea>
+    <input type="password" id="pwInput" placeholder="Chronistenpasswort...">
+    <button onclick="addEntry()">🖋️ Eintrag speichern</button>
     <div id="entries"></div>
-
-    <div id="entryForm">
-      <textarea id="noteInput" placeholder="Notiz eingeben..."></textarea>
-      <textarea id="flowInput" placeholder="Optionaler Fließtext..."></textarea>
-      <button onclick="addEntry()">🖋️ Eintrag speichern</button>
-    </div>
   </div>
 
   <script>
@@ -93,10 +71,10 @@
         const div = document.createElement('div');
         div.className = 'entry';
         div.innerHTML = `
-          <h3>📜 Eintrag vom ${entry.date}</h3>
+          <h3>📜 ${entry.date}</h3>
           <p>${entry.note}</p>
           <details><summary>Fließtext anzeigen</summary><pre>${entry.flow || '(kein Fließtext)'}</pre></details>
-          <button onclick="speakText(\`${entry.note.replace(/`/g, '\\`')}\`)">🔊 Vorlesen</button>
+          <button onclick="speakText(\\`${entry.note.replace(/`/g, '\\`')}\\`)">🔊 Vorlesen</button>
         `;
         entriesDiv.appendChild(div);
       });
@@ -105,38 +83,39 @@
     async function addEntry() {
       const note = document.getElementById('noteInput').value.trim();
       const flow = document.getElementById('flowInput').value.trim();
-      if (!note) return alert('Bitte eine Notiz eingeben!');
+      const pw = document.getElementById('pwInput').value.trim();
       const date = new Date().toLocaleDateString('de-DE');
-      const res = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ note, flow, date })
-      });
-      const result = await res.json();
-      if (result.error) return alert('Fehler: ' + result.error);
-      document.getElementById('noteInput').value = '';
-      document.getElementById('flowInput').value = '';
-      loadEntries();
+
+      if (!note || !pw) return alert('Bitte Notiz und Passwort eingeben!');
+
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ note, flow, date, password: pw })
+        });
+        const result = await res.json();
+        if (result.error) return alert('Fehler: ' + result.error);
+        document.getElementById('noteInput').value = '';
+        document.getElementById('flowInput').value = '';
+        document.getElementById('pwInput').value = '';
+        loadEntries();
+      } catch (e) {
+        console.error('Fehler beim Speichern:', e);
+        alert('Fehler beim Speichern.');
+      }
     }
 
     function speakText(text) {
-      const u = new SpeechSynthesisUtterance(text);
-      u.lang = 'de-DE';
-      u.rate = 0.85;
-      u.pitch = 0.6;
-      speechSynthesis.speak(u);
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'de-DE';
+      utterance.rate = 0.85;
+      utterance.pitch = 0.6;
+      speechSynthesis.speak(utterance);
     }
 
-    function checkPassword() {
-      const pw = document.getElementById('pwInput').value;
-      if (pw === 'Mendric') {
-        document.getElementById('unlockArea').classList.add('hidden');
-        document.getElementById('mainContent').classList.remove('hidden');
-        loadEntries();
-      } else {
-        alert('Falsches Passwort.');
-      }
-    }
+    window.addEntry = addEntry;
+    window.onload = loadEntries;
   </script>
 </body>
 </html>
