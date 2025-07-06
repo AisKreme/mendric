@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mendrics Chronik – Magisches Buch</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4.1.0/turn.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4.1.0/turn.min.css" />
   <style>
     body {
       background: url('https://cdn.pixabay.com/photo/2017/03/27/13/56/old-paper-2178564_1280.jpg') center center fixed no-repeat;
@@ -20,6 +20,12 @@
       margin-bottom: 2rem;
       color: #3a2e1a;
       text-shadow: 1px 1px 2px #fff;
+    }
+    #container {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
     }
     #flipbook {
       width: 800px;
@@ -74,14 +80,42 @@
       font-size: 1rem;
       width: 200px;
     }
+    .hidden {
+      display: none;
+    }
+    #toc {
+      width: 220px;
+      background: #fffef0dd;
+      padding: 1rem;
+      border: 3px solid #5c3d1e;
+      border-radius: 10px;
+      height: fit-content;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+    #toc h3 {
+      margin-top: 0;
+    }
+    #toc ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    #toc li {
+      cursor: pointer;
+      margin-bottom: 0.4rem;
+      color: #2c2b29;
+    }
+    #toc li:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
   <h1>Mendrics Chronik</h1>
   <div id="unlockArea">
     <p>🔒 Nur eingeweihte Chronisten dürfen lesen oder schreiben.</p>
-    <input type="password" id="pwInput" placeholder="Passwort">
-    <br><br>
+    <input type="password" id="pwInput" placeholder="Passwort" />
+    <br /><br />
     <button onclick="checkPassword()">🔓 Freischalten</button>
   </div>
   <div id="entryForm" class="hidden">
@@ -89,7 +123,13 @@
     <textarea id="flowInput" placeholder="Optional: Fließtext-Version..."></textarea>
     <button onclick="addEntry()">🖋️ Eintrag speichern</button>
   </div>
-  <div id="flipbook" class="hidden"></div>
+  <div id="container" class="hidden">
+    <div id="toc">
+      <h3>📜 Inhaltsverzeichnis</h3>
+      <ul id="tocList"></ul>
+    </div>
+    <div id="flipbook"></div>
+  </div>
   <div id="controls" class="hidden">
     <button onclick="$('#flipbook').turn('previous')">⬅️ Zurück</button>
     <button onclick="$('#flipbook').turn('next')">Weiter ➡️</button>
@@ -104,7 +144,7 @@
       if (document.getElementById('pwInput').value === 'Mendric') {
         document.getElementById('unlockArea').style.display = 'none';
         document.getElementById('entryForm').classList.remove('hidden');
-        document.getElementById('flipbook').classList.remove('hidden');
+        document.getElementById('container').classList.remove('hidden');
         document.getElementById('controls').classList.remove('hidden');
         isUnlocked = true;
         renderBook();
@@ -128,6 +168,7 @@
 
     function renderBook() {
       $('#flipbook').html('');
+      $('#tocList').html('');
       const entries = JSON.parse(localStorage.getItem('chronik')) || [];
       entries.forEach((entry, index) => {
         const page = document.createElement('div');
@@ -143,6 +184,11 @@
           </div>`;
         page.innerHTML = content;
         $('#flipbook').append(page);
+
+        const tocItem = document.createElement('li');
+        tocItem.textContent = `Seite ${index + 1} – ${entry.date}`;
+        tocItem.onclick = () => $('#flipbook').turn('page', index + 1);
+        document.getElementById('tocList').appendChild(tocItem);
       });
       $('#flipbook').turn({ width: 800, height: 500, autoCenter: true });
       if (entries.length > 1) $('#flipbook').turn('page', entries.length);
