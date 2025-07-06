@@ -115,7 +115,8 @@ function speakText(text) {
   speechSynthesis.speak(utterance);
 }
 
+// Globale Registrierungen
 window.addEntry = addEntry;
-window.onload = loadEntries;
 window.prevPage = prevPage;
 window.nextPage = nextPage;
+window.onload = loadEntries;
