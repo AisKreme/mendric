@@ -2,17 +2,22 @@ import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
+const password = process.env.CHRONIK_PASSWORD || 'Mendric';
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 export default async function handler(req, res) {
-  // ✅ CORS aktivieren
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
+  }
+
+  // Gebe das Passwort bei ?mode=pw zurück
+  if (req.method === 'GET' && req.query.mode === 'pw') {
+    return res.status(200).json({ password });
   }
 
   if (req.method === 'GET') {
