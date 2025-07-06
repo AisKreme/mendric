@@ -33,6 +33,7 @@ button {
   font-size: 1rem;
   border-radius: 5px;
   cursor: pointer;
+  margin-right: 0.3rem;
 }
 .entry {
   animation: turnPage 0.7s ease-in-out;
@@ -55,6 +56,7 @@ button {
   border-radius: 10px;
   margin-bottom: 2rem;
   box-shadow: 0 0 30px rgba(0,0,0,0.2);
+  position: relative;
 }
 .book-nav {
   text-align: center;
@@ -64,8 +66,37 @@ button {
   margin: 0 1rem;
   font-size: 1.1rem;
 }
+#pageIndicator {
+  font-weight: bold;
+}
+#toc-toggle {
+  position: absolute;
+  top: 0;
+  right: -45px;
+  background: #5a3a1e;
+  color: white;
+  border-radius: 5px 0 0 5px;
+  padding: 0.5rem;
+  cursor: pointer;
+  z-index: 999;
+}
 #toc {
-  margin-bottom: 1rem;
+  position: absolute;
+  top: 0;
+  right: -300px;
+  width: 250px;
+  height: 100%;
+  background: #fff8e1;
+  padding: 1rem;
+  overflow-y: auto;
+  box-shadow: -4px 0 10px rgba(0,0,0,0.2);
+  transition: right 0.4s ease-in-out;
+}
+#toc.open {
+  right: 0;
+}
+#toc h3 {
+  margin-top: 0;
 }
 #toc ul {
   list-style: none;
@@ -78,4 +109,10 @@ button {
 }
 #toc li:hover {
   text-decoration: underline;
+}
+.editing textarea {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-bottom: 0.5rem;
 }
