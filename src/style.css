@@ -6,41 +6,69 @@ body {
   padding: 2rem;
   color: #2c2b29;
 }
-h1 {
+
+.cover-screen {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000 url('https://cdn.pixabay.com/photo/2017/08/30/07/52/fantasy-2695569_1280.jpg') center/cover no-repeat;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #fffbe8;
   text-align: center;
-  color: #3a2e1a;
+  z-index: 9999;
+  font-family: 'Cardo', serif;
+  animation: fadeIn 1.5s ease-out;
 }
-.container {
-  max-width: 800px;
-  margin: auto;
-  background: rgba(255,248,225,0.95);
-  padding: 2rem;
-  border-radius: 10px;
-  border: 2px solid #7a5a3a;
-}
-textarea, input[type="password"] {
-  width: 100%;
-  padding: 0.5rem;
+
+.cover-screen h1 {
+  font-size: 3rem;
   margin-bottom: 1rem;
-  font-family: monospace;
-  font-size: 1rem;
+  text-shadow: 0 0 12px #f9d97b, 0 0 24px #f0b000;
+  animation: glow 2s infinite alternate;
 }
-button {
-  background: #5a3a1e;
-  color: white;
+
+.cover-screen input, .cover-screen button {
+  font-size: 1.2rem;
+  padding: 0.5rem;
+  margin-top: 0.8rem;
   border: none;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  border-radius: 5px;
+  border-radius: 6px;
+}
+
+.cover-screen button {
+  background: #8b5e3c;
+  color: white;
   cursor: pointer;
 }
-.entry {
-  margin-top: 2rem;
-  padding-top: 1rem;
-  border-top: 1px solid #aaa;
+
+.cover-screen button:hover {
+  background: #a66f47;
+}
+
+.error-message {
+  color: #ff4444;
+  margin-top: 0.6rem;
+  font-weight: bold;
 }
 
 .rune-glow {
   animation: glow 2.5s infinite alternate;
   filter: drop-shadow(0 0 6px #ffe39c) drop-shadow(0 0 12px #f0b000);
+  max-width: 180px;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+}
+
+@keyframes glow {
+  from { text-shadow: 0 0 4px #fff, 0 0 10px #f9d97b; }
+  to { text-shadow: 0 0 20px #fff6a9, 0 0 40px #f0b000; }
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; transform: scale(1.1); }
+  100% { opacity: 1; transform: scale(1); }
 }
