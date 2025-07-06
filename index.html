@@ -9,6 +9,11 @@
   <link rel="stylesheet" href="src/style.css">
 </head>
 <body>
+  <nav>
+    <a href="chronik.html">📖 Chronik</a>
+    <a href="nscs.html">🧙‍♂️ NSC-Verzeichnis</a>
+  </nav>
+
   <div id="cover" class="cover-screen">
     <img src="https://cdn.pixabay.com/photo/2024/12/07/13/19/viking-9250894_1280.png" alt="Rune"
          class="rune-glow" style="max-width: 180px; margin-bottom: 1rem;">
@@ -31,7 +36,11 @@
         .then(res => res.json())
         .then(data => {
           if (data.success) {
-            window.location.href = 'chronik.html';
+            const cover = document.getElementById('cover');
+            cover.classList.add('fade-out');
+            setTimeout(() => {
+              window.location.href = 'chronik.html';
+            }, 1200);
           } else {
             document.getElementById('errorMessage').textContent = '⚡ Du erhältst einen Elektrischen Schock und erhälst 1W6 Schaden';
           }
