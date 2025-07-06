@@ -1,9 +1,9 @@
 const API_URL = 'https://mendric.vercel.app/api/chronik';
-const CHRONIK_PASSWORD = 'Mendric';
 let entries = [];
 let currentPage = 0;
 
-const openSound = new Audio('https://cdn.pixabay.com/download/audio/2023/03/06/audio_a0f5e58f6f.mp3?filename=magical-transition-143105.mp3');
+// Sound beim Öffnen
+const openSound = new Audio('https://cdn.freesound.org/previews/704/704359_634166-lq.mp3'); // Beispiel-URL mit funktionierender kleiner MP3
 
 async function loadEntries() {
   const res = await fetch(API_URL);
@@ -104,13 +104,12 @@ async function addEntry() {
   const note = document.getElementById('noteInput').value.trim();
   const flow = document.getElementById('flowInput').value.trim();
   const date = new Date().toLocaleDateString('de-DE');
-
   if (!note) return alert('Bitte Notiz eingeben!');
   try {
     const res = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ note, flow, date, password: CHRONIK_PASSWORD })
+      body: JSON.stringify({ note, flow, date })
     });
     const result = await res.json();
     if (result.error) return alert('Fehler: ' + result.error);
@@ -129,7 +128,7 @@ async function deleteEntry(id) {
     const res = await fetch(API_URL, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, password: CHRONIK_PASSWORD })
+      body: JSON.stringify({ id })
     });
     const result = await res.json();
     if (result.error) return alert('Fehler: ' + result.error);
@@ -162,7 +161,7 @@ function editEntry(div, entry) {
       const res = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ note: newNote, flow: newFlow, date: entry.date, password: CHRONIK_PASSWORD })
+        body: JSON.stringify({ note: newNote, flow: newFlow, date: entry.date })
       });
       const result = await res.json();
       if (result.error) return alert('Fehler: ' + result.error);
@@ -181,14 +180,18 @@ function editEntry(div, entry) {
 function checkAccess() {
   const input = document.getElementById('accessPassword').value.trim();
   const error = document.getElementById('errorMessage');
-  if (input === CHRONIK_PASSWORD) {
-    document.getElementById('cover').style.display = 'none';
-    document.getElementById('chronikApp').style.display = 'block';
-    openSound.play();
-    loadEntries();
-  } else {
-    error.textContent = '⚡ Du erhältst einen Elektrischen Schock und erhälst 1W6 Schaden';
-  }
+  fetch(API_URL + '?mode=pw')
+    .then(r => r.json())
+    .then(data => {
+      if (input === data.password) {
+        document.getElementById('cover').style.display = 'none';
+        document.getElementById('chronikApp').style.display = 'block';
+        openSound.play();
+        loadEntries();
+      } else {
+        error.textContent = '⚡ Du erhältst einen Elektrischen Schock und erhälst 1W6 Schaden';
+      }
+    });
 }
 
 window.addEntry = addEntry;
