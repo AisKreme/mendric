@@ -23,10 +23,20 @@ html.swipe-right {
   100% { transform: translateX(100%); opacity: 0; }
 }
 </style>
+<style>
+html.swipe-out {
+  animation: smoothSwipeOut 0.8s ease-in forwards;
+  background-color: #000 !important;
+}
+@keyframes smoothSwipeOut {
+  0% { opacity: 1; transform: translateX(0); }
+  100% { opacity: 0; transform: translateX(-30px); }
+}
+</style>
 </head>
 <body>
 <nav>
-  <a href="chronik.html" onclick="document.documentElement.classList.add('swipe-right')">📖 Chronik</a>
+  <a href="chronik.html" onclick="triggerSwipe()"> onclick="document.documentElement.classList.add('swipe-right')">📖 Chronik</a>
   <a href="nscs.html">🧙‍♂️ NSC-Verzeichnis</a>
 </nav>
 
@@ -95,6 +105,14 @@ links.forEach(link => {
     document.documentElement.classList.add('swipe-right');
   });
 });
+</script>
+<script>
+function triggerSwipe() {
+  document.documentElement.classList.add('swipe-out');
+  setTimeout(() => {
+    window.location.href = 'chronik.html';
+  }, 800);
+}
 </script>
 </body>
 </html>
