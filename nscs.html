@@ -13,25 +13,35 @@
   <a href="nscs.html" class="swipe-link">🧙‍♂️ NSC-Verzeichnis</a>
 </nav>
 
-  <h1>🧙‍♂️ NSC-Verzeichnis</h1>
-  <div class="form">
-    <h2>Neuen NSC anlegen</h2>
-    <input type="text" id="nscName" placeholder="Name des NSC" />
-    <input type="text" id="nscRolle" placeholder="Rolle / Funktion" />
-    <textarea id="nscInfo" placeholder="Beschreibung, Notizen, Beziehungen..."></textarea>
-    <button onclick="saveNSC()">💾 Speichern</button>
-  </div>
+<h1>🧙‍♂️ NSC-Verzeichnis</h1>
+<div class="form-wrapper" style="text-align:center;">
+  <button onclick="toggleNSCForm()">➕ Neuer NSC</button>
+</div>
 
+<div class="form" id="nscForm" style="display:none;">
+  <h2>Neuen NSC anlegen</h2>
+  <input type="text" id="nscName" placeholder="Name des NSC" />
+  <input type="text" id="nscRolle" placeholder="Rolle / Funktion" />
+  <textarea id="nscInfo" placeholder="Beschreibung, Notizen, Beziehungen..."></textarea>
+  <button onclick="saveNSC()">💾 Speichern</button>
+</div>
 
-  <div class="nsc-list">
+<div class="nsc-list">
+  <div class="nsc-header">
     <h2>Bekannte NSCs</h2>
-  <input class="search-input" type="text" id="searchField" placeholder="🔍 Suche Name oder Rolle..." />
-    <div id="nscContainer">Wird geladen...</div>
+    <input class="search-input" type="text" id="searchField" placeholder="🔍 Suche Name oder Rolle..." />
   </div>
+  <div id="nscContainer">Wird geladen...</div>
+</div>
 
 <script>
 const API_NSC = 'https://mendric.vercel.app/api/nscs';
 let nscs = [];
+
+function toggleNSCForm() {
+  const form = document.getElementById('nscForm');
+  form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
 
 async function saveNSC() {
   const name = document.getElementById('nscName').value.trim();
@@ -48,6 +58,7 @@ async function saveNSC() {
   document.getElementById('nscName').value = '';
   document.getElementById('nscRolle').value = '';
   document.getElementById('nscInfo').value = '';
+  document.getElementById('nscForm').style.display = 'none';
   loadNSCs();
 }
 
