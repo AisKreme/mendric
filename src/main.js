@@ -26,7 +26,7 @@ function renderPage(index) {
     <h3>📜 ${entry.date}</h3>
     <p>${entry.note}</p>
     <details><summary>Fließtext anzeigen</summary><pre>${entry.flow || '(kein Fließtext)'}</pre></details>
-    <button onclick="speakText(\\`${entry.note.replace(/`/g, '\\`')}\\`)">🔊 Vorlesen</button>
+    <button onclick="speakText(\`${entry.note.replace(/`/g, '\\`')}\`)">🔊 Vorlesen</button>
     <button onclick="deleteEntry(${entry.id})">🗑️ Löschen</button>
   `;
   book.appendChild(div);
