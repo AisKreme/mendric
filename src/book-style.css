@@ -1,10 +1,16 @@
 body {
   font-family: 'Cardo', serif;
-  background: url('https://cdn.pixabay.com/photo/2016/11/29/03/53/book-1868597_1280.jpg') no-repeat center center fixed;
+  background: #000 url('https://cdn.pixabay.com/photo/2017/08/30/07/52/fantasy-2695569_1280.jpg') no-repeat center center fixed;
   background-size: cover;
+  color: #fef4dc;
   margin: 0;
   padding: 2rem;
-  color: #2c2b29;
+  animation: fadeIn 1.2s ease-out;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; transform: scale(1.05); }
+  100% { opacity: 1; transform: scale(1); }
 }
 
 nav {
@@ -17,8 +23,11 @@ nav a {
   font-size: 1.1rem;
   color: #ffd86b;
   margin: 0 1rem;
+  display: inline-block;
+  transition: transform 0.3s ease;
 }
 nav a:hover {
+  transform: scale(1.05);
   text-shadow: 0 0 5px #ffd86b;
 }
 
@@ -26,11 +35,11 @@ nav a:hover {
   max-width: 850px;
   margin: auto;
   padding: 1rem;
-  background: rgba(255,248,220,0.95);
-  border: 3px solid #8b5e3c;
-  border-radius: 10px;
+  background: rgba(20, 20, 20, 0.9);
+  border: 2px solid #c8a74e;
+  border-radius: 12px;
   margin-bottom: 2rem;
-  box-shadow: 0 0 30px rgba(0,0,0,0.2);
+  box-shadow: 0 0 30px rgba(255, 223, 100, 0.2);
   position: relative;
 }
 
@@ -44,7 +53,7 @@ nav a:hover {
 }
 #pageIndicator {
   font-weight: bold;
-  color: #5a3a1e;
+  color: #ffe977;
 }
 
 #toc-toggle {
@@ -117,10 +126,10 @@ nav a:hover {
 .container {
   max-width: 800px;
   margin: 2rem auto;
-  background: rgba(255,248,225,0.95);
+  background: rgba(10,10,10,0.8);
   padding: 2rem;
   border-radius: 10px;
-  border: 2px solid #7a5a3a;
+  border: 2px solid #f5cb6b;
 }
 textarea, input[type="password"] {
   width: 100%;
@@ -128,12 +137,12 @@ textarea, input[type="password"] {
   margin-bottom: 1rem;
   font-family: monospace;
   font-size: 1rem;
-  background: #fefefc;
-  color: #2c2b29;
+  background: #222;
+  color: #ffeccc;
   border: 1px solid #777;
 }
 button {
-  background: #5a3a1e;
+  background: #c09348;
   color: white;
   border: none;
   padding: 0.5rem 1rem;
@@ -141,9 +150,8 @@ button {
   border-radius: 5px;
   cursor: pointer;
   margin-right: 0.3rem;
-  box-shadow: 0 0 6px #d8b977;
+  box-shadow: 0 0 6px #f5cb6b;
 }
-
 .container button:first-child {
   background: #b88c32;
   color: #fffde6;
