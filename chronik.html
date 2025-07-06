@@ -55,7 +55,8 @@ body {
   <div id="chronikApp">
     <div id="bookContainer" class="book-container">
       <div id="toc-toggle" onclick="toggleTOC()">📖</div>
-      <div id="bookPages"></div>
+      <input type="text" id="searchChronik" placeholder="🔍 Suche in Einträgen..." style="width: 100%; max-width: 300px; margin-bottom: 1rem; padding: 0.5rem;" />
+<div id="bookPages"></div>
       <div id="toc"></div>
       <div class="book-nav">
         <button onclick="prevPage()">⬅️</button>
@@ -68,7 +69,8 @@ body {
       <button onclick="toggleEntryForm()" style="margin-bottom: 1rem;">🖋️ Neue Seite schreiben</button>
       <div id="entryForm" style="display: none;">
         <textarea id="noteInput" placeholder="Notiz eingeben..."></textarea>
-        <textarea id="flowInput" placeholder="Optionaler Fließtext..."></textarea>
+        <input type="text" id="chapterInput" placeholder="Kapitel / Ort / Abschnitt" />
+<textarea id="flowInput" placeholder="Optionaler Fließtext..."></textarea>
         <button onclick="addEntry()">📜 Eintrag speichern</button>
       </div>
     </div>
@@ -111,6 +113,60 @@ document.querySelectorAll('a.swipe-link').forEach(link => {
     }, 800);
   });
 });
+</script>
+
+<div id="timeline" style="margin-top:3rem; text-align:center;">
+  <h3>🗓️ Zeitleiste (in Arbeit)</h3>
+  <div id="timelineBar" style="height: 6px; background: #f0c66d; margin: 1rem auto; max-width: 90%; position: relative;"></div>
+</div>
+
+<script>
+let allEntries = [];
+
+document.getElementById('searchChronik').addEventListener('input', () => {
+  const query = document.getElementById('searchChronik').value.toLowerCase();
+  const filtered = allEntries.filter(entry =>
+    entry.note.toLowerCase().includes(query) ||
+    (entry.flow && entry.flow.toLowerCase().includes(query)) ||
+    (entry.chapter && entry.chapter.toLowerCase().includes(query))
+  );
+  renderFiltered(filtered);
+});
+
+function renderFiltered(filtered) {
+  entries = filtered;
+  currentPage = 0;
+  renderPage(currentPage);
+}
+
+function addEntry() {
+  const note = document.getElementById('noteInput').value.trim();
+  const flow = document.getElementById('flowInput').value.trim();
+  const chapter = document.getElementById('chapterInput').value.trim();
+  const date = new Date().toLocaleDateString('de-DE');
+  if (!note) return alert('Notiz erforderlich');
+  fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ note, flow, chapter, date })
+  })
+    .then(res => res.json())
+    .then(() => {
+      document.getElementById('noteInput').value = '';
+      document.getElementById('flowInput').value = '';
+      document.getElementById('chapterInput').value = '';
+      loadEntries();
+    });
+}
+
+async function loadEntries() {
+  const res = await fetch(API_URL);
+  entries = await res.json();
+  allEntries = [...entries];
+  if (entries.length > 0) currentPage = entries.length - 1;
+  renderPage(currentPage);
+  renderTOC();
+}
 </script>
 </body>
 </html>
