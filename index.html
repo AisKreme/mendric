@@ -6,237 +6,183 @@
   <title>Mendrics Chronik</title>
   <style>
     body {
-      background: #f5f0e6 url('https://i.imgur.com/6vDR7Q1.png') repeat;
+      background: url('https://i.imgur.com/6vASd6X.jpeg') no-repeat center center fixed;
+      background-size: cover;
       font-family: 'Georgia', serif;
       margin: 0;
       padding: 2rem;
       color: #2c2b29;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
     }
     h1 {
       text-align: center;
-      font-size: 2.5rem;
+      font-size: 2.8rem;
       margin-bottom: 2rem;
-      border-bottom: 2px solid #999;
-      padding-bottom: 0.5rem;
+      color: #3a2e1a;
+      text-shadow: 1px 1px 2px #ddd;
     }
-    #chronikWrapper {
-      display: flex;
-      gap: 1rem;
-      width: 100%;
-      max-width: 1100px;
-    }
-    #chronikBook {
-      flex: 1;
-      height: 500px;
-      background: rgba(255, 248, 225, 0.95);
-      box-shadow: inset 0 0 40px rgba(0,0,0,0.2), -10px 0 15px rgba(0,0,0,0.2);
-      padding: 2rem;
-      position: relative;
-      overflow: hidden;
-      border: 6px solid #5c3d1e;
-      border-radius: 12px 0 0 12px;
-      perspective: 2000px;
-    }
-    #toc {
-      width: 200px;
-      background: #fff8e1;
-      border: 2px solid #8b5e3c;
-      border-radius: 0 12px 12px 0;
-      padding: 1rem;
-      overflow-y: auto;
-      max-height: 500px;
-      box-shadow: inset 0 0 15px rgba(0,0,0,0.1);
-    }
-    #toc h2 {
-      font-size: 1.2rem;
-      margin-bottom: 0.5rem;
-      border-bottom: 1px solid #ccc;
-    }
-    #toc ul {
-      list-style: none;
-      padding: 0;
-    }
-    #toc li {
-      margin: 0.3rem 0;
-      cursor: pointer;
-      color: #333;
-    }
-    #toc li:hover {
-      text-decoration: underline;
-    }
-    .page {
-      display: none;
-      height: 100%;
-      overflow-y: auto;
-      white-space: pre-wrap;
-      transform-origin: left;
-      transition: transform 0.6s ease;
-      backface-visibility: hidden;
-    }
-    .page.active {
-      display: block;
-    }
-    .page-flip {
-      transform: rotateY(-180deg);
-    }
-    .entry-meta {
-      font-size: 0.85rem;
-      color: #555;
-      margin-bottom: 0.5rem;
-    }
-    .entry-buttons {
-      margin-top: 1rem;
-    }
-    .entry-buttons button {
-      font-size: 0.9rem;
-      padding: 0.4rem 0.6rem;
-      margin-right: 0.3rem;
-      background-color: #3f3c3a;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    #navButtons {
-      margin-top: 1rem;
-    }
-    #navButtons button {
-      font-size: 1rem;
-      padding: 0.5rem 1rem;
-      margin: 0.3rem;
-      cursor: pointer;
-    }
-    #entryForm {
-      margin-top: 2rem;
-      display: none;
-      flex-direction: column;
-      align-items: stretch;
-      width: 90%;
+    .book {
       max-width: 800px;
+      margin: auto;
+      background: rgba(255,248,225,0.95);
+      padding: 2rem;
+      border: 5px solid #5c3d1e;
+      border-radius: 12px;
+      box-shadow: 0 0 25px rgba(0,0,0,0.3);
     }
     textarea {
       width: 100%;
-      height: 180px;
+      height: 120px;
       font-family: monospace;
       font-size: 1rem;
+      padding: 1rem;
+      border: 1px solid #999;
+      border-radius: 6px;
       margin-bottom: 1rem;
-      border: 1px solid #ccc;
-      padding: 0.5rem;
-      background: #fff;
       white-space: pre;
       overflow-wrap: break-word;
     }
-    #unlockArea {
-      margin-top: 2rem;
-      text-align: center;
+    button {
+      padding: 0.5rem 1rem;
+      margin-right: 0.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: #5c3d1e;
+      color: white;
     }
-    input[type="password"] {
+    .entry {
+      background: #fffef9;
+      border: 1px solid #c2b59b;
+      padding: 1rem;
+      margin-top: 1.5rem;
+      border-radius: 8px;
+      position: relative;
+    }
+    .entry .buttons {
+      margin-top: 1rem;
+    }
+    .hidden {
+      display: none;
+    }
+    #unlockSection {
+      text-align: center;
+      max-width: 400px;
+      margin: 5rem auto;
+      background: rgba(255,248,225,0.95);
+      padding: 2rem;
+      border: 3px solid #5c3d1e;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    }
+    #unlockSection input {
       padding: 0.5rem;
       font-size: 1rem;
-      width: 200px;
-    }
-    .footer {
-      margin-top: 0.5rem;
-      text-align: center;
-      font-size: 0.9rem;
-      color: #555;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      width: 80%;
+      border-radius: 5px;
+      border: 1px solid #888;
     }
   </style>
 </head>
 <body>
   <h1>Mendrics Chronik</h1>
-  <div id="chronikWrapper">
-    <div id="chronikBook"></div>
-    <div id="toc">
-      <h2>📖 Seitenwahl</h2>
-      <ul id="tocList"></ul>
-    </div>
-  </div>
-  <div class="footer" id="pageNumber"></div>
-  <div id="navButtons">
-    <button onclick="prevPage()">⬅️ Zurück</button>
-    <button onclick="nextPage()">Weiter ➡️</button>
-  </div>
-  <div id="unlockArea">
-    <p>🧙‍♂️ Nur eingeweihte Chronisten dürfen neue Seiten schreiben oder löschen.</p>
-    <input type="password" id="pwInput" placeholder="Passwort">
+
+  <div id="unlockSection">
+    <p>🧙‍♂️ Nur wahre Chronisten dürfen lesen und schreiben.<br>Bitte das geheime Passwort eingeben:</p>
+    <input type="password" id="passwordInput" placeholder="Passwort">
+    <br>
     <button onclick="checkPassword()">🔓 Freischalten</button>
   </div>
-  <div id="entryForm">
-    <textarea id="chronikText" placeholder="Schreibe hier deinen neuen Eintrag..."></textarea>
-    <button onclick="addEntry()">🖋️ Eintrag speichern</button>
+
+  <div id="mainContent" class="hidden">
+    <div class="book">
+      <textarea id="noteInput" placeholder="Notiz eingeben..."></textarea>
+      <textarea id="flowInput" placeholder="Optional: Fließtext-Version dieser Notiz..."></textarea>
+      <button onclick="saveEntry()">Eintrag speichern</button>
+    </div>
+    <div id="entries" class="book"></div>
   </div>
+
   <script>
-    const chronikContainer = document.getElementById('chronikBook');
-    const chronikText = document.getElementById('chronikText');
-    const pageNumber = document.getElementById('pageNumber');
-    const tocList = document.getElementById('tocList');
-    let currentPage = 0;
-    let isUnlocked = false;
+    const entriesDiv = document.getElementById('entries');
+    const mainContent = document.getElementById('mainContent');
+    const unlockSection = document.getElementById('unlockSection');
 
-    window.onload = () => {
-      const eintraege = JSON.parse(localStorage.getItem('chronik')) || [];
-      if (eintraege.length) currentPage = eintraege.length - 1;
-      renderPages();
-    };
+    function checkPassword() {
+      const input = document.getElementById('passwordInput').value;
+      if (input === 'Mendric') {
+        unlockSection.classList.add('hidden');
+        mainContent.classList.remove('hidden');
+        renderEntries();
+      } else {
+        alert("Falsches Passwort. Nur wahre Chronisten dürfen fortfahren!");
+      }
+    }
 
-    function renderPages() {
-      chronikContainer.innerHTML = '';
-      tocList.innerHTML = '';
-      const eintraege = JSON.parse(localStorage.getItem('chronik')) || [];
+    function saveEntry() {
+      const note = document.getElementById('noteInput').value.trim();
+      const flow = document.getElementById('flowInput').value.trim();
+      if (!note) return alert("Bitte eine Notiz eingeben.");
 
-      eintraege.forEach((eintrag, index) => {
-        const page = document.createElement('div');
-        page.className = 'page';
-        if (index === currentPage) page.classList.add('active');
-        let content = `<div class="entry-meta">📜 Eintrag vom ${eintrag.date}</div>`;
-        content += `<div>${eintrag.text}</div>`;
-        content += `<div class="entry-buttons">
-                      <button onclick="speakText(\`${eintrag.text.replace(/`/g, '\\`')}\`)">🔊 Vorlesen</button>`;
-        if (isUnlocked) {
-          content += `<button onclick="deleteEntry(${index})">🗑️ Löschen</button>`;
-        }
-        content += `</div>`;
-        page.innerHTML = content;
-        chronikContainer.appendChild(page);
+      const entry = { note, flow };
+      const entries = JSON.parse(localStorage.getItem('chronik')) || [];
+      entries.push(entry);
+      localStorage.setItem('chronik', JSON.stringify(entries));
+      document.getElementById('noteInput').value = '';
+      document.getElementById('flowInput').value = '';
+      renderEntries();
+    }
 
-        const tocItem = document.createElement('li');
-        tocItem.textContent = `Seite ${index + 1} – ${eintrag.date}`;
-        tocItem.onclick = () => {
-          flipToPage(index);
+    function renderEntries() {
+      entriesDiv.innerHTML = '';
+      const entries = JSON.parse(localStorage.getItem('chronik')) || [];
+      entries.forEach((entry, index) => {
+        const div = document.createElement('div');
+        div.className = 'entry';
+
+        const noteDiv = document.createElement('div');
+        noteDiv.className = 'note';
+        noteDiv.textContent = entry.note;
+
+        const flowDiv = document.createElement('div');
+        flowDiv.className = 'flow hidden';
+        flowDiv.textContent = entry.flow || '(Kein Fließtext hinterlegt)';
+
+        const buttons = document.createElement('div');
+        buttons.className = 'buttons';
+
+        const speakBtn = document.createElement('button');
+        speakBtn.textContent = '🔊 Vorlesen';
+        speakBtn.onclick = () => speakText(noteDiv.classList.contains('hidden') ? flowDiv.textContent : noteDiv.textContent);
+
+        const toggleBtn = document.createElement('button');
+        toggleBtn.textContent = '➡️ Fließtext anzeigen';
+        toggleBtn.onclick = () => {
+          const isNote = !noteDiv.classList.contains('hidden');
+          noteDiv.classList.toggle('hidden');
+          flowDiv.classList.toggle('hidden');
+          toggleBtn.textContent = isNote ? '⬅️ Notiz anzeigen' : '➡️ Fließtext anzeigen';
         };
-        tocList.appendChild(tocItem);
-      });
-      pageNumber.textContent = eintraege.length ? `Seite ${currentPage + 1} von ${eintraege.length}` : 'Keine Einträge';
-    }
 
-    function flipToPage(newPage) {
-      const pages = document.querySelectorAll('.page');
-      pages.forEach((pg, idx) => {
-        if (idx === currentPage) {
-          pg.classList.add('page-flip');
-          setTimeout(() => { pg.classList.remove('active', 'page-flip'); }, 600);
-        }
-      });
-      currentPage = newPage;
-      setTimeout(renderPages, 600);
-    }
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = '🗑️ Löschen';
+        deleteBtn.onclick = () => {
+          if (confirm('Diesen Eintrag wirklich löschen?')) {
+            deleteEntry(index);
+          }
+        };
 
-    function addEntry() {
-      const text = chronikText.value.trim();
-      if (!text) return;
-      const datum = new Date().toLocaleDateString("de-DE", {
-        year: 'numeric', month: 'long', day: 'numeric'
+        buttons.appendChild(speakBtn);
+        if (entry.flow) buttons.appendChild(toggleBtn);
+        buttons.appendChild(deleteBtn);
+
+        div.appendChild(noteDiv);
+        div.appendChild(flowDiv);
+        div.appendChild(buttons);
+        entriesDiv.appendChild(div);
       });
-      const eintraege = JSON.parse(localStorage.getItem('chronik')) || [];
-      eintraege.push({ text: text, date: datum });
-      localStorage.setItem('chronik', JSON.stringify(eintraege));
-      chronikText.value = '';
-      currentPage = eintraege.length - 1;
-      renderPages();
     }
 
     function speakText(text) {
@@ -244,45 +190,18 @@
       const cleanText = text.replace(/\p{Emoji_Presentation}|\p{Extended_Pictographic}/gu, '');
       const utterance = new SpeechSynthesisUtterance(cleanText);
       utterance.lang = 'de-DE';
-      utterance.rate = 0.8;
-      utterance.pitch = 0.5;
+      utterance.rate = 0.85;
+      utterance.pitch = 0.6;
       const voices = speechSynthesis.getVoices().filter(v => v.lang === 'de-DE');
       utterance.voice = voices.find(v => v.name.includes('Male') || v.name.includes('Deep')) || voices[0];
       speechSynthesis.speak(utterance);
     }
 
     function deleteEntry(index) {
-      if (!confirm("Diesen Eintrag wirklich löschen?")) return;
-      const eintraege = JSON.parse(localStorage.getItem('chronik')) || [];
-      eintraege.splice(index, 1);
-      localStorage.setItem('chronik', JSON.stringify(eintraege));
-      if (currentPage >= eintraege.length) currentPage = eintraege.length - 1;
-      renderPages();
-    }
-
-    function nextPage() {
-      const eintraege = JSON.parse(localStorage.getItem('chronik')) || [];
-      if (currentPage < eintraege.length - 1) {
-        flipToPage(currentPage + 1);
-      }
-    }
-
-    function prevPage() {
-      if (currentPage > 0) {
-        flipToPage(currentPage - 1);
-      }
-    }
-
-    function checkPassword() {
-      const input = document.getElementById('pwInput').value;
-      if (input === "Mendric") {
-        document.getElementById('entryForm').style.display = 'flex';
-        document.getElementById('unlockArea').style.display = 'none';
-        isUnlocked = true;
-        renderPages();
-      } else {
-        alert("Falsches Passwort. Nur wahre Chronisten dürfen schreiben!");
-      }
+      const entries = JSON.parse(localStorage.getItem('chronik')) || [];
+      entries.splice(index, 1);
+      localStorage.setItem('chronik', JSON.stringify(entries));
+      renderEntries();
     }
   </script>
 </body>
