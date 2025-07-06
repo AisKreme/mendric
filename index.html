@@ -3,19 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mendrics Chronik</title>
+  <title>Mendrics Chronik – Buchansicht</title>
   <link href="https://fonts.googleapis.com/css2?family=Cardo&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="src/style.css">
 </head>
 <body>
   <h1>Mendrics Chronik</h1>
+
+  <div id="bookContainer" class="book-container">
+    <div id="toc"></div>
+    <div id="bookPages"></div>
+    <div class="book-nav">
+      <button onclick="prevPage()">⬅️</button>
+      <span id="pageIndicator"></span>
+      <button onclick="nextPage()">➡️</button>
+    </div>
+  </div>
+
   <div class="container">
     <textarea id="noteInput" placeholder="Notiz eingeben..."></textarea>
     <textarea id="flowInput" placeholder="Optionaler Fließtext..."></textarea>
     <input type="password" id="pwInput" placeholder="Chronistenpasswort...">
     <button onclick="addEntry()">🖋️ Eintrag speichern</button>
-    <div id="entries"></div>
   </div>
+
   <script src="src/main.js"></script>
 </body>
 </html>
