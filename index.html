@@ -6,7 +6,7 @@
   <title>Mendrics Chronik</title>
   <style>
     body {
-      background: #e7e2d4;
+      background: #d8c7a6 url('https://i.imgur.com/OB0y6MR.jpg') repeat;
       font-family: 'Georgia', serif;
       margin: 0;
       padding: 2rem;
@@ -22,23 +22,63 @@
       border-bottom: 2px solid #999;
       padding-bottom: 0.5rem;
     }
+    #chronikWrapper {
+      display: flex;
+      gap: 1rem;
+      width: 100%;
+      max-width: 1100px;
+    }
     #chronikBook {
-      width: 90%;
-      max-width: 800px;
+      flex: 1;
       height: 500px;
-      background: #fff8e1;
-      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      background: rgba(255, 248, 225, 0.95);
+      box-shadow: inset 0 0 40px rgba(0,0,0,0.2), -10px 0 15px rgba(0,0,0,0.2);
       padding: 2rem;
       position: relative;
       overflow: hidden;
+      border: 6px solid #5c3d1e;
+      border-radius: 12px 0 0 12px;
+    }
+    #toc {
+      width: 200px;
+      background: #fff8e1;
+      border: 2px solid #8b5e3c;
+      border-radius: 0 12px 12px 0;
+      padding: 1rem;
+      overflow-y: auto;
+      max-height: 500px;
+      box-shadow: inset 0 0 15px rgba(0,0,0,0.1);
+    }
+    #toc h2 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      border-bottom: 1px solid #ccc;
+    }
+    #toc ul {
+      list-style: none;
+      padding: 0;
+    }
+    #toc li {
+      margin: 0.3rem 0;
+      cursor: pointer;
+      color: #333;
+    }
+    #toc li:hover {
+      text-decoration: underline;
     }
     .page {
       display: none;
       height: 100%;
       overflow-y: auto;
+      white-space: pre-wrap;
     }
     .page.active {
       display: block;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateX(30px); }
+      to { opacity: 1; transform: translateX(0); }
     }
     .entry-meta {
       font-size: 0.85rem;
@@ -84,6 +124,8 @@
       border: 1px solid #ccc;
       padding: 0.5rem;
       background: #fff;
+      white-space: pre;
+      overflow-wrap: break-word;
     }
     #unlockArea {
       margin-top: 2rem;
@@ -94,12 +136,26 @@
       font-size: 1rem;
       width: 200px;
     }
+    .footer {
+      margin-top: 0.5rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #555;
+    }
   </style>
 </head>
 <body>
   <h1>Mendrics Chronik</h1>
 
-  <div id="chronikBook"></div>
+  <div id="chronikWrapper">
+    <div id="chronikBook"></div>
+    <div id="toc">
+      <h2>📖 Seitenwahl</h2>
+      <ul id="tocList"></ul>
+    </div>
+  </div>
+
+  <div class="footer" id="pageNumber"></div>
 
   <div id="navButtons">
     <button onclick="prevPage()">⬅️ Zurück</button>
@@ -107,7 +163,7 @@
   </div>
 
   <div id="unlockArea">
-    <p>🧙‍♂️ Nur eingeweihte Chronisten dürfen neue Seiten schreiben.</p>
+    <p>🧙‍♂️ Nur eingeweihte Chronisten dürfen neue Seiten schreiben oder löschen.</p>
     <input type="password" id="pwInput" placeholder="Passwort">
     <button onclick="checkPassword()">🔓 Freischalten</button>
   </div>
@@ -120,7 +176,10 @@
   <script>
     const chronikContainer = document.getElementById('chronikBook');
     const chronikText = document.getElementById('chronikText');
+    const pageNumber = document.getElementById('pageNumber');
+    const tocList = document.getElementById('tocList');
     let currentPage = 0;
+    let isUnlocked = false;
 
     window.onload = () => {
       renderPages();
@@ -128,21 +187,33 @@
 
     function renderPages() {
       chronikContainer.innerHTML = '';
+      tocList.innerHTML = '';
       const eintraege = JSON.parse(localStorage.getItem('chronik')) || [];
+
       eintraege.forEach((eintrag, index) => {
         const page = document.createElement('div');
         page.className = 'page';
         if (index === currentPage) page.classList.add('active');
-        const content = `
-          <div class="entry-meta">📜 Eintrag vom ${eintrag.date}</div>
-          <div>${eintrag.text}</div>
-          <div class="entry-buttons">
-            <button onclick="speakText(\`${eintrag.text.replace(/`/g, '\\`')}\`)">🔊 Vorlesen</button>
-            <button onclick="deleteEntry(${index})">🗑️ Löschen</button>
-          </div>`;
+        let content = `<div class="entry-meta">📜 Eintrag vom ${eintrag.date}</div>`;
+        content += `<div>${eintrag.text}</div>`;
+        content += `<div class="entry-buttons">
+                      <button onclick="speakText(\`${eintrag.text.replace(/`/g, '\\`')}\`)">🔊 Vorlesen</button>`;
+        if (isUnlocked) {
+          content += `<button onclick="deleteEntry(${index})">🗑️ Löschen</button>`;
+        }
+        content += `</div>`;
         page.innerHTML = content;
         chronikContainer.appendChild(page);
+
+        const tocItem = document.createElement('li');
+        tocItem.textContent = `Seite ${index + 1} – ${eintrag.date}`;
+        tocItem.onclick = () => {
+          currentPage = index;
+          renderPages();
+        };
+        tocList.appendChild(tocItem);
       });
+      pageNumber.textContent = eintraege.length ? `Seite ${currentPage + 1} von ${eintraege.length}` : 'Keine Einträge';
     }
 
     function addEntry() {
@@ -163,8 +234,9 @@
       if (!text) return;
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'de-DE';
-      utterance.rate = 0.9;
-      utterance.pitch = 0.7;
+      utterance.rate = 0.8;
+      utterance.pitch = 0.5;
+      utterance.voice = speechSynthesis.getVoices().find(voice => voice.lang === 'de-DE');
       speechSynthesis.speak(utterance);
     }
 
@@ -197,6 +269,8 @@
       if (input === "Mendric") {
         document.getElementById('entryForm').style.display = 'flex';
         document.getElementById('unlockArea').style.display = 'none';
+        isUnlocked = true;
+        renderPages();
       } else {
         alert("Falsches Passwort. Nur wahre Chronisten dürfen schreiben!");
       }
