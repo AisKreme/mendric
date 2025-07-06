@@ -2,6 +2,7 @@ const API_URL = 'https://mendric.vercel.app/api/chronik';
 
 let entries = [];
 let currentPage = 0;
+const CHRONIK_PASSWORD = 'Mendric'; // clientseitig für Zugriff – nicht sicherheitskritisch bei rein privater Nutzung
 
 async function loadEntries() {
   const res = await fetch(API_URL);
@@ -30,7 +31,6 @@ function renderPage(index) {
 
   const note = document.createElement('p');
   note.textContent = entry.note;
-  note.classList.add('note-display');
 
   const flow = document.createElement('details');
   const summary = document.createElement('summary');
@@ -105,15 +105,14 @@ function prevPage() {
 async function addEntry() {
   const note = document.getElementById('noteInput').value.trim();
   const flow = document.getElementById('flowInput').value.trim();
-  const pw = document.getElementById('pwInput').value.trim();
   const date = new Date().toLocaleDateString('de-DE');
 
-  if (!note || !pw) return alert('Bitte Notiz und Passwort eingeben!');
+  if (!note) return alert('Bitte Notiz eingeben!');
   try {
     const res = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ note, flow, date, password: pw })
+      body: JSON.stringify({ note, flow, date, password: CHRONIK_PASSWORD })
     });
     const result = await res.json();
     if (result.error) return alert('Fehler: ' + result.error);
@@ -127,14 +126,12 @@ async function addEntry() {
 }
 
 async function deleteEntry(id) {
-  const pw = document.getElementById('pwInput').value.trim();
-  if (!pw) return alert('Zum Löschen bitte Passwort eingeben.');
   if (!confirm('Diesen Eintrag wirklich löschen?')) return;
   try {
     const res = await fetch(API_URL, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, password: pw })
+      body: JSON.stringify({ id, password: CHRONIK_PASSWORD })
     });
     const result = await res.json();
     if (result.error) return alert('Fehler: ' + result.error);
@@ -163,8 +160,6 @@ function editEntry(div, entry) {
   const saveBtn = document.createElement('button');
   saveBtn.textContent = '💾 Speichern';
   saveBtn.onclick = async () => {
-    const pw = document.getElementById('pwInput').value.trim();
-    if (!pw) return alert('Zum Bearbeiten bitte Passwort eingeben.');
     const newNote = noteArea.value.trim();
     const newFlow = flowArea.value.trim();
 
@@ -172,7 +167,7 @@ function editEntry(div, entry) {
       const res = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ note: newNote, flow: newFlow, date: entry.date, password: pw })
+        body: JSON.stringify({ note: newNote, flow: newFlow, date: entry.date, password: CHRONIK_PASSWORD })
       });
       const result = await res.json();
       if (result.error) return alert('Fehler: ' + result.error);
@@ -189,8 +184,20 @@ function editEntry(div, entry) {
   div.appendChild(saveBtn);
 }
 
+function checkAccess() {
+  const input = document.getElementById('accessPassword').value.trim();
+  const error = document.getElementById('errorMessage');
+  if (input === CHRONIK_PASSWORD) {
+    document.getElementById('cover').style.display = 'none';
+    document.getElementById('chronikApp').style.display = 'block';
+    loadEntries();
+  } else {
+    error.textContent = '⚡ Du erhältst einen Elektrischen Schock und erhälst 1W6 Schaden';
+  }
+}
+
 window.addEntry = addEntry;
 window.prevPage = prevPage;
 window.nextPage = nextPage;
 window.toggleTOC = toggleTOC;
-window.onload = loadEntries;
+window.checkAccess = checkAccess;
