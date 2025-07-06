@@ -36,7 +36,7 @@ html.swipe-out {
 </head>
 <body>
 <nav>
-  <a href="chronik.html" onclick="triggerSwipe()"> onclick="document.documentElement.classList.add('swipe-right')">📖 Chronik</a>
+  <a href="chronik.html" class="swipe-link" > onclick="document.documentElement.classList.add('swipe-right')">📖 Chronik</a>
   <a href="nscs.html">🧙‍♂️ NSC-Verzeichnis</a>
 </nav>
 
@@ -113,6 +113,18 @@ function triggerSwipe() {
     window.location.href = 'chronik.html';
   }, 800);
 }
+</script>
+
+<script>
+document.querySelectorAll('a.swipe-link').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    document.documentElement.classList.add('swipe-out');
+    setTimeout(() => {
+      window.location.href = link.href;
+    }, 800);
+  });
+});
 </script>
 </body>
 </html>
