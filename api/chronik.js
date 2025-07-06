@@ -2,7 +2,6 @@ import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
-const password = process.env.CHRONIK_PASSWORD || 'Mendric';
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
@@ -24,8 +23,7 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'POST') {
-    const { note, flow, date, password: pwInput } = req.body;
-    if (pwInput !== password) return res.status(403).json({ error: 'Zugriff verweigert – falsches Passwort' });
+    const { note, flow, date } = req.body;
     if (!note || !date) return res.status(400).json({ error: 'note und date erforderlich' });
 
     const { error } = await supabase
@@ -37,8 +35,7 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'DELETE') {
-    const { id, password: pwInput } = req.body;
-    if (pwInput !== password) return res.status(403).json({ error: 'Zugriff verweigert – falsches Passwort' });
+    const { id } = req.body;
     if (!id) return res.status(400).json({ error: 'id erforderlich' });
 
     const { error } = await supabase
