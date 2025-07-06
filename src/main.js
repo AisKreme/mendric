@@ -44,7 +44,7 @@ function renderPage(index) {
 
   const speakFlowBtn = document.createElement('button');
   speakFlowBtn.textContent = '🔊 Fließtext';
-  speakBtn.onclick = () => speakText(entry.flow || '');
+speakFlowBtn.onclick = () => speakText(entry.flow || '');
 
   const editBtn = document.createElement('button');
   editBtn.textContent = '📝 Bearbeiten';
