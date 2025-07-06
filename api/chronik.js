@@ -15,11 +15,6 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  // Gebe das Passwort bei ?mode=pw zurück
-  if (req.method === 'GET' && req.query.mode === 'pw') {
-    return res.status(200).json({ password });
-  }
-
   if (req.method === 'GET') {
     const { data, error } = await supabase
       .from('chronik_entries')
@@ -35,7 +30,11 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'POST') {
-    const { note, flow, date } = req.body;
+    const { note, flow, date, password: pwInput } = req.body;
+
+    if (pwInput !== password) {
+      return res.status(403).json({ error: 'Zugriff verweigert – falsches Passwort' });
+    }
 
     if (!note || !date) {
       return res.status(400).json({ error: 'note und date erforderlich' });
