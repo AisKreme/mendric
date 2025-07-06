@@ -86,3 +86,4 @@ async function deleteEntry(id) {
 }
 
 window.loadEntries = loadEntries;
+window.checkAccess = checkAccess;
