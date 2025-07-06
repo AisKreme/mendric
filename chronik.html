@@ -10,7 +10,6 @@
 </head>
 <body>
 <nav>
-  <a href="index.html">🏰 Startseite</a>
   <a href="chronik.html">📖 Chronik</a>
   <a href="nscs.html">🧙‍♂️ NSC-Verzeichnis</a>
 </nav>
@@ -43,7 +42,6 @@
       const form = document.getElementById('entryForm');
       form.style.display = form.style.display === 'none' ? 'block' : 'none';
     }
-    // Buch direkt laden
     window.onload = () => {
       if (window.loadEntries) loadEntries();
     };
