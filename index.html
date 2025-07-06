@@ -37,11 +37,13 @@
               window.location.href = 'chronik.html';
             }, 1200);
           } else {
-            document.getElementById('errorMessage').textContent = '⚡ Du erhältst einen Elektrischen Schock und erhälst 1W6 Schaden';
+            alert('⚡ Du erhältst einen Elektrischen Schock und erhälst 1W6 Schaden');
+            location.reload();
           }
         })
         .catch(() => {
-          document.getElementById('errorMessage').textContent = '⚡ Du erhältst einen Elektrischen Schock und erhälst 1W6 Schaden';
+          alert('⚡ Du erhältst einen Elektrischen Schock und erhälst 1W6 Schaden');
+          location.reload();
         });
     }
   </script>
