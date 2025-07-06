@@ -135,13 +135,17 @@ async function loadNSCs() {
   filterNSCs();
 }
 
+
 function filterNSCs() {
   const query = document.getElementById('searchField').value.toLowerCase();
   const filtered = nscs.filter(n =>
-    n.name.toLowerCase().includes(query) || (n.rolle && n.rolle.toLowerCase().includes(query))
+    n.name.toLowerCase().includes(query) ||
+    (n.rolle && n.rolle.toLowerCase().includes(query)) ||
+    (n.info && n.info.toLowerCase().includes(query))
   );
   renderNSCs(filtered);
 }
+    
 
 document.getElementById('searchField').addEventListener('input', filterNSCs);
 loadNSCs();
