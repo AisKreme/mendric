@@ -20,17 +20,40 @@ function renderPage(index) {
     return;
   }
   const entry = entries[index];
+
   const div = document.createElement('div');
   div.className = 'entry';
-  div.innerHTML = `
-    <h3>📜 ${entry.date}</h3>
-    <p>${entry.note}</p>
-    <details><summary>Fließtext anzeigen</summary><pre>${entry.flow || '(kein Fließtext)'}</pre></details>
-    <button onclick="speakText(\`${entry.note.replace(/`/g, '\\`')}\`)">🔊 Vorlesen</button>
-    <button onclick="deleteEntry(${entry.id})">🗑️ Löschen</button>
-  `;
+
+  const title = document.createElement('h3');
+  title.textContent = `📜 ${entry.date}`;
+
+  const note = document.createElement('p');
+  note.textContent = entry.note;
+
+  const flow = document.createElement('details');
+  const summary = document.createElement('summary');
+  summary.textContent = 'Fließtext anzeigen';
+  const pre = document.createElement('pre');
+  pre.textContent = entry.flow || '(kein Fließtext)';
+  flow.appendChild(summary);
+  flow.appendChild(pre);
+
+  const speakBtn = document.createElement('button');
+  speakBtn.textContent = '🔊 Vorlesen';
+  speakBtn.onclick = () => speakText(entry.note);
+
+  const delBtn = document.createElement('button');
+  delBtn.textContent = '🗑️ Löschen';
+  delBtn.onclick = () => deleteEntry(entry.id);
+
+  div.appendChild(title);
+  div.appendChild(note);
+  div.appendChild(flow);
+  div.appendChild(speakBtn);
+  div.appendChild(delBtn);
+
   book.appendChild(div);
-  indicator.textContent = \`Seite \${index + 1} von \${entries.length}\`;
+  indicator.textContent = `Seite ${index + 1} von ${entries.length}`;
 }
 
 function renderTOC() {
@@ -39,7 +62,7 @@ function renderTOC() {
   const list = document.createElement('ul');
   entries.forEach((entry, i) => {
     const li = document.createElement('li');
-    li.innerHTML = \`Seite \${i + 1}: \${entry.date}\`;
+    li.textContent = `Seite ${i + 1}: ${entry.date}`;
     li.style.cursor = 'pointer';
     li.onclick = () => {
       currentPage = i;
@@ -115,7 +138,6 @@ function speakText(text) {
   speechSynthesis.speak(utterance);
 }
 
-// Globale Registrierungen
 window.addEntry = addEntry;
 window.prevPage = prevPage;
 window.nextPage = nextPage;
