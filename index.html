@@ -6,13 +6,14 @@
   <title>Mendrics Chronik</title>
   <style>
     body {
-      background: #fdfcf7;
+      background: #e7e2d4;
       font-family: 'Georgia', serif;
       margin: 0;
       padding: 2rem;
-      max-width: 900px;
-      margin-inline: auto;
       color: #2c2b29;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
     h1 {
       text-align: center;
@@ -20,6 +21,59 @@
       margin-bottom: 2rem;
       border-bottom: 2px solid #999;
       padding-bottom: 0.5rem;
+    }
+    #chronikBook {
+      width: 90%;
+      max-width: 800px;
+      height: 500px;
+      background: #fff8e1;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .page {
+      display: none;
+      height: 100%;
+      overflow-y: auto;
+    }
+    .page.active {
+      display: block;
+    }
+    .entry-meta {
+      font-size: 0.85rem;
+      color: #555;
+      margin-bottom: 0.5rem;
+    }
+    .entry-buttons {
+      margin-top: 1rem;
+    }
+    .entry-buttons button {
+      font-size: 0.9rem;
+      padding: 0.4rem 0.6rem;
+      margin-right: 0.3rem;
+      background-color: #3f3c3a;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #navButtons {
+      margin-top: 1rem;
+    }
+    #navButtons button {
+      font-size: 1rem;
+      padding: 0.5rem 1rem;
+      margin: 0.3rem;
+      cursor: pointer;
+    }
+    #entryForm {
+      margin-top: 2rem;
+      display: none;
+      flex-direction: column;
+      align-items: stretch;
+      width: 90%;
+      max-width: 800px;
     }
     textarea {
       width: 100%;
@@ -31,53 +85,65 @@
       padding: 0.5rem;
       background: #fff;
     }
-    button {
-      padding: 0.6rem 1.2rem;
-      font-size: 1rem;
-      cursor: pointer;
-      margin: 0.3rem;
-      border: none;
-      background-color: #3f3c3a;
-      color: white;
-      border-radius: 6px;
-    }
-    .entry {
-      background: #fff;
-      border-left: 4px solid #8b5e3c;
-      padding: 1rem;
+    #unlockArea {
       margin-top: 2rem;
-      white-space: pre-wrap;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      text-align: center;
     }
-    .entry-meta {
-      font-size: 0.85rem;
-      color: #555;
-      margin-bottom: 0.5rem;
-    }
-    #chronik label {
-      font-weight: bold;
+    input[type="password"] {
+      padding: 0.5rem;
+      font-size: 1rem;
+      width: 200px;
     }
   </style>
 </head>
 <body>
   <h1>Mendrics Chronik</h1>
 
-  <textarea id="chronikText" placeholder="Schreibe hier deinen neuen Eintrag, z. B. Ort, Beobachtungen, magische Notizen..."></textarea><br>
-  <button onclick="addEntry()">🖋️ Eintrag speichern</button>
-  <button onclick="speakEntry()">🔊 Vorlesen</button>
-  <button onclick="clearEntries()">🗑️ Alles löschen</button>
+  <div id="chronikBook"></div>
 
-  <div id="chronik"></div>
+  <div id="navButtons">
+    <button onclick="prevPage()">⬅️ Zurück</button>
+    <button onclick="nextPage()">Weiter ➡️</button>
+  </div>
+
+  <div id="unlockArea">
+    <p>🧙‍♂️ Nur eingeweihte Chronisten dürfen neue Seiten schreiben.</p>
+    <input type="password" id="pwInput" placeholder="Passwort">
+    <button onclick="checkPassword()">🔓 Freischalten</button>
+  </div>
+
+  <div id="entryForm">
+    <textarea id="chronikText" placeholder="Schreibe hier deinen neuen Eintrag..."></textarea>
+    <button onclick="addEntry()">🖋️ Eintrag speichern</button>
+  </div>
 
   <script>
-    const chronikContainer = document.getElementById('chronik');
+    const chronikContainer = document.getElementById('chronikBook');
     const chronikText = document.getElementById('chronikText');
+    let currentPage = 0;
 
-    // Lade gespeicherte Einträge
     window.onload = () => {
-      const eintraege = JSON.parse(localStorage.getItem('chronik')) || [];
-      eintraege.reverse().forEach(eintrag => createEntryElement(eintrag.text, eintrag.date));
+      renderPages();
     };
+
+    function renderPages() {
+      chronikContainer.innerHTML = '';
+      const eintraege = JSON.parse(localStorage.getItem('chronik')) || [];
+      eintraege.forEach((eintrag, index) => {
+        const page = document.createElement('div');
+        page.className = 'page';
+        if (index === currentPage) page.classList.add('active');
+        const content = `
+          <div class="entry-meta">📜 Eintrag vom ${eintrag.date}</div>
+          <div>${eintrag.text}</div>
+          <div class="entry-buttons">
+            <button onclick="speakText(\`${eintrag.text.replace(/`/g, '\\`')}\`)">🔊 Vorlesen</button>
+            <button onclick="deleteEntry(${index})">🗑️ Löschen</button>
+          </div>`;
+        page.innerHTML = content;
+        chronikContainer.appendChild(page);
+      });
+    }
 
     function addEntry() {
       const text = chronikText.value.trim();
@@ -85,22 +151,15 @@
       const datum = new Date().toLocaleDateString("de-DE", {
         year: 'numeric', month: 'long', day: 'numeric'
       });
-      createEntryElement(text, datum);
-      chronikText.value = '';
       const eintraege = JSON.parse(localStorage.getItem('chronik')) || [];
       eintraege.push({ text: text, date: datum });
       localStorage.setItem('chronik', JSON.stringify(eintraege));
+      chronikText.value = '';
+      currentPage = eintraege.length - 1;
+      renderPages();
     }
 
-    function createEntryElement(text, datum) {
-      const div = document.createElement('div');
-      div.className = 'entry';
-      div.innerHTML = `<div class="entry-meta">📜 Eintrag vom ${datum}</div>${text}`;
-      chronikContainer.prepend(div);
-    }
-
-    function speakEntry() {
-      const text = chronikText.value.trim();
+    function speakText(text) {
       if (!text) return;
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'de-DE';
@@ -109,10 +168,37 @@
       speechSynthesis.speak(utterance);
     }
 
-    function clearEntries() {
-      if (confirm("Bist du sicher, dass du alle Einträge löschen willst?")) {
-        localStorage.removeItem('chronik');
-        chronikContainer.innerHTML = '';
+    function deleteEntry(index) {
+      if (!confirm("Diesen Eintrag wirklich löschen?")) return;
+      const eintraege = JSON.parse(localStorage.getItem('chronik')) || [];
+      eintraege.splice(index, 1);
+      localStorage.setItem('chronik', JSON.stringify(eintraege));
+      if (currentPage >= eintraege.length) currentPage = eintraege.length - 1;
+      renderPages();
+    }
+
+    function nextPage() {
+      const eintraege = JSON.parse(localStorage.getItem('chronik')) || [];
+      if (currentPage < eintraege.length - 1) {
+        currentPage++;
+        renderPages();
+      }
+    }
+
+    function prevPage() {
+      if (currentPage > 0) {
+        currentPage--;
+        renderPages();
+      }
+    }
+
+    function checkPassword() {
+      const input = document.getElementById('pwInput').value;
+      if (input === "Mendric") {
+        document.getElementById('entryForm').style.display = 'flex';
+        document.getElementById('unlockArea').style.display = 'none';
+      } else {
+        alert("Falsches Passwort. Nur wahre Chronisten dürfen schreiben!");
       }
     }
   </script>
