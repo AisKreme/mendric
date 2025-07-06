@@ -133,3 +133,19 @@ button {
   margin-right: 0.3rem;
   box-shadow: 0 0 6px #f5cb6b;
 }
+
+/* 🖋️ Mystischer Stift-Button */
+.container button:first-child {
+  background: #b88c32;
+  color: #fffde6;
+  font-size: 1.1rem;
+  border: 2px solid #f5cb6b;
+  box-shadow: 0 0 8px #f5cb6b;
+  transition: all 0.3s ease-in-out;
+}
+
+.container button:first-child:hover {
+  background: #cfa847;
+  transform: scale(1.05);
+  box-shadow: 0 0 12px #ffe792, 0 0 24px #ffd66c;
+}
