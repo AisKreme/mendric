@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mendrics Chronik – Foliantenbuch</title>
+  <title>Mendrics Chronik – Magisches Buch</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cardo&display=swap">
   <style>
     body {
-      background: url('https://cdn.pixabay.com/photo/2016/11/29/03/53/book-1868597_1280.jpg') center center no-repeat fixed;
+      background: url('https://cdn.pixabay.com/photo/2016/11/29/03/53/book-1868597_1280.jpg') no-repeat center center fixed;
       background-size: cover;
       margin: 0;
       padding: 0;
@@ -21,92 +21,152 @@
       color: #3a2e1a;
       text-shadow: 2px 2px 4px #d6c289;
     }
+    .hidden {
+      display: none;
+    }
     .book-container {
       display: flex;
       justify-content: center;
-      align-items: flex-start;
-      gap: 2rem;
-      padding: 2rem;
+      margin-top: 2rem;
+      position: relative;
     }
     .book {
       width: 800px;
       height: 500px;
-      background: #fdfaf2;
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      background: #fdfaf2 url('https://cdn.pixabay.com/photo/2015/09/18/19/03/old-944234_1280.jpg') center center no-repeat;
+      background-size: cover;
       border: 10px solid #7a5a3a;
-      border-radius: 8px;
-      position: relative;
-      overflow: hidden;
-    }
-    .book-page {
+      border-radius: 10px;
+      box-shadow: 0 0 25px rgba(0,0,0,0.5);
       padding: 2rem;
-      height: 100%;
-      overflow-y: auto;
+      position: relative;
     }
-    .book-page h2 {
-      font-size: 1.4rem;
-      color: #5a4221;
+    .book h2 {
+      font-size: 1.5rem;
       margin-bottom: 1rem;
+      color: #5a4221;
     }
-    .book-page p {
-      white-space: pre-wrap;
+    .book p {
       font-size: 1.1rem;
+      white-space: pre-wrap;
       line-height: 1.6;
     }
-    .footer {
+    .book .footer {
       position: absolute;
-      bottom: 0;
+      bottom: 1rem;
       width: 100%;
       text-align: center;
       font-size: 0.9rem;
-      color: #7a5a3a;
-      padding: 0.5rem 0;
-      background: rgba(255,248,220,0.5);
+      color: #5c3d1e;
+    }
+    .buttons {
+      margin-top: 1rem;
+    }
+    .buttons button {
+      background-color: #5c3d1e;
+      color: white;
+      border: none;
+      padding: 0.4rem 1rem;
+      margin-right: 0.5rem;
+      border-radius: 5px;
+      cursor: pointer;
     }
     .controls {
       text-align: center;
       margin: 1rem 0;
     }
-    #entryForm {
-      background: rgba(255,248,220,0.9);
-      border: 3px solid #7a5a3a;
-      border-radius: 10px;
-      padding: 1rem;
-      width: 600px;
+    #entryForm, #unlockArea {
+      max-width: 700px;
       margin: 2rem auto;
+      background: rgba(255,248,220,0.95);
+      padding: 1.5rem;
+      border-radius: 10px;
+      border: 2px solid #7a5a3a;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
     }
     textarea {
       width: 100%;
       font-size: 1rem;
-      padding: 0.5rem;
-      margin-bottom: 1rem;
+      padding: 0.6rem;
       font-family: monospace;
+      margin-bottom: 1rem;
+      border: 1px solid #bbb;
+      border-radius: 5px;
     }
-    button {
-      background: #5c3d1e;
+    input[type=password] {
+      font-size: 1rem;
+      padding: 0.5rem;
+      width: 200px;
+      margin-bottom: 1rem;
+    }
+    #tocToggle {
+      position: absolute;
+      top: -2.5rem;
+      right: 0;
+      background-color: #5c3d1e;
       color: white;
       border: none;
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
-      border-radius: 5px;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
       cursor: pointer;
     }
-    .action-buttons {
-      margin-top: 1rem;
+    #tocPanel {
+      position: absolute;
+      top: 0;
+      right: -260px;
+      width: 240px;
+      background: #fff8e1;
+      border: 2px solid #7a5a3a;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: -4px 4px 12px rgba(0,0,0,0.3);
+      transition: right 0.4s ease;
     }
-    .hidden {
-      display: none;
+    #tocPanel.open {
+      right: -10px;
+    }
+    #tocPanel h3 {
+      margin-top: 0;
+      font-size: 1.1rem;
+      border-bottom: 1px solid #aaa;
+      margin-bottom: 0.5rem;
+    }
+    #tocList {
+      list-style: none;
+      padding: 0;
+      font-size: 0.95rem;
+    }
+    #tocList li {
+      margin: 0.4rem 0;
+      cursor: pointer;
+      color: #3a2e1a;
+    }
+    #tocList li:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
   <h1>Mendrics Chronik</h1>
-  <div class="book-container">
-    <div class="book">
-      <div class="book-page" id="bookPage">
-        <h2 id="entryTitle">📜 Eintrag vom …</h2>
+
+  <div id="unlockArea">
+    <p>🧙‍♂️ Nur eingeweihte Chronisten dürfen das Buch öffnen.<br>Gib das geheime Wort ein:</p>
+    <input type="password" id="pwInput" placeholder="Passwort">
+    <br>
+    <button onclick="checkPassword()">🔓 Freischalten</button>
+  </div>
+
+  <div id="mainContent" class="hidden">
+    <div class="book-container">
+      <div class="book">
+        <button id="tocToggle" onclick="toggleToc()">📖</button>
+        <div id="tocPanel">
+          <h3>Inhaltsverzeichnis</h3>
+          <ul id="tocList"></ul>
+        </div>
+        <h2 id="entryTitle">📜 Eintrag vom ...</h2>
         <p id="entryText">Noch kein Eintrag vorhanden.</p>
-        <div class="action-buttons">
+        <div class="buttons">
           <button onclick="toggleText()">➡️ Fließtext anzeigen</button>
           <button onclick="speakText()">🔊 Vorlesen</button>
           <button onclick="deleteEntry()">🗑️ Löschen</button>
@@ -114,26 +174,44 @@
         <div class="footer" id="pageNumber">Seite 0</div>
       </div>
     </div>
-  </div>
 
-  <div class="controls">
-    <button onclick="prevPage()">⬅️ Vorherige Seite</button>
-    <button onclick="nextPage()">Nächste Seite ➡️</button>
-  </div>
+    <div class="controls">
+      <button onclick="prevPage()">⬅️ Vorherige Seite</button>
+      <button onclick="nextPage()">Nächste Seite ➡️</button>
+    </div>
 
-  <div id="entryForm">
-    <textarea id="noteInput" placeholder="Notiz eingeben..."></textarea>
-    <textarea id="flowInput" placeholder="Optionaler Fließtext..."></textarea>
-    <button onclick="addEntry()">🖋️ Eintrag speichern</button>
+    <div id="entryForm">
+      <textarea id="noteInput" placeholder="Notiz eingeben..."></textarea>
+      <textarea id="flowInput" placeholder="Optional: Fließtext..."></textarea>
+      <button onclick="addEntry()">🖋️ Eintrag speichern</button>
+    </div>
   </div>
 
   <script>
     let currentPage = 0;
-    let entries = JSON.parse(localStorage.getItem('chronik')) || [];
     let showFlow = false;
+    let entries = JSON.parse(localStorage.getItem('chronik')) || [];
+
+    function checkPassword() {
+      const input = document.getElementById('pwInput').value;
+      if (input === 'Mendric') {
+        document.getElementById('unlockArea').classList.add('hidden');
+        document.getElementById('mainContent').classList.remove('hidden');
+        currentPage = entries.length > 0 ? entries.length - 1 : 0;
+        renderPage(currentPage);
+        renderToc();
+      } else {
+        alert("Falsches Passwort!");
+      }
+    }
 
     function renderPage(index) {
-      if (entries.length === 0) return;
+      if (entries.length === 0) {
+        document.getElementById('entryTitle').textContent = '📜 Noch keine Einträge vorhanden';
+        document.getElementById('entryText').textContent = '';
+        document.getElementById('pageNumber').textContent = 'Seite 0';
+        return;
+      }
       const e = entries[index];
       document.getElementById('entryTitle').textContent = `📜 Eintrag vom ${e.date}`;
       document.getElementById('entryText').textContent = showFlow && e.flow ? e.flow : e.note;
@@ -143,7 +221,7 @@
     function addEntry() {
       const note = document.getElementById('noteInput').value.trim();
       const flow = document.getElementById('flowInput').value.trim();
-      if (!note) return alert("Bitte Text eingeben!");
+      if (!note) return alert("Bitte eine Notiz eingeben!");
       const date = new Date().toLocaleDateString('de-DE');
       entries.push({ note, flow, date });
       localStorage.setItem('chronik', JSON.stringify(entries));
@@ -152,6 +230,7 @@
       currentPage = entries.length - 1;
       showFlow = false;
       renderPage(currentPage);
+      renderToc();
     }
 
     function prevPage() {
@@ -173,12 +252,12 @@
     function toggleText() {
       if (entries.length === 0) return;
       const e = entries[currentPage];
-      if (e.flow) {
-        showFlow = !showFlow;
-        renderPage(currentPage);
-      } else {
+      if (!e.flow) {
         alert("Kein Fließtext vorhanden.");
+        return;
       }
+      showFlow = !showFlow;
+      renderPage(currentPage);
     }
 
     function speakText() {
@@ -196,12 +275,37 @@
 
     function deleteEntry() {
       if (entries.length === 0) return;
-      if (!confirm('Diesen Eintrag wirklich löschen?')) return;
+      if (!confirm("Diesen Eintrag wirklich löschen?")) return;
       entries.splice(currentPage, 1);
       localStorage.setItem('chronik', JSON.stringify(entries));
       if (currentPage >= entries.length) currentPage = entries.length - 1;
       showFlow = false;
       renderPage(currentPage);
+      renderToc();
+    }
+
+    function renderToc() {
+      const tocList = document.getElementById('tocList');
+      tocList.innerHTML = '';
+      entries.forEach((e, i) => {
+        const li = document.createElement('li');
+        li.textContent = `Seite ${i + 1} – ${e.date}`;
+        li.onclick = () => {
+          currentPage = i;
+          showFlow = false;
+          renderPage(i);
+        };
+        tocList.appendChild(li);
+      });
+    }
+
+    function toggleToc() {
+      const panel = document.getElementById('tocPanel');
+      panel.classList.toggle('open');
+    }
+
+    if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+      speechSynthesis.onvoiceschanged = () => {};
     }
 
     window.onload = () => {
@@ -209,7 +313,7 @@
         currentPage = entries.length - 1;
         renderPage(currentPage);
       }
-    }
+    };
   </script>
 </body>
 </html>
