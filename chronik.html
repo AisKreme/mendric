@@ -56,7 +56,9 @@ body {
     <div id="bookContainer" class="book-container">
       <div id="toc-toggle" onclick="toggleTOC()">📖</div>
       <input type="text" id="searchChronik" placeholder="🔍 Suche in Einträgen..." style="width: 100%; max-width: 300px; margin-bottom: 1rem; padding: 0.5rem;" />
+<input type="text" id="searchChronik" placeholder="🔍 Suche..." style="width:300px;margin-bottom:1rem;padding:0.5rem;" />
 <div id="bookPages"></div>
+<div id="timelineMarkers" style="display:flex;gap:0.5rem;margin:2rem 0;justify-content:center;flex-wrap:wrap;"></div>
       <div id="toc"></div>
       <div class="book-nav">
         <button onclick="prevPage()">⬅️</button>
@@ -71,6 +73,7 @@ body {
         <textarea id="noteInput" placeholder="Notiz eingeben..."></textarea>
         <input type="text" id="chapterInput" placeholder="Kapitel / Ort / Abschnitt" />
 <textarea id="flowInput" placeholder="Optionaler Fließtext..."></textarea>
+<input type="text" id="tagsInput" placeholder="Tags (kommagetrennt, z. B. Wald,Feuer,Rätsel)" />
         <button onclick="addEntry()">📜 Eintrag speichern</button>
       </div>
     </div>
@@ -133,6 +136,13 @@ document.getElementById('searchChronik').addEventListener('input', () => {
   renderFiltered(filtered);
 });
 
+
+function highlightMatches(text, query) {
+  if (!query) return text;
+  const re = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+  return text.replace(re, '<mark>$1</mark>');
+}
+
 function renderFiltered(filtered) {
   entries = filtered;
   currentPage = 0;
@@ -140,6 +150,9 @@ function renderFiltered(filtered) {
 }
 
 function addEntry() {
+  const tagsRaw = document.getElementById('tagsInput').value.trim();
+  const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
+  const kapitel = document.getElementById('chapterInput').value.trim();
   const note = document.getElementById('noteInput').value.trim();
   const flow = document.getElementById('flowInput').value.trim();
   const chapter = document.getElementById('chapterInput').value.trim();
@@ -148,7 +161,7 @@ function addEntry() {
   fetch(API_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ note, flow, chapter, date })
+    body: JSON.stringify({ note, flow, kapitel, tags, date })
   })
     .then(res => res.json())
     .then(() => {
@@ -166,6 +179,7 @@ async function loadEntries() {
   if (entries.length > 0) currentPage = entries.length - 1;
   renderPage(currentPage);
   renderTOC();
+  renderTimelineMarkers();
 }
 </script>
 </body>
