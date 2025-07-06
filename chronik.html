@@ -7,11 +7,28 @@
   <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/166/166539.png">
   <link href="https://fonts.googleapis.com/css2?family=Cardo&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="src/book-style.css">
+<style>
+/* Optional swipe effect between pages */
+html.swipe-left {
+  animation: swipeLeft 0.4s forwards;
+}
+html.swipe-right {
+  animation: swipeRight 0.4s forwards;
+}
+@keyframes swipeLeft {
+  0% { transform: translateX(0); opacity: 1; }
+  100% { transform: translateX(-100%); opacity: 0; }
+}
+@keyframes swipeRight {
+  0% { transform: translateX(0); opacity: 1; }
+  100% { transform: translateX(100%); opacity: 0; }
+}
+</style>
 </head>
 <body>
 <nav>
   <a href="chronik.html">📖 Chronik</a>
-  <a href="nscs.html">🧙‍♂️ NSC-Verzeichnis</a>
+  <a href="nscs.html" onclick="document.documentElement.classList.add('swipe-left')">🧙‍♂️ NSC-Verzeichnis</a>
 </nav>
 
   <div id="chronikApp">
@@ -46,5 +63,13 @@
       if (window.loadEntries) loadEntries();
     };
   </script>
+<script>
+const links = document.querySelectorAll('a[href*="nscs.html"]');
+links.forEach(link => {
+  link.addEventListener('click', () => {
+    document.documentElement.classList.add('swipe-left');
+  });
+});
+</script>
 </body>
 </html>
