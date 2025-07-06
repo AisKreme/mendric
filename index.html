@@ -6,7 +6,7 @@
   <title>Mendrics Chronik</title>
   <style>
     body {
-      background: #d8c7a6 url('https://i.imgur.com/OB0y6MR.jpg') repeat;
+      background: #f5f0e6 url('https://i.imgur.com/6vDR7Q1.png') repeat;
       font-family: 'Georgia', serif;
       margin: 0;
       padding: 2rem;
@@ -38,6 +38,7 @@
       overflow: hidden;
       border: 6px solid #5c3d1e;
       border-radius: 12px 0 0 12px;
+      perspective: 2000px;
     }
     #toc {
       width: 200px;
@@ -71,14 +72,15 @@
       height: 100%;
       overflow-y: auto;
       white-space: pre-wrap;
+      transform-origin: left;
+      transition: transform 0.6s ease;
+      backface-visibility: hidden;
     }
     .page.active {
       display: block;
-      animation: fadeIn 0.8s ease-in-out;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateX(30px); }
-      to { opacity: 1; transform: translateX(0); }
+    .page-flip {
+      transform: rotateY(-180deg);
     }
     .entry-meta {
       font-size: 0.85rem;
@@ -146,7 +148,6 @@
 </head>
 <body>
   <h1>Mendrics Chronik</h1>
-
   <div id="chronikWrapper">
     <div id="chronikBook"></div>
     <div id="toc">
@@ -154,25 +155,20 @@
       <ul id="tocList"></ul>
     </div>
   </div>
-
   <div class="footer" id="pageNumber"></div>
-
   <div id="navButtons">
     <button onclick="prevPage()">⬅️ Zurück</button>
     <button onclick="nextPage()">Weiter ➡️</button>
   </div>
-
   <div id="unlockArea">
     <p>🧙‍♂️ Nur eingeweihte Chronisten dürfen neue Seiten schreiben oder löschen.</p>
     <input type="password" id="pwInput" placeholder="Passwort">
     <button onclick="checkPassword()">🔓 Freischalten</button>
   </div>
-
   <div id="entryForm">
     <textarea id="chronikText" placeholder="Schreibe hier deinen neuen Eintrag..."></textarea>
     <button onclick="addEntry()">🖋️ Eintrag speichern</button>
   </div>
-
   <script>
     const chronikContainer = document.getElementById('chronikBook');
     const chronikText = document.getElementById('chronikText');
@@ -182,6 +178,8 @@
     let isUnlocked = false;
 
     window.onload = () => {
+      const eintraege = JSON.parse(localStorage.getItem('chronik')) || [];
+      if (eintraege.length) currentPage = eintraege.length - 1;
       renderPages();
     };
 
@@ -208,12 +206,23 @@
         const tocItem = document.createElement('li');
         tocItem.textContent = `Seite ${index + 1} – ${eintrag.date}`;
         tocItem.onclick = () => {
-          currentPage = index;
-          renderPages();
+          flipToPage(index);
         };
         tocList.appendChild(tocItem);
       });
       pageNumber.textContent = eintraege.length ? `Seite ${currentPage + 1} von ${eintraege.length}` : 'Keine Einträge';
+    }
+
+    function flipToPage(newPage) {
+      const pages = document.querySelectorAll('.page');
+      pages.forEach((pg, idx) => {
+        if (idx === currentPage) {
+          pg.classList.add('page-flip');
+          setTimeout(() => { pg.classList.remove('active', 'page-flip'); }, 600);
+        }
+      });
+      currentPage = newPage;
+      setTimeout(renderPages, 600);
     }
 
     function addEntry() {
@@ -232,11 +241,13 @@
 
     function speakText(text) {
       if (!text) return;
-      const utterance = new SpeechSynthesisUtterance(text);
+      const cleanText = text.replace(/\p{Emoji_Presentation}|\p{Extended_Pictographic}/gu, '');
+      const utterance = new SpeechSynthesisUtterance(cleanText);
       utterance.lang = 'de-DE';
       utterance.rate = 0.8;
       utterance.pitch = 0.5;
-      utterance.voice = speechSynthesis.getVoices().find(voice => voice.lang === 'de-DE');
+      const voices = speechSynthesis.getVoices().filter(v => v.lang === 'de-DE');
+      utterance.voice = voices.find(v => v.name.includes('Male') || v.name.includes('Deep')) || voices[0];
       speechSynthesis.speak(utterance);
     }
 
@@ -252,15 +263,13 @@
     function nextPage() {
       const eintraege = JSON.parse(localStorage.getItem('chronik')) || [];
       if (currentPage < eintraege.length - 1) {
-        currentPage++;
-        renderPages();
+        flipToPage(currentPage + 1);
       }
     }
 
     function prevPage() {
       if (currentPage > 0) {
-        currentPage--;
-        renderPages();
+        flipToPage(currentPage - 1);
       }
     }
 
