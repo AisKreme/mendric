@@ -1,8 +1,9 @@
 const API_URL = 'https://mendric.vercel.app/api/chronik';
-
+const CHRONIK_PASSWORD = 'Mendric';
 let entries = [];
 let currentPage = 0;
-const CHRONIK_PASSWORD = 'Mendric'; // clientseitig für Zugriff – nicht sicherheitskritisch bei rein privater Nutzung
+
+const openSound = new Audio('https://cdn.pixabay.com/download/audio/2023/03/06/audio_a0f5e58f6f.mp3?filename=magical-transition-143105.mp3');
 
 async function loadEntries() {
   const res = await fetch(API_URL);
@@ -20,15 +21,12 @@ function renderPage(index) {
     indicator.textContent = '';
     return;
   }
-
   const entry = entries[index];
   const div = document.createElement('div');
   div.className = 'entry';
-  div.dataset.id = entry.id;
 
   const title = document.createElement('h3');
   title.textContent = `📜 ${entry.date}`;
-
   const note = document.createElement('p');
   note.textContent = entry.note;
 
@@ -153,16 +151,13 @@ function speakText(text) {
 function editEntry(div, entry) {
   const noteArea = document.createElement('textarea');
   noteArea.value = entry.note;
-
   const flowArea = document.createElement('textarea');
   flowArea.value = entry.flow || '';
-
   const saveBtn = document.createElement('button');
   saveBtn.textContent = '💾 Speichern';
   saveBtn.onclick = async () => {
     const newNote = noteArea.value.trim();
     const newFlow = flowArea.value.trim();
-
     try {
       const res = await fetch(API_URL, {
         method: 'POST',
@@ -177,7 +172,6 @@ function editEntry(div, entry) {
       alert('Fehler beim Speichern.');
     }
   };
-
   div.innerHTML = '';
   div.appendChild(noteArea);
   div.appendChild(flowArea);
@@ -190,6 +184,7 @@ function checkAccess() {
   if (input === CHRONIK_PASSWORD) {
     document.getElementById('cover').style.display = 'none';
     document.getElementById('chronikApp').style.display = 'block';
+    openSound.play();
     loadEntries();
   } else {
     error.textContent = '⚡ Du erhältst einen Elektrischen Schock und erhälst 1W6 Schaden';
