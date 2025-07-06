@@ -4,14 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Der Dritte Entwurf</title>
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/166/166539.png">
   <link href="https://fonts.googleapis.com/css2?family=Cardo&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="src/style.css">
 </head>
 <body>
   <div id="cover" class="cover-screen">
+    <img src="https://cdn.pixabay.com/photo/2015/12/01/20/28/rune-1077094_1280.jpg" alt="Rune" style="max-width: 180px; margin-bottom: 1rem; border-radius: 10px; box-shadow: 0 0 15px rgba(255,255,255,0.3)">
     <h1>Der Dritte Entwurf</h1>
     <p>🔐 Nur Eingeweihte dürfen dieses Buch öffnen</p>
-    <input type="password" id="accessPassword" placeholder="Geheimwort...">
+    <input type="password" id="accessPassword" placeholder="..." style="width: 150px; text-align: center;">
     <button onclick="checkAccess()">🪄 Öffnen</button>
     <p id="errorMessage" class="error-message"></p>
   </div>
