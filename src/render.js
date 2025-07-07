@@ -30,20 +30,24 @@ export function renderPage(entry, index, total, onEdit, onDelete, onSpeakNote, o
   title.textContent = `📜 ${entry.date}`;
   div.appendChild(title);
 
-  // Notiz mit Hervorhebung
-  const note = document.createElement('p');
-  note.innerHTML = highlightMatches(entry.note, searchQuery);
-  div.appendChild(note);
+// Notiz mit Hervorhebung im Stil des Eingabefeldes
+const note = document.createElement('div');
+note.className = 'note-text';
+note.innerHTML = highlightMatches(entry.note, searchQuery);
+div.appendChild(note);
 
-  // Fließtext als Details-Summary mit Hervorhebung
-  const flow = document.createElement('details');
-  const summary = document.createElement('summary');
-  summary.textContent = 'Fließtext anzeigen';
-  const pre = document.createElement('pre');
-  pre.innerHTML = highlightMatches(entry.flow || '(kein Fließtext)', searchQuery);
-  flow.appendChild(summary);
-  flow.appendChild(pre);
-  div.appendChild(flow);
+// Fließtext als Details-Summary mit Hervorhebung und Eingabefeld-Stil
+const flow = document.createElement('details');
+const summary = document.createElement('summary');
+summary.textContent = 'Fließtext anzeigen';
+
+const pre = document.createElement('pre');
+pre.className = 'flow-text';
+pre.innerHTML = highlightMatches(entry.flow || '(kein Fließtext)', searchQuery);
+
+flow.appendChild(summary);
+flow.appendChild(pre);
+div.appendChild(flow);
 
   // Buttons erzeugen mit Styling-Klassen
   const speakNoteBtn = document.createElement('button');

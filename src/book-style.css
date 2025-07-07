@@ -117,6 +117,19 @@ nav a:hover {
 }
 
 /* Seiten-Eintrag */
+.note-text, .flow-text {
+  font-family: monospace;
+  font-size: 1rem;
+  background: #1b1b1b;
+  color: #ffeccc;
+  padding: 0.5rem;
+  border: 1px solid #999;
+  border-radius: 6px;
+  white-space: pre-wrap; /* Zeilenumbrüche sichtbar machen */
+  margin-bottom: 1rem;
+  min-height: 100px; /* optional, um Eingabefeldern zu entsprechen */
+}
+
 .entry {
   animation: turnPage 0.7s ease-in-out;
   background: rgba(255,255,255,0.05);
