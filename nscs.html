@@ -4,164 +4,36 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>NSC-Verzeichnis</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cardo&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="src/nsc-style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cardo&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="src/nsc-style.css" />
 </head>
 <body>
-<nav>
-  <a href="chronik.html" class="swipe-link">📖 Chronik</a>
-  <a href="nscs.html" class="swipe-link">🧙‍♂️ NSC-Verzeichnis</a>
-</nav>
+  <nav>
+    <a href="chronik.html" class="swipe-link">📖 Chronik</a>
+    <a href="nscs.html" class="swipe-link">🧙‍♂️ NSC-Verzeichnis</a>
+  </nav>
 
-<h1>🧙‍♂️ NSC-Verzeichnis</h1>
-<div class="form-wrapper" style="text-align:center;">
-  <button onclick="toggleNSCForm()">➕ Neuer NSC</button>
-</div>
-
-<div class="form" id="nscForm" style="display:none;">
-  <h2>Neuen NSC anlegen</h2>
-  <input type="text" id="nscName" placeholder="Name des NSC" />
-  <input type="text" id="nscRolle" placeholder="Rolle / Funktion" />
-  <textarea id="nscInfo" placeholder="Beschreibung, Notizen, Beziehungen..."></textarea>
-  <button onclick="saveNSC()">💾 Speichern</button>
-</div>
-
-<div class="nsc-list">
-  <div class="nsc-header">
-    <input class="search-input" type="text" id="searchField" placeholder="🔍 Suche Name oder Rolle..." />
-    <h2>Bekannte NSCs</h2>
-
+  <h1>🧙‍♂️ NSC-Verzeichnis</h1>
+  <div class="form-wrapper" style="text-align:center;">
+    <button id="toggleFormBtn">➕ Neuer NSC</button>
   </div>
-  <div id="nscContainer">Wird geladen...</div>
-</div>
 
-<script>
-const API_NSC = 'https://mendric.vercel.app/api/nscs';
-let nscs = [];
+  <div class="form" id="nscForm" style="display:none;">
+    <h2>Neuen NSC anlegen</h2>
+    <input type="text" id="nscName" placeholder="Name des NSC" />
+    <input type="text" id="nscRolle" placeholder="Rolle / Funktion" />
+    <textarea id="nscInfo" placeholder="Beschreibung, Notizen, Beziehungen..."></textarea>
+    <button id="saveNSCBtn">💾 Speichern</button>
+  </div>
 
-function toggleNSCForm() {
-  const form = document.getElementById('nscForm');
-  form.style.display = form.style.display === 'none' ? 'block' : 'none';
-}
+  <div class="nsc-list">
+    <div class="nsc-header">
+      <input class="search-input" type="text" id="searchField" placeholder="🔍 Suche Name oder Rolle..." />
+      <h2>Bekannte NSCs</h2>
+    </div>
+    <div id="nscContainer">Wird geladen...</div>
+  </div>
 
-async function saveNSC() {
-  const name = document.getElementById('nscName').value.trim();
-  const rolle = document.getElementById('nscRolle').value.trim();
-  const info = document.getElementById('nscInfo').value.trim();
-  if (!name) return alert("Bitte Name eingeben.");
-  const res = await fetch(API_NSC, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, rolle, info })
-  });
-  const result = await res.json();
-  if (result.error) return alert('Fehler: ' + result.error);
-  document.getElementById('nscName').value = '';
-  document.getElementById('nscRolle').value = '';
-  document.getElementById('nscInfo').value = '';
-  document.getElementById('nscForm').style.display = 'none';
-  loadNSCs();
-}
-
-async function deleteNSC(id) {
-  if (!confirm("Diesen NSC wirklich löschen?")) return;
-  const res = await fetch(API_NSC, {
-    method: 'DELETE',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ id })
-  });
-  const result = await res.json();
-  if (result.error) return alert('Fehler: ' + result.error);
-  loadNSCs();
-}
-
-function editNSC(entry, nsc) {
-  const nameInput = document.createElement('input');
-  nameInput.value = nsc.name;
-
-  const roleInput = document.createElement('input');
-  roleInput.value = nsc.rolle;
-
-  const infoArea = document.createElement('textarea');
-  infoArea.value = nsc.info;
-
-  const saveBtn = document.createElement('button');
-  saveBtn.textContent = '💾 Speichern';
-  saveBtn.onclick = async () => {
-    const updated = {
-      id: nsc.id,
-      name: nameInput.value.trim(),
-      rolle: roleInput.value.trim(),
-      info: infoArea.value.trim()
-    };
-    const res = await fetch(API_NSC, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(updated)
-    });
-    const result = await res.json();
-    if (result.error) return alert('Fehler: ' + result.error);
-    loadNSCs();
-  };
-
-  entry.innerHTML = '';
-  entry.appendChild(nameInput);
-  entry.appendChild(roleInput);
-  entry.appendChild(infoArea);
-  entry.appendChild(saveBtn);
-}
-
-function renderNSCs(list) {
-  const container = document.getElementById('nscContainer');
-  container.innerHTML = '';
-  list.forEach(nsc => {
-    const div = document.createElement('div');
-    div.className = 'nsc-entry';
-    div.innerHTML = `
-      <h3>🧾 ${nsc.name}</h3>
-      <p><strong>Rolle:</strong> ${nsc.rolle || '–'}</p>
-      <p>${nsc.info || ''}</p>
-      <div class="nsc-controls">
-        <button onclick="editNSC(this.parentNode.parentNode, ${JSON.stringify(nsc).replace(/"/g, '&quot;')})">✏️</button>
-        <button onclick="deleteNSC(${nsc.id})">🗑️</button>
-      </div>
-    `;
-    container.appendChild(div);
-  });
-}
-
-async function loadNSCs() {
-  const res = await fetch(API_NSC);
-  nscs = await res.json();
-  filterNSCs();
-}
-
-
-function filterNSCs() {
-  const query = document.getElementById('searchField').value.toLowerCase();
-  const filtered = nscs.filter(n =>
-    n.name.toLowerCase().includes(query) ||
-    (n.rolle && n.rolle.toLowerCase().includes(query)) ||
-    (n.info && n.info.toLowerCase().includes(query))
-  );
-  renderNSCs(filtered);
-}
-    
-
-document.getElementById('searchField').addEventListener('input', filterNSCs);
-loadNSCs();
-</script>
-
-<script>
-document.querySelectorAll('a.swipe-link').forEach(link => {
-  link.addEventListener('click', e => {
-    e.preventDefault();
-    document.documentElement.classList.add('swipe-out');
-    setTimeout(() => {
-      window.location.href = link.href;
-    }, 800);
-  });
-});
-</script>
+  <script type="module" src="src/controller-nsc.js"></script>
 </body>
 </html>
