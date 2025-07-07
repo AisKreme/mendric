@@ -85,7 +85,11 @@ body {
       const form = document.getElementById('entryForm');
       form.style.display = form.style.display === 'none' ? 'block' : 'none';
     }
-    window.onload = () => {
+    
+window.onload = () => {
+  const saved = localStorage.getItem('lastKapitel');
+  if (saved) document.getElementById('chapterInput').value = saved;
+
       if (window.loadEntries) loadEntries();
     };
   </script>
@@ -149,7 +153,12 @@ function renderFiltered(filtered) {
   renderPage(currentPage);
 }
 
+
 function addEntry() {
+  const kapitelField = document.getElementById('chapterInput');
+  const kapitel = kapitelField.value.trim();
+  if (kapitel) localStorage.setItem('lastKapitel', kapitel);
+
   const tagsRaw = document.getElementById('tagsInput').value.trim();
   const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
   const kapitel = document.getElementById('chapterInput').value.trim();
