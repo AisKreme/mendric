@@ -6,27 +6,29 @@ let entries = [];
 let currentPage = 0;
 let allEntries = [];
 
-document.getElementById('btnPrev').addEventListener('click', () => {
-  prevPage();
-});
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('btnPrev').addEventListener('click', () => {
+    prevPage();
+  });
 
-document.getElementById('btnNext').addEventListener('click', () => {
-  nextPage();
-});
+  document.getElementById('btnNext').addEventListener('click', () => {
+    nextPage();
+  });
 
-document.getElementById('toc-toggle').addEventListener('click', () => {
-  const toc = document.getElementById('toc');
-  if (!toc) return;
-  toc.style.display = (toc.style.display === 'none' || toc.style.display === '') ? 'block' : 'none';
-});
+  document.getElementById('toc-toggle').addEventListener('click', () => {
+    const toc = document.getElementById('toc');
+    if (!toc) return;
+    toc.style.display = (toc.style.display === 'none' || toc.style.display === '') ? 'block' : 'none';
+  });
 
-document.getElementById('toggleEntryBtn').addEventListener('click', () => {
-  const form = document.getElementById('entryForm');
-  form.style.display = form.style.display === 'none' ? 'block' : 'none';
-});
+  document.getElementById('toggleEntryBtn').addEventListener('click', () => {
+    const form = document.getElementById('entryForm');
+    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+  });
 
-document.getElementById('saveEntryBtn').addEventListener('click', () => {
-  addEntry();
+  document.getElementById('saveEntryBtn').addEventListener('click', () => {
+    addEntry();
+  });
 });
 
 export async function loadEntries() {
