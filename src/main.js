@@ -18,7 +18,7 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('toc-toggle').addEventListener('click', () => {
     const toc = document.getElementById('toc');
     if (!toc) return;
-    toc.style.display = (toc.style.display === 'none' || toc.style.display === '') ? 'block' : 'none';
+toc.classList.toggle('open');
   });
 
   document.getElementById('toggleEntryBtn').addEventListener('click', () => {
