@@ -39,16 +39,17 @@ nav a:hover {
 }
 
 .nsc-header input.search-input {
-  order: 1; /* Suchfeld zuerst */
+  order: 2; /* Suchfeld zuerst */
   flex: 1 1 220px; /* Breite anpassbar, Basisbreite 220px */
-  max-width: 220px;
+  max-width: 240px;
 }
 
 .nsc-header h2 {
-  order: 2; /* Titel nach Suchfeld */
+  order: 1; /* Titel nach Suchfeld */
   margin: 0;
   color: #fffbe8;
   white-space: nowrap; /* Zeilenumbruch verhindern */
+  flex-shrink: 0;
 }
 
 /* === Überschrift === */
