@@ -55,6 +55,10 @@ function renderPage(index) {
   speakFlowBtn.textContent = '🔊 Fließtext';
   speakFlowBtn.onclick = () => speakText(entry.flow || '');
 
+  const editBtn = document.createElement('button');
+  editBtn.textContent = '📝 Bearbeiten';
+  editBtn.onclick = () => editEntry(div, entry);
+
   const delBtn = document.createElement('button');
   delBtn.textContent = '🗑️ Löschen';
   delBtn.onclick = () => deleteEntry(entry.id);
@@ -64,6 +68,7 @@ function renderPage(index) {
   div.appendChild(flow);
   div.appendChild(speakNoteBtn);
   div.appendChild(speakFlowBtn);
+  div.appendChild(editBtn);
   div.appendChild(delBtn);
 
   if (entry.tags?.length) {
@@ -77,9 +82,61 @@ function renderPage(index) {
   indicator.textContent = `Seite ${currentPage + 1} von ${entries.length}`;
 }
 
+function editEntry(entryDiv, entry) {
+  const noteInput = document.createElement('textarea');
+  noteInput.value = entry.note;
+  noteInput.style.width = '100%';
+  noteInput.style.height = '100px';
+
+  const flowInput = document.createElement('textarea');
+  flowInput.value = entry.flow || '';
+  flowInput.style.width = '100%';
+  flowInput.style.height = '100px';
+
+  const kapitelInput = document.createElement('input');
+  kapitelInput.type = 'text';
+  kapitelInput.value = entry.kapitel || '';
+  kapitelInput.placeholder = 'Kapitel / Ort / Abschnitt';
+  kapitelInput.style.width = '100%';
+
+  const tagsInput = document.createElement('input');
+  tagsInput.type = 'text';
+  tagsInput.value = entry.tags ? entry.tags.join(', ') : '';
+  tagsInput.placeholder = 'Tags (kommagetrennt)';
+  tagsInput.style.width = '100%';
+
+  const saveBtn = document.createElement('button');
+  saveBtn.textContent = '💾 Speichern';
+  saveBtn.onclick = async () => {
+    const updated = {
+      id: entry.id,
+      note: noteInput.value.trim(),
+      flow: flowInput.value.trim(),
+      kapitel: kapitelInput.value.trim(),
+      tags: tagsInput.value.split(',').map(t => t.trim()).filter(Boolean),
+      date: entry.date
+    };
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updated)
+    });
+    const result = await res.json();
+    if (result.error) return alert('Fehler: ' + result.error);
+    loadEntries();
+  };
+
+  entryDiv.innerHTML = '';
+  entryDiv.appendChild(noteInput);
+  entryDiv.appendChild(flowInput);
+  entryDiv.appendChild(kapitelInput);
+  entryDiv.appendChild(tagsInput);
+  entryDiv.appendChild(saveBtn);
+}
+
 function highlightMatches(text, query) {
   if (!query) return text;
-  const re = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\$&') + ')', 'gi');
+  const re = new RegExp('(' + query.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\$&') + ')', 'gi');
   return text.replace(re, '<mark>$1</mark>');
 }
 
@@ -105,6 +162,7 @@ function prevPage() {
     renderPage(currentPage);
   }
 }
+
 function nextPage() {
   if (currentPage < entries.length - 1) {
     currentPage++;
@@ -127,10 +185,10 @@ function deleteEntry(id) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ id })
   })
-    .then(res => res.json())
-    .then(() => {
-      loadEntries();
-    });
+  .then(res => res.json())
+  .then(() => {
+    loadEntries();
+  });
 }
 
 function addEntry() {
@@ -149,14 +207,14 @@ function addEntry() {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ note, flow, kapitel, tags, date })
   })
-    .then(res => res.json())
-    .then(() => {
-      document.getElementById("noteInput").value = '';
-      document.getElementById("flowInput").value = '';
-      document.getElementById("kapitelInput").value = '';
-      document.getElementById("tagsInput").value = '';
-      loadEntries();
-    });
+  .then(res => res.json())
+  .then(() => {
+    document.getElementById("noteInput").value = '';
+    document.getElementById("flowInput").value = '';
+    document.getElementById("kapitelInput").value = '';
+    document.getElementById("tagsInput").value = '';
+    loadEntries();
+  });
 }
 
 function renderTOC() {
@@ -228,6 +286,7 @@ function renderTimelineMarkers() {
     markerBar.appendChild(marker);
   });
 }
+
 function toggleTOC() {
   const toc = document.getElementById('toc');
   if (!toc) return;
