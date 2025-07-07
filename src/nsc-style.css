@@ -22,10 +22,12 @@ nav a {
   font-size: 1.1rem;
   color: #ffd86b;
   margin: 0 1rem;
+  display: inline-block;
+  transition: transform 0.3s ease;
 }
 nav a:hover {
+  transform: scale(1.05);
   text-shadow: 0 0 5px #ffd86b;
-  cursor: pointer;
 }
 
 .nsc-header {
