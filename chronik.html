@@ -155,18 +155,14 @@ function renderFiltered(filtered) {
 
 
 function addEntry() {
-  const kapitelField = document.getElementById('chapterInput');
-  const kapitel = kapitelField.value.trim();
-  if (kapitel) localStorage.setItem('lastKapitel', kapitel);
-
-  const tagsRaw = document.getElementById('tagsInput').value.trim();
-  const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
-  const kapitel = document.getElementById('chapterInput').value.trim();
   const note = document.getElementById('noteInput').value.trim();
   const flow = document.getElementById('flowInput').value.trim();
-  const chapter = document.getElementById('chapterInput').value.trim();
+  const kapitel = document.getElementById('chapterInput').value.trim();
+  const tagsRaw = document.getElementById('tagsInput').value.trim();
+  const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
   const date = new Date().toLocaleDateString('de-DE');
   if (!note) return alert('Notiz erforderlich');
+
   fetch(API_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
