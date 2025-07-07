@@ -1,6 +1,7 @@
 import { fetchEntries, saveEntry, deleteEntryById } from './api.js';
 import { renderPage, renderTOC, renderTimelineMarkers } from './render.js';
 import { editEntry } from './edit.js';
+import { supabase } from './supabaseClient.js';
 
 let entries = [];
 let currentPage = 0;

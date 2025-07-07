@@ -1,3 +1,4 @@
+import { supabase } from './supabaseClient.js';
 // src/api.js
 
 const API_URL = 'https://mendric.vercel.app/api/chronik';
