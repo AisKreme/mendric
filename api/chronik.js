@@ -1,3 +1,5 @@
+console.log('RECEIVED:', req.body);
+
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.SUPABASE_URL;
