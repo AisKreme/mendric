@@ -216,14 +216,6 @@ function renderTimelineMarkers() {
     markerBar.appendChild(marker);
   });
 }
-
-;
-  allEntries.forEach((entry, index) => {
-    if (!uniqueDates[entry.date]) {
-      uniqueDates[entry.date] = index;
-    }
-  });
-
   const sortedDates = Object.entries(uniqueDates).sort(([a], [b]) => {
     const [ta, tb] = [new Date(a.split('.').reverse().join('-')), new Date(b.split('.').reverse().join('-'))];
     return ta - tb;
