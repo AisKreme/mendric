@@ -6,7 +6,11 @@ const supabase = createClient(
 );
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  const allowedOrigins = ['https://mendric.vercel.app', 'http://localhost:5173'];
+const origin = req.headers.origin;
+if (allowedOrigins.includes(origin)) {
+  res.setHeader('Access-Control-Allow-Origin', origin);
+}
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 

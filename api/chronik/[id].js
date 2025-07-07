@@ -6,12 +6,12 @@ const supabase = createClient(
 );
 
 export default async function handler(req, res) {
-  // Setze CORS-Header
-  res.setHeader('Access-Control-Allow-Origin', '*');  // Für Entwicklung: "*" oder spezifische URL
+  // CORS-Header setzen
+ res.setHeader('Access-Control-Allow-Origin', 'https://mendric.vercel.app'); // In Produktion besser einschränken!
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // OPTIONS-Anfrage direkt beenden
+  // Preflight OPTIONS-Anfrage kurz beantworten
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
@@ -32,7 +32,9 @@ export default async function handler(req, res) {
     return res.status(200).json({ success: true });
   }
 
-  // Weitere Methoden, falls benötigt
+  // Falls weitere Methoden benötigt werden, hier ergänzen
 
-  res.status(405).json({ error: 'Method not allowed' });
+  // Methode nicht erlaubt
+  res.setHeader('Allow', 'PUT, OPTIONS');
+  return res.status(405).json({ error: 'Method not allowed' });
 }
