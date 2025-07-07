@@ -177,6 +177,31 @@ function addEntry() {
     });
 }
 
+
+function renderTimelineMarkers() {
+  const markerBar = document.getElementById('timelineMarkers');
+  if (!markerBar) return;
+  markerBar.innerHTML = '';
+  allEntries.forEach((entry, i) => {
+    const marker = document.createElement('button');
+    marker.textContent = entry.date;
+    marker.title = entry.kapitel || '';
+    marker.style.padding = '0.3rem 0.6rem';
+    marker.style.borderRadius = '6px';
+    marker.style.border = '1px solid #999';
+    marker.style.background = '#2c2b29';
+    marker.style.color = '#fffbe8';
+    marker.style.cursor = 'pointer';
+    marker.style.margin = '0.2rem';
+    marker.onclick = () => {
+      currentPage = i;
+      renderPage(i);
+    };
+    markerBar.appendChild(marker);
+  });
+}
+
+
 async function loadEntries() {
   const res = await fetch(API_URL);
   entries = await res.json();
