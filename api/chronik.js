@@ -32,16 +32,16 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'POST') {
-    const { note, flow, kapitel, tags, date } = req.body;
+    const { note, flow, kapitel, tags, date, images } = req.body;
     if (!note || !date) {
       return res.status(400).json({ error: 'note und date erforderlich' });
     }
 
-    console.log('POST body:', { note, flow, kapitel, tags, date });
+    console.log('POST body:', { note, flow, kapitel, tags, date, images });
 
     const { error } = await supabase
       .from('chronik_entries')
-      .insert([{ note, flow, kapitel, tags, date }]);
+      .insert([{ note, flow, kapitel, tags, date, images }]);
 
     if (error) {
       console.error('Supabase POST error:', error);
