@@ -238,7 +238,7 @@ function renderTOC() {
     ul.style.marginBottom = '0.5rem';
     grouped[kapitel].forEach(item => {
       const li = document.createElement('li');
-      li.textContent = ${item.date};
+      li.textContent = '${item.date}';
       li.style.cursor = 'pointer';
       li.onclick = () => {
         currentPage = item.index;
