@@ -165,3 +165,26 @@ button {
   transform: scale(1.05);
   box-shadow: 0 0 12px #ffe792, 0 0 24px #ffd66c;
 }
+
+/* Stylische Eingabefelder wie in nsc-style.css */
+input[type="text"], textarea {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  font-family: monospace;
+  font-size: 1rem;
+  background: #1b1b1b;
+  color: #ffeccc;
+  border: 1px solid #999;
+  border-radius: 6px;
+}
+input#searchChronik {
+  width: 80%;
+  max-width: 400px;
+  display: block;
+  margin: 1rem auto;
+  background: #111;
+  border: 1px solid #999;
+  color: #ffeccc;
+  text-align: center;
+}
