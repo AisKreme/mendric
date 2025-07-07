@@ -71,7 +71,7 @@ body {
       <button onclick="toggleEntryForm()" style="margin-bottom: 1rem;">🖋️ Neue Seite schreiben</button>
       <div id="entryForm" style="display: none;">
         <textarea id="noteInput" placeholder="Notiz eingeben..."></textarea>
-        <input type="text" id="chapterInput" placeholder="Kapitel / Ort / Abschnitt" />
+        <input type="text" id="kapitelInput" placeholder="Kapitel / Ort / Abschnitt" />
 <textarea id="flowInput" placeholder="Optionaler Fließtext..."></textarea>
 <input type="text" id="tagsInput" placeholder="Tags (kommagetrennt, z. B. Wald,Feuer,Rätsel)" />
         <button onclick="addEntry()">📜 Eintrag speichern</button>
@@ -88,7 +88,7 @@ body {
     
 window.onload = () => {
   const saved = localStorage.getItem('lastKapitel');
-  if (saved) document.getElementById('chapterInput').value = saved;
+  if (saved) document.getElementById("kapitelInput").value = saved;
 
       if (window.loadEntries) loadEntries();
     };
@@ -157,7 +157,7 @@ function renderFiltered(filtered) {
 function addEntry() {
   const note = document.getElementById('noteInput').value.trim();
   const flow = document.getElementById('flowInput').value.trim();
-  const kapitel = document.getElementById('chapterInput').value.trim();
+  const kapitel = document.getElementById("kapitelInput").value.trim();
   const tagsRaw = document.getElementById('tagsInput').value.trim();
   const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
   const date = new Date().toLocaleDateString('de-DE');
@@ -172,7 +172,7 @@ function addEntry() {
     .then(() => {
       document.getElementById('noteInput').value = '';
       document.getElementById('flowInput').value = '';
-      document.getElementById('chapterInput').value = '';
+      document.getElementById("kapitelInput").value = '';
       loadEntries();
     });
 }
