@@ -228,3 +228,8 @@ function renderTimelineMarkers() {
     markerBar.appendChild(marker);
   });
 }
+function toggleTOC() {
+  const toc = document.getElementById('toc');
+  if (!toc) return;
+  toc.style.display = (toc.style.display === 'none') ? 'block' : 'none';
+}
