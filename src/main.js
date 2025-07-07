@@ -6,6 +6,14 @@ let entries = [];
 let currentPage = 0;
 let allEntries = [];
 
+document.getElementById('btnPrev').addEventListener('click', () => {
+  prevPage();
+});
+
+document.getElementById('btnNext').addEventListener('click', () => {
+  nextPage();
+});
+
 export async function loadEntries() {
   try {
     entries = await fetchEntries();
