@@ -269,34 +269,36 @@ input#searchChronik {
 
 /*File Upload*/
 #dropzone {
+  display: none; /* standardmäßig versteckt, wird per JS gezeigt */
   border: 2px dashed #f5cb6b;
   padding: 1rem;
   margin-top: 1rem;
-  border-radius: 6px;
-  color: #ffe792;
+  text-align: center;
   cursor: pointer;
+  border-radius: 8px;
+  background-color: rgba(30, 30, 30, 0.95);
+  color: #ffe792;
+  font-weight: bold;
   user-select: none;
+  transition: border-color 0.3s ease;
 }
 
-#dropzone:focus {
-  outline: none;
+#dropzone.dragover {
+  border-color: #ffd86b;
+  background-color: rgba(40, 40, 40, 0.95);
+}
+
+#previewContainer img {
+  max-width: 150px;
+  border-radius: 6px;
+  cursor: pointer;
   box-shadow: 0 0 8px #f5cb6b;
+  transition: transform 0.3s ease;
 }
 
-#dropzone.visible {
-  display: block;
-  opacity: 1;
-}
-
-#dropzone input[type="file"] {
-  display: none;
-}
-
-#previewContainer {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+#previewContainer img:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 12px #ffd86b;
 }
 
 .preview-image {
