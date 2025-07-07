@@ -143,17 +143,10 @@ html.swipe-out {
 /* === Suche neben Titel - Stil-Anpassung === */
 .nsc-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  flex-wrap: wrap;
-}
-.nsc-header h2 {
-  margin: 0;
-  color: #fffbe8;
-  user-select: none;
 }
 .nsc-header .search-input {
-  display: inline-block;
   width: 220px;
   padding: 0.4rem 0.4rem;
   font-size: 1rem;
@@ -162,7 +155,6 @@ html.swipe-out {
   border: 1px solid #999;
   border-radius: 6px;
   text-align: left;
-  margin-left: 1rem;
   transition: box-shadow 0.3s ease;
 }
 .nsc-header .search-input:focus {
