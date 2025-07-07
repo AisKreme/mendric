@@ -7,42 +7,6 @@
   <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/166/166539.png">
   <link href="https://fonts.googleapis.com/css2?family=Cardo&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="src/book-style.css">
-<style>
-/* Optional swipe effect between pages */
-html.swipe-left {
-  animation: swipeLeft 0.4s forwards;
-}
-html.swipe-right {
-  animation: swipeRight 0.4s forwards;
-}
-@keyframes swipeLeft {
-  0% { transform: translateX(0); opacity: 1; }
-  100% { transform: translateX(-100%); opacity: 0; }
-}
-@keyframes swipeRight {
-  0% { transform: translateX(0); opacity: 1; }
-  100% { transform: translateX(100%); opacity: 0; }
-}
-</style>
-<style>
-html.swipe-out {
-  animation: smoothSwipeOut 0.8s ease-in forwards;
-  background-color: #000 !important;
-}
-@keyframes smoothSwipeOut {
-  0% { opacity: 1; transform: translateX(0); }
-  100% { opacity: 0; transform: translateX(-30px); }
-}
-</style>
-<style>
-body {
-  animation: fadeIn 1.2s ease-out;
-}
-@keyframes fadeIn {
-  0% { opacity: 0; transform: scale(1.05); }
-  100% { opacity: 1; transform: scale(1); }
-}
-</style>
 </head>
 <body>
 
@@ -51,66 +15,47 @@ body {
   <a href="nscs.html" class="swipe-link">🧙‍♂️ NSC-Verzeichnis</a>
 </nav>
 
-
-  <div id="chronikApp">
-    <div id="bookContainer" class="book-container">
-      <div id="toc-toggle" onclick="toggleTOC()">📖</div>
-      <input type="text" id="searchChronik" placeholder="🔍 Suche in Einträgen..." style="width: 100%; max-width: 300px; margin-bottom: 1rem; padding: 0.5rem;" />
-
-<div id="bookPages"></div>
-
-      <div id="toc"></div>
-      <div class="book-nav">
-        <button onclick="prevPage()">⬅️</button>
-        <span id="pageIndicator"></span>
-        <button onclick="nextPage()">➡️</button>
-      </div>
-    </div>
-
-    <div class="container">
-      <button onclick="toggleEntryForm()" style="margin-bottom: 1rem;">🖋️ Neue Seite schreiben</button>
-      <div id="entryForm" style="display: none;">
-        <textarea id="noteInput" placeholder="Notiz eingeben..."></textarea>
-        <input type="text" id="kapitelInput" placeholder="Kapitel / Ort / Abschnitt" />
-<textarea id="flowInput" placeholder="Optionaler Fließtext..."></textarea>
-<input type="text" id="tagsInput" placeholder="Tags (kommagetrennt, z. B. Wald,Feuer,Rätsel)" />
-        <button onclick="addEntry()">📜 Eintrag speichern</button>
-      </div>
+<div id="chronikApp">
+  <div id="bookContainer" class="book-container">
+    <div id="toc-toggle" onclick="toggleTOC()">📖</div>
+    <input type="text" id="searchChronik" placeholder="🔍 Suche in Einträgen..." />
+    <div id="bookPages"></div>
+    <div id="toc"></div>
+    <div class="book-nav">
+      <button onclick="prevPage()">⬅️</button>
+      <span id="pageIndicator"></span>
+      <button onclick="nextPage()">➡️</button>
     </div>
   </div>
 
-  <script src="src/main.js"></script>
-  <script>
-    function toggleEntryFormfunction () {
-      const form = document.getElementById('entryForm');
-      form.style.display = form.style.display === 'none' ? 'block' : 'none';
-    }
-    
+  <div class="container">
+    <button onclick="toggleEntryForm()">🖋️ Neue Seite schreiben</button>
+    <div id="entryForm" style="display: none;">
+      <textarea id="noteInput" placeholder="Notiz eingeben..."></textarea>
+      <input type="text" id="kapitelInput" placeholder="Kapitel / Ort / Abschnitt" />
+      <textarea id="flowInput" placeholder="Optionaler Fließtext..."></textarea>
+      <input type="text" id="tagsInput" placeholder="Tags (kommagetrennt, z. B. Wald,Feuer,Rätsel)" />
+      <button onclick="addEntry()">📜 Eintrag speichern</button>
+    </div>
+  </div>
+</div>
+
+<h2 style="text-align:center; margin-top: 3rem;">🗓️ Zeitleiste</h2>
+<div id="timelineMarkers" style="display:flex;gap:0.5rem;margin:2rem auto;justify-content:center;flex-wrap:wrap;max-width:90%;"></div>
+
+<script src="src/main.js"></script>
+<script>
+function toggleEntryForm() {
+  const form = document.getElementById('entryForm');
+  form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
+
 window.onload = () => {
   const saved = localStorage.getItem('lastKapitel');
   if (saved) document.getElementById("kapitelInput").value = saved;
+  if (window.loadEntries) loadEntries();
+};
 
-      if (window.loadEntries) loadEntries();
-    };
-  </script>
-<script>
-const links = document.querySelectorAll('a[href*="nscs.html"]');
-links.forEach(link => {
-  link.addEventListener('click', () => {
-    document.documentElement.classList.add('swipe-left');
-  });
-});
-</script>
-<script>
-function triggerSwipefunction () {
-  document.documentElement.classList.add('swipe-out');
-  setTimeout(() => {
-    window.location.href = 'nscs.html';
-  }, 800);
-}
-</script>
-
-<script>
 document.querySelectorAll('a.swipe-link').forEach(link => {
   link.addEventListener('click', e => {
     e.preventDefault();
@@ -121,207 +66,5 @@ document.querySelectorAll('a.swipe-link').forEach(link => {
   });
 });
 </script>
-
-
-</div>
-
-<script>
-let allEntries = [];
-
-document.getElementById('searchChronik').addEventListener('input', () => {
-  const query = document.getElementById('searchChronik').value.toLowerCase();
-  const filtered = allEntries.filter(entry =>
-    entry.note.toLowerCase().includes(query) ||
-    (entry.flow && entry.flow.toLowerCase().includes(query)) ||
-    (entry.chapter && entry.chapter.toLowerCase().includes(query))
-  renderFiltered(filtered);
-});
-
-
-function highlightMatches(text, query) {
-  if (!query) return text;
-  const re = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
-  return text.replace(re, '<mark>$1</mark>');
-}
-
-function renderFiltered(filtered) {
-  entries = filtered;
-  currentPage = 0;
-  renderPage(currentPage);
-}
-
-
-function addEntryfunction () {
-  const note = document.getElementById('noteInput').value.trim();
-  const flow = document.getElementById('flowInput').value.trim();
-  const kapitel = document.getElementById("kapitelInput").value.trim();
-  const tagsRaw = document.getElementById('tagsInput').value.trim();
-  const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
-  const date = new Date().toLocaleDateString('de-DE');
-  if (!note) return alert('Notiz erforderlich');
-
-  fetch(API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ note, flow, kapitel, tags, date })
-  })
-    .then(res => res.json())
-    .then(() => {
-      document.getElementById('noteInput').value = '';
-      document.getElementById('flowInput').value = '';
-      document.getElementById("kapitelInput").value = '';
-      loadEntries();
-    });
-  }
-  const sortedDates = Object.entries(uniqueDates).sort(([a], [b]) => {
-    const parseDate = d => {
-      const [day, month, year] = d.split('.');
-      return new Date(`${year}-${month}-${day}`);
-    };
-    return parseDate(a) - parseDate(b);
-  });
-
-  sortedDates.forEach(([date, index]) => {
-    const marker = document.createElement('button');
-    marker.textContent = date;
-    marker.title = allEntries[index].kapitel || '';
-    marker.style.padding = '0.3rem 0.6rem';
-    marker.style.borderRadius = '6px';
-    marker.style.border = '1px solid #999';
-    marker.style.background = '#2c2b29';
-    marker.style.color = '#fffbe8';
-    marker.style.cursor = 'pointer';
-    marker.style.margin = '0.2rem';
-    marker.onclick = () => {
-      currentPage = index;
-      renderPage(index);
-    };
-    markerBar.appendChild(marker);
-  });
-}
-  const sortedDates = Object.entries(uniqueDates).sort(([a], [b]) => {
-    const [ta, tb] = [new Date(a.split('.').reverse().join('-')), new Date(b.split('.').reverse().join('-'))];
-    return ta - tb;
-  });
-
-  sortedDates.forEach(([date, index]) => {
-    const marker = document.createElement('button');
-    marker.textContent = date;
-    marker.title = allEntries[index].kapitel || '';
-    marker.style.padding = '0.3rem 0.6rem';
-    marker.style.borderRadius = '6px';
-    marker.style.border = '1px solid #999';
-    marker.style.background = '#2c2b29';
-    marker.style.color = '#fffbe8';
-    marker.style.cursor = 'pointer';
-    marker.style.margin = '0.2rem';
-    marker.onclick = () => {
-      currentPage = index;
-      renderPage(index);
-    };
-    markerBar.appendChild(marker);
-  });
-}
-
-;
-    markerBar.appendChild(marker);
-  });
-}
-
-
-async function loadEntriesfunction () {
-  const res = await fetch(API_URL);
-  entries = await res.json();
-  allEntries = [...entries];
-  if (entries.length > 0) currentPage = entries.length - 1;
-  renderPage(currentPage);
-  renderTOC();
-  renderTimelineMarkers();
-}
-</script>
-
-
-
-
-
-
-
-<h2 style="text-align:center; margin-top: 3rem;">🗓️ Zeitleiste</h2>
-
-
-
-<h2 style="text-align:center; margin-top: 3rem;">🗓️ Zeitleiste</h2>
-<div id="timelineMarkers" style="display:flex;gap:0.5rem;margin:2rem auto;justify-content:center;flex-wrap:wrap;max-width:90%;"></div>
-
 </body>
-
 </html>
-<script>
-function () {
-  const markerBar = document.getElementById('timelineMarkers');
-  if (!markerBar) return;
-  markerBar.innerHTML = '';
-
-  const uniqueDates = {};
-  allEntries.forEach((entry, index) => {
-    if (!uniqueDates[entry.date]) {
-      uniqueDates[entry.date] = index;
-  }
-  const sortedDates = Object.entries(uniqueDates).sort(([a], [b]) => {
-    const parseDate = d => {
-      const [day, month, year] = d.split('.');
-      return new Date(`${year}-${month}-${day}`);
-    };
-    return parseDate(a) - parseDate(b);
-  });
-
-  sortedDates.forEach(([date, index]) => {
-    const marker = document.createElement('button');
-    marker.textContent = date;
-    marker.title = allEntries[index].kapitel || '';
-    marker.style.padding = '0.3rem 0.6rem';
-    marker.style.borderRadius = '6px';
-    marker.style.border = '1px solid #999';
-    marker.style.background = '#2c2b29';
-    marker.style.color = '#fffbe8';
-    marker.style.cursor = 'pointer';
-    marker.style.margin = '0.2rem';
-    marker.onclick = () => {
-      currentPage = index;
-      renderPage(index);
-    };
-    markerBar.appendChild(marker);
-  });
-}
-  const sortedDates = Object.entries(uniqueDates).sort(([a], [b]) => {
-    const [ta, tb] = [new Date(a.split('.').reverse().join('-')), new Date(b.split('.').reverse().join('-'))];
-    return ta - tb;
-  });
-
-  sortedDates.forEach(([date, index]) => {
-    const marker = document.createElement('button');
-    marker.textContent = date;
-    marker.title = allEntries[index].kapitel || '';
-    marker.style.padding = '0.3rem 0.6rem';
-    marker.style.borderRadius = '6px';
-    marker.style.border = '1px solid #999';
-    marker.style.background = '#2c2b29';
-    marker.style.color = '#fffbe8';
-    marker.style.cursor = 'pointer';
-    marker.style.margin = '0.2rem';
-    marker.onclick = () => {
-      currentPage = index;
-      renderPage(index);
-    };
-    markerBar.appendChild(marker);
-  });
-}
-
-;
-    markerBar.appendChild(marker);
-  });
-}
-
-
-async 
-</script>
