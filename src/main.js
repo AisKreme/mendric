@@ -4,6 +4,13 @@ import { editEntry } from './edit.js';
 
 const supabase = window.supabase;
 
+// Beispiel: Daten abrufen
+async function fetchEntries() {
+  let { data, error } = await supabase.from('chronik_entries').select('*');
+  if (error) throw error;
+  return data;
+}
+
 let entries = [];
 let currentPage = 0;
 let allEntries = [];
