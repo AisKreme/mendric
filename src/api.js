@@ -1,3 +1,12 @@
+// src/api.js
+import { supabase } from './supabaseClient.js';
+
+export async function fetchEntries() {
+  let { data, error } = await supabase.from('chronik_entries').select('*');
+  if (error) throw error;
+  return data;
+}
+
 const API_URL = 'https://mendric.vercel.app/api/chronik';
 
 export async function fetchEntries() {
