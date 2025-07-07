@@ -28,6 +28,27 @@ nav a:hover {
   cursor: pointer;
 }
 
+.nsc-header {
+  display: flex;
+  align-items: center; /* Vertikale Zentrierung */
+  gap: 1rem; /* Abstand zwischen Suchleiste und Titel */
+  margin-bottom: 1rem;
+  flex-wrap: wrap; /* Für kleine Bildschirme Zeilenumbruch */
+}
+
+.nsc-header input.search-input {
+  order: 1; /* Suchfeld zuerst */
+  flex: 1 1 220px; /* Breite anpassbar, Basisbreite 220px */
+  max-width: 220px;
+}
+
+.nsc-header h2 {
+  order: 2; /* Titel nach Suchfeld */
+  margin: 0;
+  color: #fffbe8;
+  white-space: nowrap; /* Zeilenumbruch verhindern */
+}
+
 /* === Überschrift === */
 h1 {
   text-align: center;
