@@ -62,3 +62,15 @@ export function filterNSCs() {
 
 document.getElementById('searchField').addEventListener('input', filterNSCs);
 loadNSCs();
+
+// Button-Elemente holen
+const toggleFormBtn = document.getElementById('toggleFormBtn');
+const saveNSCBtn = document.getElementById('saveNSCBtn');
+
+toggleFormBtn.addEventListener('click', () => {
+  toggleNSCForm();
+});
+
+saveNSCBtn.addEventListener('click', () => {
+  saveNewNSC();
+});
