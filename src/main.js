@@ -2,42 +2,25 @@ import { fetchEntries, saveEntry, deleteEntryById } from './api.js';
 import { renderPage, renderTOC, renderTimelineMarkers } from './render.js';
 import { editEntry } from './edit.js';
 
-const supabase = window.supabase;
-
-// Beispiel: Daten abrufen
-async function fetchEntries() {
-  let { data, error } = await supabase.from('chronik_entries').select('*');
-  if (error) throw error;
-  return data;
-}
+const supabase = window.supabase; // optional, wenn du in api.js das SDK nutzt, hier eigentlich nicht nötig
 
 let entries = [];
 let currentPage = 0;
 let allEntries = [];
 
 window.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('btnPrev').addEventListener('click', () => {
-    prevPage();
-  });
-
-  document.getElementById('btnNext').addEventListener('click', () => {
-    nextPage();
-  });
-
+  document.getElementById('btnPrev').addEventListener('click', prevPage);
+  document.getElementById('btnNext').addEventListener('click', nextPage);
   document.getElementById('toc-toggle').addEventListener('click', () => {
     const toc = document.getElementById('toc');
     if (!toc) return;
     toc.classList.toggle('open');
   });
-
   document.getElementById('toggleEntryBtn').addEventListener('click', () => {
     const form = document.getElementById('entryForm');
     form.style.display = form.style.display === 'none' ? 'block' : 'none';
   });
-
-  document.getElementById('saveEntryBtn').addEventListener('click', () => {
-    addEntry();
-  });
+  document.getElementById('saveEntryBtn').addEventListener('click', addEntry);
 });
 
 export async function loadEntries() {
@@ -69,12 +52,8 @@ function onEdit(entryDiv, entry) {
 function onDelete(id) {
   if (!confirm('Diesen Eintrag wirklich löschen?')) return;
   deleteEntryById(id)
-    .then(() => {
-      loadEntries();
-    })
-    .catch(e => {
-      alert('Fehler beim Löschen: ' + e.message);
-    });
+    .then(loadEntries)
+    .catch(e => alert('Fehler beim Löschen: ' + e.message));
 }
 
 function onSelectPage(index) {
@@ -120,7 +99,7 @@ export function addEntry() {
   const kapitel = document.getElementById('kapitelInput').value.trim();
   const tagsRaw = document.getElementById('tagsInput').value.trim();
   const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
-  const images = window.uploadedImageURLs || []; // Bilder-URLs aus Upload
+  const images = window.uploadedImageURLs || []; // Bild-URLs aus Upload
   const date = new Date().toLocaleDateString('de-DE');
 
   if (kapitel) localStorage.setItem('lastKapitel', kapitel);
@@ -136,9 +115,7 @@ export function addEntry() {
       clearPreviews(); // Dropzone-Vorschau löschen
       loadEntries();
     })
-    .catch(e => {
-      alert('Fehler beim Speichern: ' + e.message);
-    });
+    .catch(e => alert('Fehler beim Speichern: ' + e.message));
 }
 
 export function renderFiltered(filtered) {
