@@ -1,8 +1,8 @@
 // src/render.js
 
 /**
- * Rendert eine einzelne Eintragsseite mit allen Buttons (Vorlesen, Bearbeiten, Löschen) und Tags.
- * @param {Object} entry - Eintragsobjekt mit {note, flow, kapitel, tags, date, id}
+ * Rendert eine einzelne Eintragsseite mit allen Buttons (Vorlesen, Bearbeiten, Löschen), Tags und Bildanzeige.
+ * @param {Object} entry - Eintragsobjekt mit {note, flow, kapitel, tags, date, id, images}
  * @param {number} index - Aktuelle Seitenzahl (0-basiert)
  * @param {number} total - Gesamtzahl der Einträge
  * @param {Function} onEdit - Callback für Bearbeiten (entryDiv, entry)
@@ -30,26 +30,24 @@ export function renderPage(entry, index, total, onEdit, onDelete, onSpeakNote, o
   title.textContent = `📜 ${entry.date}`;
   div.appendChild(title);
 
-// Notiz mit Hervorhebung im Stil des Eingabefeldes
-const note = document.createElement('div');
-note.className = 'note-text';
-note.innerHTML = highlightMatches(entry.note, searchQuery);
-div.appendChild(note);
+  // Notiz mit Hervorhebung (style Klasse für Eingabefeld-Optik)
+  const note = document.createElement('div');
+  note.className = 'note-text';
+  note.innerHTML = highlightMatches(entry.note, searchQuery);
+  div.appendChild(note);
 
-// Fließtext als Details-Summary mit Hervorhebung und Eingabefeld-Stil
-const flow = document.createElement('details');
-const summary = document.createElement('summary');
-summary.textContent = 'Fließtext anzeigen';
+  // Fließtext als Details-Summary mit Hervorhebung und Eingabefeld-Style
+  const flow = document.createElement('details');
+  const summary = document.createElement('summary');
+  summary.textContent = 'Fließtext anzeigen';
+  const pre = document.createElement('pre');
+  pre.className = 'flow-text';
+  pre.innerHTML = highlightMatches(entry.flow || '(kein Fließtext)', searchQuery);
+  flow.appendChild(summary);
+  flow.appendChild(pre);
+  div.appendChild(flow);
 
-const pre = document.createElement('pre');
-pre.className = 'flow-text';
-pre.innerHTML = highlightMatches(entry.flow || '(kein Fließtext)', searchQuery);
-
-flow.appendChild(summary);
-flow.appendChild(pre);
-div.appendChild(flow);
-
-  // Buttons erzeugen mit Styling-Klassen
+  // Buttons mit Styling-Klassen
   const speakNoteBtn = document.createElement('button');
   speakNoteBtn.className = 'styled-button';
   speakNoteBtn.textContent = '🔊 Notiz';
@@ -65,40 +63,27 @@ div.appendChild(flow);
   const editBtn = document.createElement('button');
   editBtn.className = 'styled-button action-button';
   editBtn.textContent = '✏️';
+  editBtn.title = 'Bearbeiten';
   editBtn.onclick = () => onEdit(div, entry);
   div.appendChild(editBtn);
 
   const delBtn = document.createElement('button');
   delBtn.className = 'styled-button action-button';
   delBtn.textContent = '🗑️';
+  delBtn.title = 'Löschen';
   delBtn.onclick = () => onDelete(entry.id);
   div.appendChild(delBtn);
 
-function renderPage(index) {
-  const book = document.getElementById('bookPages');
-  book.innerHTML = '';
-
-  if (!entries.length) {
-    book.innerHTML = '<p>Keine Einträge vorhanden.</p>';
-    return;
-  }
-
-  currentPage = Math.max(0, Math.min(index, entries.length - 1));
-  const entry = entries[currentPage];
-  const div = document.createElement('div');
-  div.className = 'entry';
-
-  // ... deine anderen Elemente (Titel, Notiz, Flow, Buttons) hier ...
-
-  // Button zum Anzeigen der Bilder (falls Bilder vorhanden)
+  // Bilder anzeigen mit Toggle-Button
   if (entry.images?.length) {
     const toggleBtn = document.createElement('button');
+    toggleBtn.className = 'styled-button';
     toggleBtn.textContent = '🖼️ Bilder anzeigen';
     toggleBtn.style.marginTop = '0.5rem';
 
     const imgContainer = document.createElement('div');
     imgContainer.style.marginTop = '1rem';
-    imgContainer.style.display = 'none'; // Start: versteckt
+    imgContainer.style.display = 'none'; // Start versteckt
 
     entry.images.forEach(url => {
       const img = document.createElement('img');
@@ -125,15 +110,15 @@ function renderPage(index) {
     div.appendChild(imgContainer);
   }
 
-  book.appendChild(div);
-}
-
   // Tags anzeigen, falls vorhanden
   if (entry.tags?.length) {
     const tagWrap = document.createElement('div');
     tagWrap.style.marginTop = '0.5rem';
     tagWrap.innerHTML = entry.tags
-      .map(tag => `<span style="background:#d8b977;color:#000;border-radius:4px;padding:0.2rem 0.4rem;margin-right:0.3rem;font-size:0.9rem;">#${tag}</span>`)
+      .map(
+        tag =>
+          `<span style="background:#d8b977;color:#000;border-radius:4px;padding:0.2rem 0.4rem;margin-right:0.3rem;font-size:0.9rem;">#${tag}</span>`
+      )
       .join(' ');
     div.appendChild(tagWrap);
   }
