@@ -1,11 +1,11 @@
 // src/upload.js
-
-const supabase = window.supabase; // Greift auf das globale Supabase-Objekt zu
+import { supabase } from './supabaseClient.js'
 
 const toggleDropzoneBtn = document.getElementById('toggleDropzoneBtn');
 const dropzone = document.getElementById('dropzone');
 const fileInput = document.getElementById('fileInput');
 const previewContainer = document.getElementById('previewContainer');
+
 
 // Toggle Dropzone Sichtbarkeit
 toggleDropzoneBtn.addEventListener('click', () => {
@@ -86,6 +86,9 @@ async function uploadFiles(files) {
 async function handleFiles(files) {
   clearPreviews();
   const urls = await uploadFiles(files);
+  if (urls.length > 0) {
+    alert(`${urls.length} Bild(er) erfolgreich hochgeladen.`);
+  }
   urls.forEach(url => {
     const img = document.createElement('img');
     img.src = url;
@@ -94,7 +97,7 @@ async function handleFiles(files) {
     img.onclick = () => window.open(url, '_blank');
     previewContainer.appendChild(img);
   });
-  window.uploadedImageURLs = urls; // Globale Variable für Bild-URLs
+  window.uploadedImageURLs = urls; // Speichere URLs global für Eintrag
 }
 
 // Alte Vorschaubilder entfernen

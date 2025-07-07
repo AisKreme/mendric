@@ -23,12 +23,12 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'POST') {
-    const { note, flow, kapitel, tags, date } = req.body;
+    const { note, flow, kapitel, tags, date, images } = req.body;
     if (!note || !date) return res.status(400).json({ error: 'note und date erforderlich' });
 
     const { error } = await supabase
       .from('chronik_entries')
-      .insert([{ note, flow, kapitel, tags, date }]);
+      .insert([{ note, flow, kapitel, tags, date, images }]);
 
     if (error) return res.status(500).json({ error: error.message });
     return res.status(200).json({ success: true });
