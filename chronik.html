@@ -122,9 +122,7 @@ document.querySelectorAll('a.swipe-link').forEach(link => {
 });
 </script>
 
-<div id="timeline" style="margin-top:3rem; text-align:center;">
-  <h3>🗓️ Zeitleiste (in Arbeit)</h3>
-  <div id="timelineBar" style="height: 6px; background: #f0c66d; margin: 1rem auto; max-width: 90%; position: relative;"></div>
+
 </div>
 
 <script>
@@ -136,7 +134,6 @@ document.getElementById('searchChronik').addEventListener('input', () => {
     entry.note.toLowerCase().includes(query) ||
     (entry.flow && entry.flow.toLowerCase().includes(query)) ||
     (entry.chapter && entry.chapter.toLowerCase().includes(query))
-  );
   renderFiltered(filtered);
 });
 
@@ -176,8 +173,6 @@ function addEntryfunction () {
       loadEntries();
     });
   }
-);
-
   const sortedDates = Object.entries(uniqueDates).sort(([a], [b]) => {
     const parseDate = d => {
       const [day, month, year] = d.split('.');
@@ -244,10 +239,7 @@ async function loadEntriesfunction () {
   renderTimelineMarkers();
 }
 </script>
-<div id="timeline" style="margin-top:3rem; text-align:center;">
-  <h3>🗓️ Zeitleiste</h3>
-  
-</div>
+
 
 
 
@@ -267,8 +259,6 @@ function () {
     if (!uniqueDates[entry.date]) {
       uniqueDates[entry.date] = index;
   }
-);
-
   const sortedDates = Object.entries(uniqueDates).sort(([a], [b]) => {
     const parseDate = d => {
       const [day, month, year] = d.split('.');
