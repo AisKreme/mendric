@@ -1,6 +1,24 @@
 {
   "type": "module",
   "dependencies": {
-    "@supabase/supabase-js": "^2.39.5"
-  }
+    "@supabase/supabase-js": "^2.50.3"
+  },
+  "name": "mendric",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AisKreme/mendric.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AisKreme/mendric/issues"
+  },
+  "homepage": "https://github.com/AisKreme/mendric#readme"
 }
