@@ -184,7 +184,8 @@ button:hover {
 }
 
 .entry button {
-  margin-right: 0.7rem;
+  margin-right: 0.8rem;
+  margin-top: 0.5rem;
   margin-bottom: 0.5rem; /* sorgt auch für etwas vertikalen Abstand, falls Buttons umbrechen */
   background: #4a3b0c;
   color: white;
