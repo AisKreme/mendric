@@ -6,11 +6,14 @@ const supabase = createClient(
 );
 
 export default async function handler(req, res) {
+  // CORS-Header setzen
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end(); // Preflight-Anfrage bestätigen
+  }
 
   console.log('Incoming request:', req.method, req.body);
 
@@ -30,7 +33,9 @@ export default async function handler(req, res) {
 
   if (req.method === 'POST') {
     const { note, flow, kapitel, tags, date } = req.body;
-    if (!note || !date) return res.status(400).json({ error: 'note und date erforderlich' });
+    if (!note || !date) {
+      return res.status(400).json({ error: 'note und date erforderlich' });
+    }
 
     console.log('POST body:', { note, flow, kapitel, tags, date });
 
@@ -48,7 +53,9 @@ export default async function handler(req, res) {
 
   if (req.method === 'DELETE') {
     const { id } = req.body;
-    if (!id) return res.status(400).json({ error: 'id erforderlich' });
+    if (!id) {
+      return res.status(400).json({ error: 'id erforderlich' });
+    }
 
     const { error } = await supabase
       .from('chronik_entries')
