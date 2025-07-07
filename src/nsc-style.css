@@ -145,7 +145,6 @@ html.swipe-out {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
   flex-wrap: wrap;
 }
 .nsc-header h2 {
@@ -156,7 +155,7 @@ html.swipe-out {
 .nsc-header .search-input {
   display: inline-block;
   width: 220px;
-  padding: 0.4rem 0.6rem;
+  padding: 0.4rem 0.4rem;
   font-size: 1rem;
   background: #111;
   color: #ffeccc;
