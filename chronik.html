@@ -182,10 +182,23 @@ function renderTimelineMarkers() {
   const markerBar = document.getElementById('timelineMarkers');
   if (!markerBar) return;
   markerBar.innerHTML = '';
-  allEntries.forEach((entry, i) => {
+
+  const uniqueDates = {};
+  allEntries.forEach((entry, index) => {
+    if (!uniqueDates[entry.date]) {
+      uniqueDates[entry.date] = index;
+    }
+  });
+
+  const sortedDates = Object.entries(uniqueDates).sort(([a], [b]) => {
+    const [ta, tb] = [new Date(a.split('.').reverse().join('-')), new Date(b.split('.').reverse().join('-'))];
+    return ta - tb;
+  });
+
+  sortedDates.forEach(([date, index]) => {
     const marker = document.createElement('button');
-    marker.textContent = entry.date;
-    marker.title = entry.kapitel || '';
+    marker.textContent = date;
+    marker.title = allEntries[index].kapitel || '';
     marker.style.padding = '0.3rem 0.6rem';
     marker.style.borderRadius = '6px';
     marker.style.border = '1px solid #999';
@@ -194,9 +207,14 @@ function renderTimelineMarkers() {
     marker.style.cursor = 'pointer';
     marker.style.margin = '0.2rem';
     marker.onclick = () => {
-      currentPage = i;
-      renderPage(i);
+      currentPage = index;
+      renderPage(index);
     };
+    markerBar.appendChild(marker);
+  });
+}
+
+;
     markerBar.appendChild(marker);
   });
 }
