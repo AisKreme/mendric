@@ -1,4 +1,5 @@
 const API_URL = 'https://mendric.vercel.app/api/chronik';
+const supabase = window.supabase;
 
 export async function fetchEntries() {
   const res = await fetch(API_URL);
