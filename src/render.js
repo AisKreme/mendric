@@ -48,25 +48,25 @@ export function renderPage(entry, index, total, onEdit, onDelete, onSpeakNote, o
   // Buttons erzeugen mit Styling-Klassen
   const speakNoteBtn = document.createElement('button');
   speakNoteBtn.className = 'styled-button';
-  speakNoteBtn.textContent = '🔊 Notiz';
+  speakNoteBtn.textContent = '🔊 Notiz action-button';
   speakNoteBtn.onclick = () => onSpeakNote(entry.note);
   div.appendChild(speakNoteBtn);
 
   const speakFlowBtn = document.createElement('button');
-  speakFlowBtn.className = 'styled-button';
+  speakFlowBtn.className = 'styled-button action-button';
   speakFlowBtn.textContent = '🔊 Fließtext';
   speakFlowBtn.onclick = () => onSpeakFlow(entry.flow || '');
   div.appendChild(speakFlowBtn);
 
   const editBtn = document.createElement('button');
   editBtn.className = 'styled-button action-button';
-  editBtn.textContent = '📝 Bearbeiten';
+  editBtn.textContent = '✏️';
   editBtn.onclick = () => onEdit(div, entry);
   div.appendChild(editBtn);
 
   const delBtn = document.createElement('button');
   delBtn.className = 'styled-button action-button';
-  delBtn.textContent = '🗑️ Löschen';
+  delBtn.textContent = '🗑️';
   delBtn.onclick = () => onDelete(entry.id);
   div.appendChild(delBtn);
 
