@@ -74,7 +74,7 @@ function renderPage(index) {
   if (entry.tags?.length) {
     const tagWrap = document.createElement('div');
     tagWrap.style.marginTop = '0.5rem';
-    tagWrap.innerHTML = entry.tags.map(tag => <span style="background:#d8b977;color:#000;border-radius:4px;padding:0.2rem 0.4rem;margin-right:0.3rem;font-size:0.9rem;">#${tag}</span>).join(' ');
+ tagWrap.innerHTML = entry.tags.map(tag => `<span style="background:#d8b977;color:#000;border-radius:4px;padding:0.2rem 0.4rem;margin-right:0.3rem;font-size:0.9rem;">#${tag}</span>`).join(' ');
     div.appendChild(tagWrap);
   }
 
