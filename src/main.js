@@ -18,7 +18,7 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('toc-toggle').addEventListener('click', () => {
     const toc = document.getElementById('toc');
     if (!toc) return;
-toc.classList.toggle('open');
+    toc.classList.toggle('open');
   });
 
   document.getElementById('toggleEntryBtn').addEventListener('click', () => {
@@ -36,7 +36,16 @@ export async function loadEntries() {
     entries = await fetchEntries();
     allEntries = [...entries];
     if (entries.length > 0) currentPage = entries.length - 1;
-    renderPage(entries[currentPage], currentPage, entries.length, onEdit, onDelete, speakText, speakText, document.getElementById("searchChronik").value);
+    renderPage(
+      entries[currentPage],
+      currentPage,
+      entries.length,
+      onEdit,
+      onDelete,
+      speakText,
+      speakText,
+      document.getElementById('searchChronik').value
+    );
     renderTOC(allEntries, onSelectPage);
     renderTimelineMarkers(allEntries, onSelectPage);
   } catch (e) {
@@ -49,17 +58,28 @@ function onEdit(entryDiv, entry) {
 }
 
 function onDelete(id) {
-  if (!confirm("Diesen Eintrag wirklich löschen?")) return;
-  deleteEntryById(id).then(() => {
-    loadEntries();
-  }).catch(e => {
-    alert('Fehler beim Löschen: ' + e.message);
-  });
+  if (!confirm('Diesen Eintrag wirklich löschen?')) return;
+  deleteEntryById(id)
+    .then(() => {
+      loadEntries();
+    })
+    .catch(e => {
+      alert('Fehler beim Löschen: ' + e.message);
+    });
 }
 
 function onSelectPage(index) {
   currentPage = index;
-  renderPage(entries[currentPage], currentPage, entries.length, onEdit, onDelete, speakText, speakText, document.getElementById("searchChronik").value);
+  renderPage(
+    entries[currentPage],
+    currentPage,
+    entries.length,
+    onEdit,
+    onDelete,
+    speakText,
+    speakText,
+    document.getElementById('searchChronik').value
+  );
 }
 
 export function prevPage() {
@@ -86,27 +106,28 @@ function speakText(text) {
 }
 
 export function addEntry() {
-  const note = document.getElementById("noteInput").value.trim();
-  const flow = document.getElementById("flowInput").value.trim();
-  const kapitel = document.getElementById("kapitelInput").value.trim();
-  const tagsRaw = document.getElementById("tagsInput").value.trim();
+  const note = document.getElementById('noteInput').value.trim();
+  const flow = document.getElementById('flowInput').value.trim();
+  const kapitel = document.getElementById('kapitelInput').value.trim();
+  const tagsRaw = document.getElementById('tagsInput').value.trim();
   const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
-  const images = window.uploadedImageURLs || [];  // hier die URLs aus Upload-Zone
-  const date = new Date().toLocaleDateString("de-DE");
+  const images = window.uploadedImageURLs || []; // Bilder-URLs aus Upload
+  const date = new Date().toLocaleDateString('de-DE');
 
-  if (kapitel) localStorage.setItem("lastKapitel", kapitel);
-  if (!note) return alert("Notiz erforderlich");
+  if (kapitel) localStorage.setItem('lastKapitel', kapitel);
+  if (!note) return alert('Notiz erforderlich');
 
-  saveEntry({ note, flow, kapitel, tags, images, date }) // images mit senden
+  saveEntry({ note, flow, kapitel, tags, images, date })
     .then(() => {
-      document.getElementById("noteInput").value = '';
-      document.getElementById("flowInput").value = '';
-      document.getElementById("kapitelInput").value = '';
-      document.getElementById("tagsInput").value = '';
-      window.uploadedImageURLs = []; // zurücksetzen
-      clearPreviews(); // Dropzone leeren
+      document.getElementById('noteInput').value = '';
+      document.getElementById('flowInput').value = '';
+      document.getElementById('kapitelInput').value = '';
+      document.getElementById('tagsInput').value = '';
+      window.uploadedImageURLs = []; // Upload-Zwischenspeicher leeren
+      clearPreviews(); // Dropzone-Vorschau löschen
       loadEntries();
-    }).catch(e => {
+    })
+    .catch(e => {
       alert('Fehler beim Speichern: ' + e.message);
     });
 }
@@ -118,8 +139,8 @@ export function renderFiltered(filtered) {
 }
 
 window.onload = () => {
-  document.getElementById("searchChronik").addEventListener("input", () => {
-    const query = document.getElementById("searchChronik").value.toLowerCase();
+  document.getElementById('searchChronik').addEventListener('input', () => {
+    const query = document.getElementById('searchChronik').value.toLowerCase();
     const filtered = allEntries.filter(entry =>
       entry.note.toLowerCase().includes(query) ||
       (entry.flow && entry.flow.toLowerCase().includes(query)) ||
