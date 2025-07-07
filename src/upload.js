@@ -1,13 +1,20 @@
 // src/upload.js
-import { supabase } from './supabaseClient.js'
+import { supabase } from './supabaseClient.js';
+import { updateEntry } from './api.js'; // API-Funktion zum Aktualisieren eines Eintrags (Bilder hinzufügen)
 
 const toggleDropzoneBtn = document.getElementById('toggleDropzoneBtn');
 const dropzone = document.getElementById('dropzone');
 const fileInput = document.getElementById('fileInput');
 const previewContainer = document.getElementById('previewContainer');
 
+let currentEntryId = null; // ID des aktuell angezeigten Eintrags, von außen setzen
 
-// Toggle Dropzone Sichtbarkeit
+// Funktion, um die aktuelle Eintrags-ID zu setzen (wird von main.js aufgerufen)
+export function setCurrentEntryId(id) {
+  currentEntryId = id;
+}
+
+// Toggle der Sichtbarkeit der Dropzone
 toggleDropzoneBtn.addEventListener('click', () => {
   if (dropzone.style.display === 'block') {
     dropzone.style.display = 'none';
@@ -20,10 +27,10 @@ toggleDropzoneBtn.addEventListener('click', () => {
   }
 });
 
-// Klick auf Dropzone öffnet Dateiauswahl
+// Klick auf Dropzone öffnet Dateiauswahl-Dialog
 dropzone.addEventListener('click', () => fileInput.click());
 
-// Drag & Drop Effekte
+// Drag & Drop Effekte für Dropzone
 dropzone.addEventListener('dragover', e => {
   e.preventDefault();
   dropzone.classList.add('dragover');
@@ -38,18 +45,18 @@ dropzone.addEventListener('drop', e => {
   handleFiles(e.dataTransfer.files);
 });
 
-// Datei-Auswahl
+// Datei-Auswahl per Dialog
 fileInput.addEventListener('change', () => {
   handleFiles(fileInput.files);
 });
 
-// Upload-Funktion: Datei an Supabase Storage senden
+// Upload einer einzelnen Datei zu Supabase Storage
 async function uploadFile(file) {
   const fileExt = file.name.split('.').pop();
   const fileName = `${Date.now()}_${Math.random().toString(36).slice(2)}.${fileExt}`;
 
   const { data, error } = await supabase.storage
-    .from('chronik-images') // Bucketname
+    .from('chronik-images') // Bucket-Name anpassen falls nötig
     .upload(fileName, file, { cacheControl: '3600', upsert: false });
 
   if (error) {
@@ -58,7 +65,6 @@ async function uploadFile(file) {
     return null;
   }
 
-  // Öffentliche URL abrufen (korrekt: publicUrl)
   const { publicUrl, error: urlError } = supabase.storage
     .from('chronik-images')
     .getPublicUrl(fileName);
@@ -71,7 +77,7 @@ async function uploadFile(file) {
   return publicUrl;
 }
 
-// Mehrere Dateien hochladen und URLs sammeln
+// Upload mehrerer Dateien und Sammeln der URLs
 async function uploadFiles(files) {
   const urls = [];
   for (const file of files) {
@@ -82,13 +88,13 @@ async function uploadFiles(files) {
   return urls;
 }
 
-// Dateien verarbeiten: Upload + Vorschau anzeigen + URLs speichern
-async function handleFiles(files) {
+// Dateien verarbeiten: Upload, Vorschau, URLs speichern und Eintrag aktualisieren
+export async function handleFiles(files) {
   clearPreviews();
   const urls = await uploadFiles(files);
-  if (urls.length > 0) {
-    alert(`${urls.length} Bild(er) erfolgreich hochgeladen.`);
-  }
+  window.uploadedImageURLs = urls; // URLs global speichern
+
+  // Vorschau der hochgeladenen Bilder anzeigen
   urls.forEach(url => {
     const img = document.createElement('img');
     img.src = url;
@@ -97,10 +103,20 @@ async function handleFiles(files) {
     img.onclick = () => window.open(url, '_blank');
     previewContainer.appendChild(img);
   });
-  window.uploadedImageURLs = urls; // Speichere URLs global für Eintrag
+
+  // Falls ein Eintrag aktiv ist, Bilder in den Eintrag schreiben
+  if (currentEntryId && urls.length > 0) {
+    try {
+      await updateEntry(currentEntryId, { images: urls });
+      alert('Bilder erfolgreich zum Eintrag hinzugefügt.');
+    } catch (error) {
+      alert('Fehler beim Aktualisieren der Bilder: ' + error.message);
+      console.error(error);
+    }
+  }
 }
 
 // Alte Vorschaubilder entfernen
-function clearPreviews() {
+export function clearPreviews() {
   previewContainer.innerHTML = '';
 }
