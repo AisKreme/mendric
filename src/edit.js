@@ -1,5 +1,5 @@
 import { saveEntry } from './api.js';
-import { loadEntries } from './controller.js'; // Beispiel
+import { loadEntries } from './main.js';
 
 export function editEntry(entryDiv, entry, reloadEntries) {
   const noteInput = document.createElement('textarea');
