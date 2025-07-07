@@ -183,6 +183,23 @@ button:hover {
   transform: scale(1.05);
 }
 
+.entry button {
+  margin-right: 0.7rem;
+  margin-bottom: 0.5rem; /* sorgt auch für etwas vertikalen Abstand, falls Buttons umbrechen */
+  background: #4a3b0c;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 0 6px #a8861d;
+  transition: background-color 0.3s ease;
+}
+
+.entry button:hover {
+  background-color: #6e5b18;
+}
+
 /* Spezielle Buttons: Bearbeiten und Löschen */
 button.action-button {
   background: #4a3b0c;
