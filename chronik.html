@@ -81,7 +81,7 @@ body {
 
   <script src="src/main.js"></script>
   <script>
-    function toggleEntryForm() {
+    function toggleEntryFormfunction () {
       const form = document.getElementById('entryForm');
       form.style.display = form.style.display === 'none' ? 'block' : 'none';
     }
@@ -102,7 +102,7 @@ links.forEach(link => {
 });
 </script>
 <script>
-function triggerSwipe() {
+function triggerSwipefunction () {
   document.documentElement.classList.add('swipe-out');
   setTimeout(() => {
     window.location.href = 'nscs.html';
@@ -154,7 +154,7 @@ function renderFiltered(filtered) {
 }
 
 
-function addEntry() {
+function addEntryfunction () {
   const note = document.getElementById('noteInput').value.trim();
   const flow = document.getElementById('flowInput').value.trim();
   const kapitel = document.getElementById("kapitelInput").value.trim();
@@ -175,11 +175,8 @@ function addEntry() {
       document.getElementById("kapitelInput").value = '';
       loadEntries();
     });
-}
-
-
-
-  });
+  }
+);
 
   const sortedDates = Object.entries(uniqueDates).sort(([a], [b]) => {
     const parseDate = d => {
@@ -237,7 +234,7 @@ function addEntry() {
 }
 
 
-async function loadEntries() {
+async function loadEntriesfunction () {
   const res = await fetch(API_URL);
   entries = await res.json();
   allEntries = [...entries];
@@ -252,12 +249,15 @@ async function loadEntries() {
   
 </div>
 
-<div id="timelineMarkers" style="display:flex;gap:0.5rem;margin:3rem auto;justify-content:center;flex-wrap:wrap;max-width:90%;"></div>
 
+
+
+<div id="timelineMarkers" style="display:flex;gap:0.5rem;margin:3rem auto;justify-content:center;flex-wrap:wrap;max-width:90%;"></div>
 </body>
+
 </html>
 <script>
-() {
+function () {
   const markerBar = document.getElementById('timelineMarkers');
   if (!markerBar) return;
   markerBar.innerHTML = '';
@@ -266,8 +266,8 @@ async function loadEntries() {
   allEntries.forEach((entry, index) => {
     if (!uniqueDates[entry.date]) {
       uniqueDates[entry.date] = index;
-    }
-  });
+  }
+);
 
   const sortedDates = Object.entries(uniqueDates).sort(([a], [b]) => {
     const parseDate = d => {
