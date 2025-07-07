@@ -27,6 +27,8 @@ function onDelete(id) {
   if (!confirm("Diesen Eintrag wirklich löschen?")) return;
   deleteEntryById(id).then(() => {
     loadEntries();
+  }).catch(e => {
+    alert('Fehler beim Löschen: ' + e.message);
   });
 }
 
@@ -76,21 +78,26 @@ export function addEntry() {
       document.getElementById("kapitelInput").value = '';
       document.getElementById("tagsInput").value = '';
       loadEntries();
+    }).catch(e => {
+      alert('Fehler beim Speichern: ' + e.message);
     });
 }
 
-document.getElementById("searchChronik").addEventListener("input", () => {
-  const query = document.getElementById("searchChronik").value.toLowerCase();
-  const filtered = allEntries.filter(entry =>
-    entry.note.toLowerCase().includes(query) ||
-    (entry.flow && entry.flow.toLowerCase().includes(query)) ||
-    (entry.kapitel && entry.kapitel.toLowerCase().includes(query))
-  );
-  renderFiltered(filtered);
-});
-
-function renderFiltered(filtered) {
+export function renderFiltered(filtered) {
   entries = filtered;
   currentPage = 0;
   onSelectPage(currentPage);
 }
+
+window.onload = () => {
+  document.getElementById("searchChronik").addEventListener("input", () => {
+    const query = document.getElementById("searchChronik").value.toLowerCase();
+    const filtered = allEntries.filter(entry =>
+      entry.note.toLowerCase().includes(query) ||
+      (entry.flow && entry.flow.toLowerCase().includes(query)) ||
+      (entry.kapitel && entry.kapitel.toLowerCase().includes(query))
+    );
+    renderFiltered(filtered);
+  });
+  loadEntries();
+};
