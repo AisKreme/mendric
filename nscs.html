@@ -6,6 +6,10 @@
   <title>NSC-Verzeichnis</title>
   <link href="https://fonts.googleapis.com/css2?family=Cardo&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="src/nsc-style.css" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
+<script>
+  window.supabase = supabase.createClient('https://siygzsqkkrtrgjzvmpvl.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNpeWd6c3Fra3J0cmdqenZtcHZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE4MjcyNzgsImV4cCI6MjA2NzQwMzI3OH0.4MiO2uothQafTgsMep3s-tfjVp1X99m-3BceiNLnpVA');
+</script>
 </head>
 <body>
   <nav>
@@ -33,10 +37,7 @@
     <div id="nscContainer">Wird geladen...</div>
   </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
-<script>
-  window.supabase = supabase.createClient('https://siygzsqkkrtrgjzvmpvl.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNpeWd6c3Fra3J0cmdqenZtcHZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE4MjcyNzgsImV4cCI6MjA2NzQwMzI3OH0.4MiO2uothQafTgsMep3s-tfjVp1X99m-3BceiNLnpVA');
-</script>
+
   <script type="module" src="src/controller-nsc.js"></script>
 </body>
 </html>
