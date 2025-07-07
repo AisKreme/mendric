@@ -1,4 +1,17 @@
-export function renderPage(entry, currentPage, totalEntries, onEdit, onDelete, onSpeakNote, onSpeakFlow, searchQuery) {
+// src/render.js
+
+/**
+ * Rendert eine einzelne Eintragsseite mit allen Buttons (Vorlesen, Bearbeiten, Löschen) und Tags.
+ * @param {Object} entry - Eintragsobjekt mit {note, flow, kapitel, tags, date, id}
+ * @param {number} index - Aktuelle Seitenzahl (0-basiert)
+ * @param {number} total - Gesamtzahl der Einträge
+ * @param {Function} onEdit - Callback für Bearbeiten (entryDiv, entry)
+ * @param {Function} onDelete - Callback für Löschen (entryId)
+ * @param {Function} onSpeakNote - Callback zum Vorlesen der Notiz
+ * @param {Function} onSpeakFlow - Callback zum Vorlesen des Fließtexts
+ * @param {string} searchQuery - Suchbegriff für Hervorhebung
+ */
+export function renderPage(entry, index, total, onEdit, onDelete, onSpeakNote, onSpeakFlow, searchQuery) {
   const book = document.getElementById('bookPages');
   const indicator = document.getElementById('pageIndicator');
   book.innerHTML = '';
@@ -12,12 +25,17 @@ export function renderPage(entry, currentPage, totalEntries, onEdit, onDelete, o
   const div = document.createElement('div');
   div.className = 'entry';
 
+  // Titel
   const title = document.createElement('h3');
   title.textContent = `📜 ${entry.date}`;
+  div.appendChild(title);
 
+  // Notiz mit Hervorhebung
   const note = document.createElement('p');
   note.innerHTML = highlightMatches(entry.note, searchQuery);
+  div.appendChild(note);
 
+  // Fließtext als Details-Summary mit Hervorhebung
   const flow = document.createElement('details');
   const summary = document.createElement('summary');
   summary.textContent = 'Fließtext anzeigen';
@@ -25,58 +43,78 @@ export function renderPage(entry, currentPage, totalEntries, onEdit, onDelete, o
   pre.innerHTML = highlightMatches(entry.flow || '(kein Fließtext)', searchQuery);
   flow.appendChild(summary);
   flow.appendChild(pre);
+  div.appendChild(flow);
 
+  // Buttons erzeugen mit Styling-Klassen
   const speakNoteBtn = document.createElement('button');
+  speakNoteBtn.className = 'styled-button';
   speakNoteBtn.textContent = '🔊 Notiz';
   speakNoteBtn.onclick = () => onSpeakNote(entry.note);
+  div.appendChild(speakNoteBtn);
 
   const speakFlowBtn = document.createElement('button');
+  speakFlowBtn.className = 'styled-button';
   speakFlowBtn.textContent = '🔊 Fließtext';
   speakFlowBtn.onclick = () => onSpeakFlow(entry.flow || '');
+  div.appendChild(speakFlowBtn);
 
   const editBtn = document.createElement('button');
+  editBtn.className = 'styled-button action-button';
   editBtn.textContent = '📝 Bearbeiten';
   editBtn.onclick = () => onEdit(div, entry);
+  div.appendChild(editBtn);
 
   const delBtn = document.createElement('button');
+  delBtn.className = 'styled-button action-button';
   delBtn.textContent = '🗑️ Löschen';
   delBtn.onclick = () => onDelete(entry.id);
-
-  div.appendChild(title);
-  div.appendChild(note);
-  div.appendChild(flow);
-  div.appendChild(speakNoteBtn);
-  div.appendChild(speakFlowBtn);
-  div.appendChild(editBtn);
   div.appendChild(delBtn);
 
+  // Tags anzeigen, falls vorhanden
   if (entry.tags?.length) {
     const tagWrap = document.createElement('div');
     tagWrap.style.marginTop = '0.5rem';
-    tagWrap.innerHTML = entry.tags.map(tag => `<span style="background:#d8b977;color:#000;border-radius:4px;padding:0.2rem 0.4rem;margin-right:0.3rem;font-size:0.9rem;">#${tag}</span>`).join(' ');
+    tagWrap.innerHTML = entry.tags
+      .map(tag => `<span style="background:#d8b977;color:#000;border-radius:4px;padding:0.2rem 0.4rem;margin-right:0.3rem;font-size:0.9rem;">#${tag}</span>`)
+      .join(' ');
     div.appendChild(tagWrap);
   }
 
   book.appendChild(div);
-  indicator.textContent = `Seite ${currentPage + 1} von ${totalEntries}`;
+  indicator.textContent = `Seite ${index + 1} von ${total}`;
 }
 
-export function highlightMatches(text, query) {
+/**
+ * Hebt alle Suchbegriffe im Text hervor.
+ * @param {string} text - Text, der durchsucht wird
+ * @param {string} query - Suchbegriff
+ * @returns {string} - HTML mit <mark> hervorgehobenen Begriffen
+ */
+function highlightMatches(text, query) {
   if (!query) return text;
-  const re = new RegExp('(' + query.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\$&') + ')', 'gi');
+  const re = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
   return text.replace(re, '<mark>$1</mark>');
 }
 
-export function renderTOC(allEntries, onSelectPage) {
+/**
+ * Rendert das Inhaltsverzeichnis (Kapitel-Gliederung).
+ * @param {Array} entries - Array aller Einträge
+ * @param {Function} onSelectPage - Callback bei Seitenwahl im TOC
+ */
+export function renderTOC(entries, onSelectPage) {
   const toc = document.getElementById('toc');
+  if (!toc) return;
   toc.innerHTML = '';
+
+  // Einträge gruppieren nach Kapitel
   const grouped = {};
-  allEntries.forEach((entry, index) => {
+  entries.forEach((entry, index) => {
     const key = entry.kapitel || '🗂️ Allgemein';
     if (!grouped[key]) grouped[key] = [];
     grouped[key].push({ ...entry, index });
   });
 
+  // Kapitel und deren Einträge ins TOC schreiben
   for (const kapitel in grouped) {
     const kapHead = document.createElement('h4');
     kapHead.textContent = kapitel;
@@ -86,9 +124,10 @@ export function renderTOC(allEntries, onSelectPage) {
 
     const ul = document.createElement('ul');
     ul.style.marginBottom = '0.5rem';
+
     grouped[kapitel].forEach(item => {
       const li = document.createElement('li');
-      li.textContent = `${item.date}`;
+      li.textContent = item.date;
       li.style.cursor = 'pointer';
       li.onclick = () => onSelectPage(item.index);
       ul.appendChild(li);
@@ -97,13 +136,18 @@ export function renderTOC(allEntries, onSelectPage) {
   }
 }
 
-export function renderTimelineMarkers(allEntries, onSelectPage) {
+/**
+ * Rendert die Zeitleisten-Marker unter dem Buch.
+ * @param {Array} entries - Array aller Einträge
+ * @param {Function} onSelectPage - Callback bei Seitenwahl im Timeline-Marker
+ */
+export function renderTimelineMarkers(entries, onSelectPage) {
   const markerBar = document.getElementById('timelineMarkers');
   if (!markerBar) return;
   markerBar.innerHTML = '';
 
   const uniqueDates = {};
-  allEntries.forEach((entry, index) => {
+  entries.forEach((entry, index) => {
     if (!uniqueDates[entry.date]) {
       uniqueDates[entry.date] = index;
     }
@@ -118,7 +162,7 @@ export function renderTimelineMarkers(allEntries, onSelectPage) {
   sortedDates.forEach(([date, index]) => {
     const marker = document.createElement('button');
     marker.textContent = date;
-    marker.title = allEntries[index].kapitel || '';
+    marker.title = entries[index].kapitel || '';
     marker.style.padding = '0.3rem 0.6rem';
     marker.style.borderRadius = '6px';
     marker.style.border = '1px solid #999';
