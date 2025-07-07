@@ -34,7 +34,7 @@ function renderPage(index) {
   div.className = 'entry';
 
   const title = document.createElement('h3');
-  title.textContent = '📜 ${entry.date}';
+  title.textContent = `📜 ${entry.date}`;
 
   const note = document.createElement('p');
   note.innerHTML = highlightMatches(entry.note, document.getElementById("searchChronik").value);
@@ -79,7 +79,7 @@ function renderPage(index) {
   }
 
   book.appendChild(div);
-  indicator.textContent = 'Seite ${currentPage + 1} von ${entries.length}';
+  indicator.textContent = `Seite ${currentPage + 1} von ${entries.length}`;
 }
 
 function editEntry(entryDiv, entry) {
@@ -238,7 +238,7 @@ function renderTOC() {
     ul.style.marginBottom = '0.5rem';
     grouped[kapitel].forEach(item => {
       const li = document.createElement('li');
-      li.textContent = '${item.date}';
+      li.textContent = `${item.date}`;
       li.style.cursor = 'pointer';
       li.onclick = () => {
         currentPage = item.index;
