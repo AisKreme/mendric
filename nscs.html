@@ -6,16 +6,13 @@
   <title>NSC-Verzeichnis</title>
   <link href="https://fonts.googleapis.com/css2?family=Cardo&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="src/nsc-style.css" />
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
-<script>
-  // Supabase Client initialisieren und global verfügbar machen
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.0/dist/module/index.js';
+
   window.supabase = createClient(
-    'https://siygzsqkkrtrgjzvmpvl.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNpeWd6c3Fra3R0cmdqenZtcHZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE4MjcyNzgsImV4cCI6MjA2NzQwMzI3OH0.4MiO2uothQafTgsMep3s-tfjVp1X99m-3BceiNLnpVA'
+    'https://siygzsqkkrtrgjzvmpvl.supabase.co',  // deine Supabase URL
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNpeWd6c3Fra3J0cmdqenZtcHZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE4MjcyNzgsImV4cCI6MjA2NzQwMzI3OH0.4MiO2uothQafTgsMep3s-tfjVp1X99m-3BceiNLnpVA'
   );
-supabase.from('chronik_entries').select('*').then(({ data, error }) => {
-      console.log(data, error);
-    });
 </script>
 </head>
 <body>
