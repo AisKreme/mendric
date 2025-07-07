@@ -1,14 +1,13 @@
 // src/upload.js
 
-const supabase = window.supabase; // holt das globale Supabase-Objekt
-// Supabase Storage Uploads
-const { data, error } = await supabase.storage.from('bucket-name').upload(...);
+const supabase = window.supabase; // Greift auf das globale Supabase-Objekt zu
 
 const toggleDropzoneBtn = document.getElementById('toggleDropzoneBtn');
 const dropzone = document.getElementById('dropzone');
 const fileInput = document.getElementById('fileInput');
 const previewContainer = document.getElementById('previewContainer');
 
+// Toggle Dropzone Sichtbarkeit
 toggleDropzoneBtn.addEventListener('click', () => {
   if (dropzone.style.display === 'block') {
     dropzone.style.display = 'none';
@@ -21,8 +20,10 @@ toggleDropzoneBtn.addEventListener('click', () => {
   }
 });
 
+// Klick auf Dropzone öffnet Dateiauswahl
 dropzone.addEventListener('click', () => fileInput.click());
 
+// Drag & Drop Effekte
 dropzone.addEventListener('dragover', e => {
   e.preventDefault();
   dropzone.classList.add('dragover');
@@ -37,15 +38,18 @@ dropzone.addEventListener('drop', e => {
   handleFiles(e.dataTransfer.files);
 });
 
+// Datei-Auswahl
 fileInput.addEventListener('change', () => {
   handleFiles(fileInput.files);
 });
 
+// Upload-Funktion: Datei an Supabase Storage senden
 async function uploadFile(file) {
   const fileExt = file.name.split('.').pop();
   const fileName = `${Date.now()}_${Math.random().toString(36).slice(2)}.${fileExt}`;
+
   const { data, error } = await supabase.storage
-    .from('chronik-images')
+    .from('chronik-images') // Bucketname
     .upload(fileName, file, { cacheControl: '3600', upsert: false });
 
   if (error) {
@@ -54,7 +58,8 @@ async function uploadFile(file) {
     return null;
   }
 
-  const { publicURL, error: urlError } = supabase.storage
+  // Öffentliche URL abrufen (korrekt: publicUrl)
+  const { publicUrl, error: urlError } = supabase.storage
     .from('chronik-images')
     .getPublicUrl(fileName);
 
@@ -63,19 +68,21 @@ async function uploadFile(file) {
     console.error(urlError);
     return null;
   }
-  return publicURL;
+  return publicUrl;
 }
 
+// Mehrere Dateien hochladen und URLs sammeln
 async function uploadFiles(files) {
   const urls = [];
   for (const file of files) {
-    if (!file.type.startsWith('image/')) continue;
+    if (!file.type.startsWith('image/')) continue; // Nur Bilder akzeptieren
     const url = await uploadFile(file);
     if (url) urls.push(url);
   }
   return urls;
 }
 
+// Dateien verarbeiten: Upload + Vorschau anzeigen + URLs speichern
 async function handleFiles(files) {
   clearPreviews();
   const urls = await uploadFiles(files);
@@ -87,9 +94,10 @@ async function handleFiles(files) {
     img.onclick = () => window.open(url, '_blank');
     previewContainer.appendChild(img);
   });
-  window.uploadedImageURLs = urls;
+  window.uploadedImageURLs = urls; // Globale Variable für Bild-URLs
 }
 
+// Alte Vorschaubilder entfernen
 function clearPreviews() {
   previewContainer.innerHTML = '';
 }
