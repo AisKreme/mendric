@@ -1,12 +1,54 @@
 import { supabase } from './supabaseClient.js';
 
+const toggleDropzoneBtn = document.getElementById('toggleDropzoneBtn');
+const dropzone = document.getElementById('dropzone');
+const fileInput = document.getElementById('fileInput');
+const previewContainer = document.getElementById('previewContainer');
+
+// Dropzone anfangs verstecken
+dropzone.style.display = 'none';
+
+// Button toggelt Sichtbarkeit der Dropzone
+toggleDropzoneBtn.addEventListener('click', () => {
+  if (dropzone.style.display === 'none') {
+    dropzone.style.display = 'block';
+    toggleDropzoneBtn.textContent = '❌ Bild-Upload schließen';
+  } else {
+    dropzone.style.display = 'none';
+    toggleDropzoneBtn.textContent = '🖼️ Bild hochladen';
+    clearPreviews();
+    fileInput.value = '';
+  }
+});
+
+// Klick auf Dropzone öffnet Dateiauswahl
+dropzone.addEventListener('click', () => fileInput.click());
+
+// Drag & Drop Events für Styling & Handling
+dropzone.addEventListener('dragover', e => {
+  e.preventDefault();
+  dropzone.style.borderColor = '#f5cb6b';
+});
+dropzone.addEventListener('dragleave', e => {
+  e.preventDefault();
+  dropzone.style.borderColor = '#ccc';
+});
+dropzone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropzone.style.borderColor = '#ccc';
+  handleFiles(e.dataTransfer.files);
+});
+
+// Dateien via Dateiauswahl
+fileInput.addEventListener('change', () => handleFiles(fileInput.files));
+
 async function uploadFile(file) {
   const fileExt = file.name.split('.').pop();
   const fileName = `${Date.now()}_${Math.random().toString(36).slice(2)}.${fileExt}`;
-  const filePath = `${fileName}`;
+  const filePath = fileName;
 
   const { data, error } = await supabase.storage
-    .from('chronik-images') // dein Bucketname
+    .from('chronik-images')
     .upload(filePath, file, {
       cacheControl: '3600',
       upsert: false
@@ -20,7 +62,6 @@ async function uploadFile(file) {
   return filePath;
 }
 
-// Upload aller Dateien und URLs sammeln
 async function uploadFiles(files) {
   const urls = [];
   for (const file of files) {
@@ -37,86 +78,24 @@ async function uploadFiles(files) {
 
 async function handleFiles(files) {
   clearPreviews();
-  const urls = await uploadFiles(files);
-  for (const url of urls) {
-    const img = document.createElement('img');
-    img.classList.add('preview-image');
-    img.src = url;
-    previewContainer.appendChild(img);
-  }
-
-  // URLs für später speichern, z.B. im hidden input oder global variable
-  window.uploadedImageURLs = urls;
-}
-
-const toggleDropzoneBtn = document.getElementById('toggleDropzoneBtn');
-const dropzone = document.getElementById('dropzone');
-const fileInput = document.getElementById('fileInput');
-const previewContainer = document.getElementById('previewContainer');
-
-// Button togglet die Sichtbarkeit der Dropzone
-toggleDropzoneBtn.addEventListener('click', () => {
-  if (dropzone.classList.contains('visible')) {
-    dropzone.classList.remove('visible');
-    toggleDropzoneBtn.textContent = '🖼️ Bild hochladen';
-    clearPreviews();
-    fileInput.value = ''; // Reset Input
-  } else {
-    dropzone.classList.add('visible');
-    toggleDropzoneBtn.textContent = '❌ Bild-Upload schließen';
-  }
-});
-
-// Klick auf Dropzone öffnet den Dateiauswahl-Dialog
-dropzone.addEventListener('click', () => {
-  fileInput.click();
-});
-
-// Drag & Drop Events
-dropzone.addEventListener('dragover', e => {
-  e.preventDefault();
-  dropzone.style.borderColor = '#f5cb6b';
-});
-
-dropzone.addEventListener('dragleave', e => {
-  e.preventDefault();
-  dropzone.style.borderColor = '#ccc';
-});
-
-dropzone.addEventListener('drop', e => {
-  e.preventDefault();
-  dropzone.style.borderColor = '#ccc';
-  const files = e.dataTransfer.files;
-  handleFiles(files);
-});
-
-// Wenn Nutzer Dateien auswählt
-fileInput.addEventListener('change', () => {
-  handleFiles(fileInput.files);
-});
-
-// Funktion zur Verarbeitung der Dateien
-function handleFiles(files) {
-  clearPreviews();
+  // Zeige lokale Vorschaubilder direkt an
   for (const file of files) {
-    if (!file.type.startsWith('image/')) continue; // Nur Bilder
+    if (!file.type.startsWith('image/')) continue;
     const img = document.createElement('img');
     img.classList.add('preview-image');
-    img.file = file;
-
     previewContainer.appendChild(img);
 
     const reader = new FileReader();
-    reader.onload = (function(aImg) {
-      return function(e) {
-        aImg.src = e.target.result;
-      };
-    })(img);
+    reader.onload = e => { img.src = e.target.result; };
     reader.readAsDataURL(file);
   }
+
+  // Lade Bilder in Supabase hoch
+  const uploadedUrls = await uploadFiles(files);
+  window.uploadedImageURLs = uploadedUrls; // Globale Variable für später
 }
 
-// Alte Vorschaubilder entfernen
+// Entfernt alle Vorschaubilder
 function clearPreviews() {
   previewContainer.innerHTML = '';
 }
