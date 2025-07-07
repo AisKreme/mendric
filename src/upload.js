@@ -1,5 +1,5 @@
 // src/upload.js
-const supabase = window.supabase;
+import { supabase } from './supabaseClient.js';
 
 const toggleDropzoneBtn = document.getElementById('toggleDropzoneBtn');
 const dropzone = document.getElementById('dropzone');
