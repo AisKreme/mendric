@@ -1,3 +1,4 @@
+/* === Grundlayout === */
 body {
   font-family: 'Cardo', serif;
   background: #000 url('https://cdn.pixabay.com/photo/2017/08/30/07/52/fantasy-2695569_1280.jpg') no-repeat center center fixed;
@@ -13,6 +14,7 @@ body {
   100% { opacity: 1; transform: scale(1); }
 }
 
+/* === Navigation === */
 nav {
   text-align: center;
   margin-bottom: 1.5rem;
@@ -29,9 +31,10 @@ nav a {
 nav a:hover {
   transform: scale(1.05);
   text-shadow: 0 0 5px #ffd86b;
+  cursor: pointer;
 }
 
-/* Container für das Buch */
+/* === Buch Container === */
 .book-container {
   max-width: 850px;
   margin: auto;
@@ -44,7 +47,7 @@ nav a:hover {
   position: relative;
 }
 
-/* Navigation unter dem Buch (Prev/Next) */
+/* Navigation unter Buch (Prev/Next Buttons) */
 .book-nav {
   text-align: center;
   margin-top: 1rem;
@@ -52,6 +55,17 @@ nav a:hover {
 .book-nav button {
   margin: 0 1rem;
   font-size: 1.1rem;
+  background: #4a3b0c;
+  color: #fffbe8;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  box-shadow: 0 0 6px #a8861d;
+  transition: background-color 0.3s ease;
+}
+.book-nav button:hover {
+  background: #6e5b18;
 }
 
 /* Page Indicator */
@@ -99,9 +113,10 @@ nav a:hover {
   visibility: visible;
   opacity: 1;
 }
-#toc h3 {
+#toc h4 {
   margin-top: 0;
   font-size: 1.1rem;
+  cursor: default;
 }
 #toc ul {
   list-style: none;
@@ -111,39 +126,98 @@ nav a:hover {
   cursor: pointer;
   margin: 0.3rem 0;
   color: #fef4dc;
+  user-select: none;
 }
 #toc li:hover {
   text-shadow: 0 0 4px #ffe39c;
 }
 
-/* Seiten-Eintrag */
-.note-text, .flow-text {
-  font-family: monospace;
-  font-size: 1rem;
-  background: #1b1b1b;
-  color: #ffeccc;
-  padding: 0.5rem;
-  border: 1px solid #999;
-  border-radius: 6px;
-  white-space: pre-wrap; /* Zeilenumbrüche sichtbar machen */
-  margin-bottom: 1rem;
-  min-height: 100px; /* optional, um Eingabefeldern zu entsprechen */
-}
-
+/* === Einträge (Seiten) */
 .entry {
-  animation: turnPage 0.7s ease-in-out;
   background: rgba(255,255,255,0.05);
-  padding: 1rem;
-  border-radius: 8px;
   border: 1px solid #666;
+  border-radius: 8px;
+  padding: 1rem;
   box-shadow: inset 0 0 10px rgba(255,223,100,0.05);
+  animation: turnPage 0.7s ease-in-out;
+  margin-bottom: 1.5rem;
 }
 @keyframes turnPage {
   0% { transform: rotateY(-90deg); opacity: 0; }
   100% { transform: rotateY(0deg); opacity: 1; }
 }
 
-/* Container für das Eingabeformular */
+/* Notiz und Fließtext Optik */
+.note-text, .flow-text {
+  background-color: #1b1b1b;
+  color: #ffeccc;
+  font-family: monospace;
+  padding: 0.6rem;
+  border-radius: 6px;
+  white-space: pre-wrap;
+  margin-top: 0.5rem;
+  border: 1px solid #999;
+}
+
+/* Buttons allgemein */
+.styled-button {
+  background: #b88c32;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  margin: 0.25rem 0.3rem 0.25rem 0;
+  box-shadow: 0 0 8px #f5cb6b;
+  transition: background-color 0.3s ease;
+  font-size: 1rem;
+  user-select: none;
+}
+.styled-button:hover {
+  background-color: #a6751f;
+}
+
+/* Bearbeiten & Löschen Buttons (dunkler) */
+.styled-button.action-button {
+  background: #4a3b0c;
+  box-shadow: 0 0 6px #a8861d;
+}
+.styled-button.action-button:hover {
+  background: #6e5b18;
+}
+
+/* Bilder */
+img {
+  max-width: 150px;
+  margin-right: 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 0 8px #f5cb6b;
+  transition: transform 0.3s ease;
+}
+img:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 12px #ffd86b;
+}
+
+/* Timeline Marker Buttons */
+#timelineMarkers button {
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid #999;
+  background: #2c2b29;
+  color: #fffbe8;
+  cursor: pointer;
+  margin: 0.2rem;
+  user-select: none;
+}
+#timelineMarkers button:hover {
+  background-color: #3b3a33;
+  border-color: #f5cb6b;
+  color: #ffe792;
+}
+
+/* Container für Eingabefelder */
 .container {
   max-width: 800px;
   margin: 2rem auto;
@@ -153,22 +227,24 @@ nav a:hover {
   border: 2px solid #f5cb6b;
 }
 
-/* Eingabeformular sichtbar machen */
+/* Formular */
 #entryForm {
-  max-width: 600px;      /* begrenzt die Breite */
+  max-width: 600px;
   margin: 1rem auto 0;
   background-color: rgba(30, 30, 30, 0.95);
   padding: 1rem;
   border-radius: 8px;
   color: #ffe792;
-  box-sizing: border-box; /* Wichtig für Padding & Breite */
-  overflow-wrap: break-word; /* Umbrüche innerhalb von Wörtern */
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+  border: 1px solid #666;
+  box-shadow: inset 0 0 10px rgba(255, 223, 100, 0.05);
 }
 
-/* Eingabefelder anpassen */
+/* Eingabefelder */
 textarea, input[type="text"], input[type="password"] {
   width: 100%;
-  max-width: 100%; /* maximal volle Breite vom Container */
+  max-width: 100%;
   padding: 0.5rem;
   margin-bottom: 1rem;
   font-family: monospace;
@@ -177,33 +253,44 @@ textarea, input[type="text"], input[type="password"] {
   color: #ffeccc;
   border: 1px solid #999;
   border-radius: 6px;
-  resize: vertical; /* Höhe anpassen erlauben, Breite nicht */
+  resize: vertical;
   box-sizing: border-box;
 }
 
-/* Für die Fließtext-Details, falls sie zu breit sind */
+/* Details in Formular (Fließtext) */
 details {
   max-width: 600px;
   overflow-wrap: break-word;
 }
 
-#entryForm {
-  max-width: 600px;
-  margin: 1rem auto 0;
-  background-color: rgba(30, 30, 30, 0.95);
-  padding: 1rem;
-  border-radius: 8px;
-  color: #ffe792;
-  box-sizing: border-box;
-  overflow-wrap: break-word;
-
-  /* Gleich wie .entry */
-  border: 1px solid #666;
-  box-shadow: inset 0 0 10px rgba(255, 223, 100, 0.05);
+/* Buttons im Formular */
+button {
+  background: #c09348;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 0.3rem;
+  box-shadow: 0 0 6px #f5cb6b;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+button:hover {
+  background-color: #a6751f;
+  transform: scale(1.05);
 }
 
-/* Alle Buttons im Buch: Basis-Stil */
-button {
+/* Erster Button im Formular (speziell) */
+.container button:first-child {
+  background: #b88c32;
+  color: #fffde6;
+  font-size: 1.1rem;
+  border: 2px solid #f5cb6b;
+  box-shadow: 0 0 8px #f5cb6b;
+  transition: all 0.3s ease-in-out;
+}
+.container button {
   background: #b88c32;
   color: white;
   border: none;
@@ -215,44 +302,16 @@ button {
   box-shadow: 0 0 8px #f5cb6b;
   transition: background-color 0.3s ease, transform 0.3s ease;
 }
-button:hover {
+
+.container button:hover {
   background-color: #a6751f;
   transform: scale(1.05);
 }
 
-.entry button {
-  margin-right: 0.8rem;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem; /* sorgt auch für etwas vertikalen Abstand, falls Buttons umbrechen */
-  background: #4a3b0c;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  cursor: pointer;
-  box-shadow: 0 0 6px #a8861d;
-  transition: background-color 0.3s ease;
-}
-
-.entry button:hover {
-  background-color: #6e5b18;
-}
-
-/* Spezielle Buttons: Bearbeiten und Löschen */
-button.action-button {
-  background: #4a3b0c;
-  box-shadow: 0 0 6px #a8861d;
-}
-button.action-button:hover {
-  background: #6e5b18;
-}
-
-/* Eingabefelder im Stil des NSC */
-input[type="text"], textarea {
-  background: #1b1b1b;
-  color: #ffeccc;
-  border: 1px solid #999;
-  border-radius: 6px;
+.container button:first-child:hover {
+  background: #cfa847;
+  transform: scale(1.05);
+  box-shadow: 0 0 12px #ffe792, 0 0 24px #ffd66c;
 }
 
 /* Sucheingabefeld */
@@ -265,11 +324,14 @@ input#searchChronik {
   border: 1px solid #999;
   color: #ffeccc;
   text-align: center;
+  border-radius: 6px;
+  padding: 0.5rem;
+  font-size: 1rem;
 }
 
-/*File Upload*/
+/* Dropzone für Bild-Upload */
 #dropzone {
-  display: none; /* standardmäßig versteckt, wird per JS gezeigt */
+  display: none; /* versteckt, wird per JS sichtbar */
   border: 2px dashed #f5cb6b;
   padding: 1rem;
   margin-top: 1rem;
@@ -288,24 +350,20 @@ input#searchChronik {
   background-color: rgba(40, 40, 40, 0.95);
 }
 
-#previewContainer img {
+/* Bildvorschau im Uploadbereich */
+#previewContainer img, .preview-image {
   max-width: 150px;
-  border-radius: 6px;
-  cursor: pointer;
-  box-shadow: 0 0 8px #f5cb6b;
-  transition: transform 0.3s ease;
-}
-
-#previewContainer img:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 12px #ffd86b;
-}
-
-.preview-image {
-  max-width: 120px;
   max-height: 120px;
   object-fit: cover;
   border-radius: 6px;
   border: 1px solid #ccc;
-  box-shadow: 0 0 8px rgba(0,0,0,0.3);
+  box-shadow: 0 0 8px #f5cb6b;
+  margin-right: 0.5rem;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+#previewContainer img:hover, .preview-image:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 12px #ffd86b;
 }
