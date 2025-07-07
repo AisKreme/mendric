@@ -79,7 +79,7 @@ function renderPage(index) {
   }
 
   book.appendChild(div);
-  indicator.textContent = Seite ${currentPage + 1} von ${entries.length};
+  indicator.textContent = 'Seite ${currentPage + 1} von ${entries.length}';
 }
 
 function editEntry(entryDiv, entry) {
