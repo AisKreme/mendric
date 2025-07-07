@@ -2,7 +2,9 @@
 import { fetchNSCs, saveNSC, deleteNSC } from './api-nsc.js';
 import { renderNSCs } from './render-nsc.js';
 import { editNSC } from './edit-nsc.js';
-const supabase = window.supabase;
+const supabase = window.supabase; // holt das globale Supabase-Objekt
+// Supabase Storage Uploads
+const { data, error } = await supabase.storage.from('bucket-name').upload(...);
 
 let nscs = [];
 

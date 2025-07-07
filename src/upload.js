@@ -1,5 +1,8 @@
 // src/upload.js
-const supabase = window.supabase;
+
+const supabase = window.supabase; // holt das globale Supabase-Objekt
+// Supabase Storage Uploads
+const { data, error } = await supabase.storage.from('bucket-name').upload(...);
 
 const toggleDropzoneBtn = document.getElementById('toggleDropzoneBtn');
 const dropzone = document.getElementById('dropzone');

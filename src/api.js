@@ -1,3 +1,7 @@
+const supabase = window.supabase; // holt das globale Supabase-Objekt
+// Supabase Storage Uploads
+const { data, error } = await supabase.storage.from('bucket-name').upload(...);
+
 const API_URL = 'https://mendric.vercel.app/api/chronik';
 
 export async function fetchEntries() {
