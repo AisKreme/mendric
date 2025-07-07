@@ -34,7 +34,7 @@ function renderPage(index) {
   div.className = 'entry';
 
   const title = document.createElement('h3');
-  title.textContent = 📜 ${entry.date};
+  title.textContent = '📜 ${entry.date}';
 
   const note = document.createElement('p');
   note.innerHTML = highlightMatches(entry.note, document.getElementById("searchChronik").value);
