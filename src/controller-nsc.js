@@ -2,7 +2,7 @@
 import { fetchNSCs, saveNSC, deleteNSC } from './api-nsc.js';
 import { renderNSCs } from './render-nsc.js';
 import { editNSC } from './edit-nsc.js';
-import { supabase } from './supabaseClient.js';
+const supabase = window.supabase;
 
 let nscs = [];
 
