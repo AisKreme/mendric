@@ -290,5 +290,9 @@ function renderTimelineMarkers() {
 function toggleTOC() {
   const toc = document.getElementById('toc');
   if (!toc) return;
-  toc.style.display = (toc.style.display === 'none') ? 'block' : 'none';
+  if (toc.style.display === 'none' || toc.style.display === '') {
+    toc.style.display = 'block';
+  } else {
+    toc.style.display = 'none';
+  }
 }
