@@ -2,8 +2,7 @@ import { fetchEntries, saveEntry, deleteEntryById } from './api.js';
 import { renderPage, renderTOC, renderTimelineMarkers } from './render.js';
 import { editEntry } from './edit.js';
 
-const supabase = window.supabase; // optional, wenn du in api.js das SDK nutzt, hier eigentlich nicht nötig
-
+const supabase = window.supabase;
 let entries = [];
 let currentPage = 0;
 let allEntries = [];
