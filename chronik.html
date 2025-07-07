@@ -29,13 +29,13 @@
   </div>
 
   <div class="container">
-    <button onclick="toggleEntryForm()">🖋️ Neue Seite schreiben</button>
+   <button id="toggleEntryBtn">🖋️ Neue Seite schreiben</button>
     <div id="entryForm" style="display: none;">
       <textarea id="noteInput" placeholder="Notiz eingeben..."></textarea>
       <input type="text" id="kapitelInput" placeholder="Kapitel / Ort / Abschnitt" />
       <textarea id="flowInput" placeholder="Optionaler Fließtext..."></textarea>
       <input type="text" id="tagsInput" placeholder="Tags (kommagetrennt, z. B. Wald,Feuer,Rätsel)" />
-      <button onclick="addEntry()">📜 Eintrag speichern</button>
+     <button id="saveEntryBtn">📜 Eintrag speichern</button>
     </div>
   </div>
 </div>

@@ -20,6 +20,15 @@ document.getElementById('toc-toggle').addEventListener('click', () => {
   toc.style.display = (toc.style.display === 'none' || toc.style.display === '') ? 'block' : 'none';
 });
 
+document.getElementById('toggleEntryBtn').addEventListener('click', () => {
+  const form = document.getElementById('entryForm');
+  form.style.display = form.style.display === 'none' ? 'block' : 'none';
+});
+
+document.getElementById('saveEntryBtn').addEventListener('click', () => {
+  addEntry();
+});
+
 export async function loadEntries() {
   try {
     entries = await fetchEntries();
