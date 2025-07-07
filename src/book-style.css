@@ -72,7 +72,6 @@ nav a:hover {
 #toc-toggle:hover {
   transform: scale(1.1);
 }
-
 #toc {
   position: absolute;
   top: 50px;
@@ -87,8 +86,9 @@ nav a:hover {
   transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
   visibility: hidden;
   opacity: 0;
-  z-index: 999;
+  z-index: 9999;
 }
+
 #toc.open {
   visibility: visible;
   opacity: 1;
