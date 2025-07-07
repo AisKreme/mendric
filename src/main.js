@@ -14,6 +14,12 @@ document.getElementById('btnNext').addEventListener('click', () => {
   nextPage();
 });
 
+document.getElementById('toc-toggle').addEventListener('click', () => {
+  const toc = document.getElementById('toc');
+  if (!toc) return;
+  toc.style.display = (toc.style.display === 'none' || toc.style.display === '') ? 'block' : 'none';
+});
+
 export async function loadEntries() {
   try {
     entries = await fetchEntries();
