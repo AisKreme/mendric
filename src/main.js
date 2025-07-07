@@ -265,7 +265,7 @@ function renderTimelineMarkers() {
   const sortedDates = Object.entries(uniqueDates).sort(([a], [b]) => {
     const [dayA, monthA, yearA] = a.split('.');
     const [dayB, monthB, yearB] = b.split('.');
-    return new Date(${yearA}-${monthA}-${dayA}) - new Date(${yearB}-${monthB}-${dayB});
+   return new Date(`${yearA}-${monthA}-${dayA}`) - new Date(`${yearB}-${monthB}-${dayB}`);
   });
 
   sortedDates.forEach(([date, index]) => {
