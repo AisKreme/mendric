@@ -1,3 +1,5 @@
+/* src/nsc-style.css */
+
 /* === Grundlayout === */
 body {
   font-family: 'Cardo', serif;
@@ -6,6 +8,7 @@ body {
   color: #fef4dc;
   padding: 2rem;
   animation: fadeIn 1.2s ease-out;
+  margin: 0;
 }
 
 /* === Navigation === */
@@ -22,6 +25,7 @@ nav a {
 }
 nav a:hover {
   text-shadow: 0 0 5px #ffd86b;
+  cursor: pointer;
 }
 
 /* === Überschrift === */
@@ -48,6 +52,8 @@ input, textarea {
   background: #1b1b1b;
   border: 1px solid #999;
   color: #ffeccc;
+  border-radius: 6px;
+  resize: vertical;
 }
 button {
   padding: 0.5rem 1rem;
@@ -57,18 +63,28 @@ button {
   border-radius: 6px;
   cursor: pointer;
   box-shadow: 0 0 8px #f5cb6b;
+  transition: background-color 0.3s ease;
+}
+button:hover {
+  background-color: #a6751f;
 }
 
 /* === NSC-Einträge === */
 .nsc-entry {
   border-bottom: 1px solid #555;
   padding: 1rem 0;
+  color: #fffbe8;
 }
 .nsc-entry:last-child {
   border: none;
 }
 .nsc-controls button {
   margin-left: 0.5rem;
+  background: #4a3b0c;
+  box-shadow: 0 0 6px #a8861d;
+}
+.nsc-controls button:hover {
+  background: #6e5b18;
 }
 
 /* === Suchfeld === */
@@ -100,8 +116,7 @@ html.swipe-out {
   100% { opacity: 0; transform: translateX(-30px); }
 }
 
-/* Neue Suche neben Titel */
-/* ... bisheriger Inhalt bleibt ... */
+/* === Suche neben Titel - Stil-Anpassung === */
 .nsc-header {
   display: flex;
   justify-content: space-between;
@@ -111,8 +126,10 @@ html.swipe-out {
 }
 .nsc-header h2 {
   margin: 0;
+  color: #fffbe8;
+  user-select: none;
 }
-.search-input {
+.nsc-header .search-input {
   display: inline-block;
   width: 220px;
   padding: 0.4rem 0.6rem;
@@ -122,4 +139,10 @@ html.swipe-out {
   border: 1px solid #999;
   border-radius: 6px;
   text-align: left;
+  margin-left: 1rem;
+  transition: box-shadow 0.3s ease;
+}
+.nsc-header .search-input:focus {
+  outline: none;
+  box-shadow: 0 0 8px #f5cb6b;
 }
