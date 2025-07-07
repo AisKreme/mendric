@@ -269,14 +269,18 @@ input#searchChronik {
 
 /*File Upload*/
 #dropzone {
-  display: none;
-  border: 2px dashed #ccc;
+  border: 2px dashed #f5cb6b;
   padding: 1rem;
-  text-align: center;
-  color: #aaa;
+  margin-top: 1rem;
+  border-radius: 6px;
+  color: #ffe792;
   cursor: pointer;
-  margin-bottom: 1rem;
-  transition: opacity 0.3s ease;
+  user-select: none;
+}
+
+#dropzone:focus {
+  outline: none;
+  box-shadow: 0 0 8px #f5cb6b;
 }
 
 #dropzone.visible {
