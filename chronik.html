@@ -58,7 +58,7 @@ body {
       <input type="text" id="searchChronik" placeholder="🔍 Suche in Einträgen..." style="width: 100%; max-width: 300px; margin-bottom: 1rem; padding: 0.5rem;" />
 
 <div id="bookPages"></div>
-<div id="timelineMarkers" style="display:flex;gap:0.5rem;margin:2rem 0;justify-content:center;flex-wrap:wrap;"></div>
+
       <div id="toc"></div>
       <div class="book-nav">
         <button onclick="prevPage()">⬅️</button>
@@ -178,16 +178,7 @@ function addEntry() {
 }
 
 
-function renderTimelineMarkers() {
-  const markerBar = document.getElementById('timelineMarkers');
-  if (!markerBar) return;
-  markerBar.innerHTML = '';
 
-  const uniqueDates = {};
-  allEntries.forEach((entry, index) => {
-    if (!uniqueDates[entry.date]) {
-      uniqueDates[entry.date] = index;
-    }
   });
 
   const sortedDates = Object.entries(uniqueDates).sort(([a], [b]) => {
@@ -256,5 +247,83 @@ async function loadEntries() {
   renderTimelineMarkers();
 }
 </script>
+<div id="timeline" style="margin-top:3rem; text-align:center;">
+  <h3>🗓️ Zeitleiste</h3>
+  
+</div>
+
+<div id="timelineMarkers" style="display:flex;gap:0.5rem;margin:3rem auto;justify-content:center;flex-wrap:wrap;max-width:90%;"></div>
+
 </body>
 </html>
+<script>
+() {
+  const markerBar = document.getElementById('timelineMarkers');
+  if (!markerBar) return;
+  markerBar.innerHTML = '';
+
+  const uniqueDates = {};
+  allEntries.forEach((entry, index) => {
+    if (!uniqueDates[entry.date]) {
+      uniqueDates[entry.date] = index;
+    }
+  });
+
+  const sortedDates = Object.entries(uniqueDates).sort(([a], [b]) => {
+    const parseDate = d => {
+      const [day, month, year] = d.split('.');
+      return new Date(`${year}-${month}-${day}`);
+    };
+    return parseDate(a) - parseDate(b);
+  });
+
+  sortedDates.forEach(([date, index]) => {
+    const marker = document.createElement('button');
+    marker.textContent = date;
+    marker.title = allEntries[index].kapitel || '';
+    marker.style.padding = '0.3rem 0.6rem';
+    marker.style.borderRadius = '6px';
+    marker.style.border = '1px solid #999';
+    marker.style.background = '#2c2b29';
+    marker.style.color = '#fffbe8';
+    marker.style.cursor = 'pointer';
+    marker.style.margin = '0.2rem';
+    marker.onclick = () => {
+      currentPage = index;
+      renderPage(index);
+    };
+    markerBar.appendChild(marker);
+  });
+}
+  const sortedDates = Object.entries(uniqueDates).sort(([a], [b]) => {
+    const [ta, tb] = [new Date(a.split('.').reverse().join('-')), new Date(b.split('.').reverse().join('-'))];
+    return ta - tb;
+  });
+
+  sortedDates.forEach(([date, index]) => {
+    const marker = document.createElement('button');
+    marker.textContent = date;
+    marker.title = allEntries[index].kapitel || '';
+    marker.style.padding = '0.3rem 0.6rem';
+    marker.style.borderRadius = '6px';
+    marker.style.border = '1px solid #999';
+    marker.style.background = '#2c2b29';
+    marker.style.color = '#fffbe8';
+    marker.style.cursor = 'pointer';
+    marker.style.margin = '0.2rem';
+    marker.onclick = () => {
+      currentPage = index;
+      renderPage(index);
+    };
+    markerBar.appendChild(marker);
+  });
+}
+
+;
+    markerBar.appendChild(marker);
+  });
+}
+
+
+async 
+</script>
