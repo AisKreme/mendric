@@ -91,17 +91,20 @@ export function addEntry() {
   const kapitel = document.getElementById("kapitelInput").value.trim();
   const tagsRaw = document.getElementById("tagsInput").value.trim();
   const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
+  const images = window.uploadedImageURLs || [];  // hier die URLs aus Upload-Zone
   const date = new Date().toLocaleDateString("de-DE");
 
   if (kapitel) localStorage.setItem("lastKapitel", kapitel);
   if (!note) return alert("Notiz erforderlich");
 
-  saveEntry({ note, flow, kapitel, tags, date })
+  saveEntry({ note, flow, kapitel, tags, images, date }) // images mit senden
     .then(() => {
       document.getElementById("noteInput").value = '';
       document.getElementById("flowInput").value = '';
       document.getElementById("kapitelInput").value = '';
       document.getElementById("tagsInput").value = '';
+      window.uploadedImageURLs = []; // zurücksetzen
+      clearPreviews(); // Dropzone leeren
       loadEntries();
     }).catch(e => {
       alert('Fehler beim Speichern: ' + e.message);

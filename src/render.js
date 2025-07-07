@@ -74,6 +74,60 @@ div.appendChild(flow);
   delBtn.onclick = () => onDelete(entry.id);
   div.appendChild(delBtn);
 
+function renderPage(index) {
+  const book = document.getElementById('bookPages');
+  book.innerHTML = '';
+
+  if (!entries.length) {
+    book.innerHTML = '<p>Keine Einträge vorhanden.</p>';
+    return;
+  }
+
+  currentPage = Math.max(0, Math.min(index, entries.length - 1));
+  const entry = entries[currentPage];
+  const div = document.createElement('div');
+  div.className = 'entry';
+
+  // ... deine anderen Elemente (Titel, Notiz, Flow, Buttons) hier ...
+
+  // Button zum Anzeigen der Bilder (falls Bilder vorhanden)
+  if (entry.images?.length) {
+    const toggleBtn = document.createElement('button');
+    toggleBtn.textContent = '🖼️ Bilder anzeigen';
+    toggleBtn.style.marginTop = '0.5rem';
+
+    const imgContainer = document.createElement('div');
+    imgContainer.style.marginTop = '1rem';
+    imgContainer.style.display = 'none'; // Start: versteckt
+
+    entry.images.forEach(url => {
+      const img = document.createElement('img');
+      img.src = url;
+      img.style.maxWidth = '150px';
+      img.style.marginRight = '0.5rem';
+      img.style.borderRadius = '6px';
+      img.style.cursor = 'pointer';
+      img.onclick = () => window.open(url, '_blank');
+      imgContainer.appendChild(img);
+    });
+
+    toggleBtn.onclick = () => {
+      if (imgContainer.style.display === 'none') {
+        imgContainer.style.display = 'block';
+        toggleBtn.textContent = '🖼️ Bilder verbergen';
+      } else {
+        imgContainer.style.display = 'none';
+        toggleBtn.textContent = '🖼️ Bilder anzeigen';
+      }
+    };
+
+    div.appendChild(toggleBtn);
+    div.appendChild(imgContainer);
+  }
+
+  book.appendChild(div);
+}
+
   // Tags anzeigen, falls vorhanden
   if (entry.tags?.length) {
     const tagWrap = document.createElement('div');
