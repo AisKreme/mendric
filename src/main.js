@@ -1,13 +1,13 @@
-import { fetchEntries, saveEntry, updateEntry, updateEntryImages, deleteEntryById } from './api.js';
+import { fetchEntries, saveEntry, updateEntry, deleteEntryById } from './api.js';
 import { renderPage, renderTOC, renderTimelineMarkers } from './render.js';
 import { editEntry } from './edit.js';
-import { clearPreviews } from './upload.js'; // Dropzone-Vorschau leeren
+import { clearPreviews } from './upload.js'; // Funktion aus upload.js importieren
 
 let entries = [];
 let currentPage = 0;
 let allEntries = [];
 
-export let currentEntryId = null; // ID des aktuell angezeigten Eintrags
+export let currentEntryId = null; // Aktuell sichtbare Eintrags-ID
 
 window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnPrev').addEventListener('click', prevPage);
@@ -70,7 +70,7 @@ function onDelete(id) {
 
 function setCurrentEntryId(id) {
   currentEntryId = id;
-  window.uploadedImageURLs = []; // Upload-Cache bei Seitenwechsel leeren
+  window.uploadedImageURLs = []; // Upload-Zwischenspeicher leeren beim Seitenwechsel
   clearPreviews();
 }
 
@@ -128,11 +128,11 @@ export async function addEntry() {
 
   try {
     if (!currentEntryId) {
-      // Neuer Eintrag speichern
+      // Neuen Eintrag speichern
       const savedEntry = await saveEntry({ note, flow, kapitel, tags, images, date });
       setCurrentEntryId(savedEntry.id);
     } else {
-      // Bestehenden Eintrag aktualisieren
+      // Existierenden Eintrag aktualisieren
       await updateEntry(currentEntryId, { note, flow, kapitel, tags, images, date });
     }
     // Formular zurücksetzen
