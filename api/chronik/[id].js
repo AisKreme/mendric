@@ -6,7 +6,7 @@ const supabase = createClient(
 
 export default async function handler(req, res) {
   // CORS-Header setzen
- res.setHeader('Access-Control-Allow-Origin', 'https://mendric.vercel.app'); // In Produktion besser einschränken!
+ res.setHeader('Access-Control-Allow-Origin', 'https://mendric.vercel.app', 'http://localhost:5173');// In Produktion besser einschränken!
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
