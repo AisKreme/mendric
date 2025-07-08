@@ -19,7 +19,7 @@ export async function saveEntry(entry) {
 }
 
 export async function updateEntry(id, updates) {
-  const res = await fetch(`${API_URL}/chronik/${id}`, {
+  const res = await fetch(`${API_URL}/chronik/id`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(updates),
@@ -32,7 +32,7 @@ export async function updateEntry(id, updates) {
 }
 
 export async function updateEntryImages(id, images) {
-  const res = await fetch(`${API_URL}/chronik-images`, {
+  const res = await fetch(`${API_URL}/chronik/id`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ id, images }),
